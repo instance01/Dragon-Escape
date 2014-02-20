@@ -8,16 +8,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,6 +25,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -44,19 +42,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.Wool;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
-
-import com.google.common.collect.Maps;
 
 public class Main extends JavaPlugin implements Listener {
 
@@ -76,6 +68,7 @@ public class Main extends JavaPlugin implements Listener {
 	public static HashMap<String, String> arenap_ = new HashMap<String, String>(); // player -> arena
 	public static HashMap<Player, ItemStack[]> pinv = new HashMap<Player, ItemStack[]>(); // player -> inventory
 	public static HashMap<Player, String> lost = new HashMap<Player, String>(); // player -> whether lost or not
+	public static HashMap<String, EnderDragon> dragons = new HashMap<String, EnderDragon>();
 
 
 	int default_max_players = 4;
@@ -242,8 +235,26 @@ public class Main extends JavaPlugin implements Listener {
 					}
 				} else if (action.equalsIgnoreCase("removearena")) {
 					//TODO removearena
+				} else if (action.equalsIgnoreCase("savearena")) {
+					if(args.length > 1){
+						if(!(sender instanceof Player)){
+							return true;
+						}
+						
+						Player p = (Player)sender;
+						
+						if(isValidArena(args[1])){
+    						File f = new File(this.getDataFolder() + "/" + args[1]);
+							f.delete();
+							saveArenaToFile(p.getName(), args[1]);	
+						}else{
+							sender.sendMessage("§cThe arena appears to be invalid (missing components)!");
+						}
+						
+					}else{
+						sender.sendMessage("§cUsage: §2/de savearena [name]");
+					}	
 				} else if(action.equalsIgnoreCase("setbounds")){
-    				//TODO setbounds
 					if (sender.hasPermission("dragonescape.setup")) {
 						if (args.length > 2) {
 							String arena = args[1];
@@ -716,7 +727,6 @@ public class Main extends JavaPlugin implements Listener {
 		return ret;
 	}
 	
-	//TODO boundary functions
 	public Location getLowBoundary(String arena) {
 		Location ret = null;
 		if (isValidArena(arena)) {
@@ -734,7 +744,7 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public boolean isValidArena(String arena) {
-		if (getConfig().isSet(arena + ".spawn") && getConfig().isSet(arena + ".lobby")) {
+		if (getConfig().isSet(arena + ".spawn") && getConfig().isSet(arena + ".lobby") && getConfig().isSet(arena + ".boundarylow") && getConfig().isSet(arena + ".boundaryhigh")) {
 			return true;
 		}
 		return false;
@@ -976,6 +986,11 @@ public class Main extends JavaPlugin implements Listener {
 		countdown_id.put(arena, t);
 
 
+		// spawn enderdragon
+		EnderDragon test = (EnderDragon) getSpawn(arena).getWorld().spawnEntity(getSpawn(arena), EntityType.ENDER_DRAGON);
+		test.teleport(getSpawn(arena));
+		test.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 999999, 50));
+		dragons.put(arena, test);
 		
 		final int d = 1;
 		
@@ -997,6 +1012,7 @@ public class Main extends JavaPlugin implements Listener {
 					}
 
 					//TODO move dragon
+					//dragons.get(arena).teleport(getSpawn(arena));
 					//TODO destroy blocks
 					
 				} catch (Exception e) {
