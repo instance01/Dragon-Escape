@@ -1,0 +1,12 @@
+name: DragonEscape
+main: com.comze_instancelabs.dragonescape.Main
+version: 1.0
+author: instancelabs
+softdepend: [Vault]
+commands:
+   dragonescape:
+      description: Main command
+      usage: /dragonescape [action]
+   de:
+      description: Main command
+      usage: /de [action]
