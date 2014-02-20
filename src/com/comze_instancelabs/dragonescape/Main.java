@@ -244,6 +244,36 @@ public class Main extends JavaPlugin implements Listener {
 					//TODO removearena
 				} else if(action.equalsIgnoreCase("setbounds")){
     				//TODO setbounds
+					if (sender.hasPermission("dragonescape.setup")) {
+						if (args.length > 2) {
+							String arena = args[1];
+							String count = args[2];
+							if(!count.equalsIgnoreCase("low") && !count.equalsIgnoreCase("high")){
+								sender.sendMessage("§cSecond parameter invalid. Usage: /de setbounds [arena] [low/high]");
+								return true;
+							}
+							if(!getConfig().isSet(arena)){
+								sender.sendMessage("§cCould not find this arena.");
+								return true;
+							}
+							
+							if(!(sender instanceof Player)){
+								return true;
+							}
+							
+							Player p = (Player)sender;
+							
+							getConfig().set(arena + ".boundary" + count + ".world", p.getWorld().getName());
+							getConfig().set(arena + ".boundary" + count + ".loc.x", p.getLocation().getBlockX());
+							getConfig().set(arena + ".boundary" + count + ".loc.y", p.getLocation().getBlockY());
+							getConfig().set(arena + ".boundary" + count + ".loc.z", p.getLocation().getBlockZ());
+							this.saveConfig();
+							
+							sender.sendMessage("§eSuccessfully saved " + count + " boundary!");
+						}else{
+							sender.sendMessage("§cUsage: /de setbounds [arena] [count].");
+						}
+					}
     			} else if (action.equalsIgnoreCase("setlobby")) {
 					if (args.length > 1) {
 						if (sender.hasPermission("dragonescape.setup")) {
@@ -690,7 +720,7 @@ public class Main extends JavaPlugin implements Listener {
 	public Location getLowBoundary(String arena) {
 		Location ret = null;
 		if (isValidArena(arena)) {
-			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".spawn.world")), getConfig().getInt(arena + ".spawn.loc.x"), getConfig().getInt(arena + ".spawn.loc.y") + 2, getConfig().getInt(arena + ".spawn.loc.z"));
+			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".boundarylow.world")), getConfig().getInt(arena + ".boundarylow.loc.x"), getConfig().getInt(arena + ".boundarylow.loc.y") + 2, getConfig().getInt(arena + ".boundarylow.loc.z"));
 		}
 		return ret;
 	}
@@ -698,7 +728,7 @@ public class Main extends JavaPlugin implements Listener {
 	public Location getHighBoundary(String arena) {
 		Location ret = null;
 		if (isValidArena(arena)) {
-			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".spawn.world")), getConfig().getInt(arena + ".spawn.loc.x"), getConfig().getInt(arena + ".spawn.loc.y") + 2, getConfig().getInt(arena + ".spawn.loc.z"));
+			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".boundaryhigh.world")), getConfig().getInt(arena + ".boundaryhigh.loc.x"), getConfig().getInt(arena + ".boundaryhigh.loc.y") + 2, getConfig().getInt(arena + ".boundaryhigh.loc.z"));
 		}
 		return ret;
 	}
