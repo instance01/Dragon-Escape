@@ -1,7 +1,12 @@
 package com.comze_instancelabs.dragonescape;
 
 
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,6 +53,8 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import com.google.common.collect.Maps;
 
@@ -678,6 +685,23 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		return ret;
 	}
+	
+	//TODO boundary functions
+	public Location getLowBoundary(String arena) {
+		Location ret = null;
+		if (isValidArena(arena)) {
+			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".spawn.world")), getConfig().getInt(arena + ".spawn.loc.x"), getConfig().getInt(arena + ".spawn.loc.y") + 2, getConfig().getInt(arena + ".spawn.loc.z"));
+		}
+		return ret;
+	}
+	
+	public Location getHighBoundary(String arena) {
+		Location ret = null;
+		if (isValidArena(arena)) {
+			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".spawn.world")), getConfig().getInt(arena + ".spawn.loc.x"), getConfig().getInt(arena + ".spawn.loc.y") + 2, getConfig().getInt(arena + ".spawn.loc.z"));
+		}
+		return ret;
+	}
 
 	public boolean isValidArena(String arena) {
 		if (getConfig().isSet(arena + ".spawn") && getConfig().isSet(arena + ".lobby")) {
@@ -1095,5 +1119,227 @@ public class Main extends JavaPlugin implements Listener {
 	    return s.matches("[-+]?\\d*\\.?\\d+");  
 	}
 	
+	
+	
+	
+	
+	
+    public void saveArenaToFile(String player, String arena){
+    	File f = new File(this.getDataFolder() + "/" + arena);
+    	Cuboid c = new Cuboid(getLowBoundary(arena), getHighBoundary(arena));
+    	Location start = c.getLowLoc();
+    	Location end = c.getHighLoc();
+
+		int width = end.getBlockX() - start.getBlockX();
+		int length = end.getBlockZ() - start.getBlockZ();
+		int height = end.getBlockY() - start.getBlockY();
+		
+		getLogger().info("BOUNDS: " + Integer.toString(width) + " " + Integer.toString(height) +  " " + Integer.toString(length)); 
+		getLogger().info("BLOCKS TO SAVE: " + Integer.toString(width * height * length));
+		
+		FileOutputStream fos;
+		ObjectOutputStream oos = null;
+		try{
+			fos = new FileOutputStream(f);
+			oos = new BukkitObjectOutputStream(fos);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		
+		for (int i = 0; i <= width; i++) {
+			for (int j = 0; j <= height; j++) {
+				for(int k = 0; k <= length; k++){
+					Block change = c.getWorld().getBlockAt(start.getBlockX() + i, start.getBlockY() + j, start.getBlockZ() + k);
+					
+					//if(change.getType() != Material.AIR){
+						ArenaBlock bl = new ArenaBlock(change);
+
+						try {
+							oos.writeObject(bl);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}	
+					//}
+
+				}
+			}
+		}
+		
+		try {
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void saveArenaToFile(String arena){
+    	File f = new File(this.getDataFolder() + "/" + arena);
+    	Cuboid c = new Cuboid(getLowBoundary(arena), getHighBoundary(arena));
+    	Location start = c.getLowLoc();
+    	Location end = c.getHighLoc();
+
+		int width = end.getBlockX() - start.getBlockX();
+		int length = end.getBlockZ() - start.getBlockZ();
+		int height = end.getBlockY() - start.getBlockY();
+		
+		getLogger().info("BOUNDS: " + Integer.toString(width) + " " + Integer.toString(height) +  " " + Integer.toString(length)); 
+		getLogger().info("BLOCKS TO SAVE: " + Integer.toString(width * height * length));
+		
+		FileOutputStream fos;
+		ObjectOutputStream oos = null;
+		try{
+			fos = new FileOutputStream(f);
+			oos = new BukkitObjectOutputStream(fos);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		
+		for (int i = 0; i <= width; i++) {
+			for (int j = 0; j <= height; j++) {
+				for(int k = 0; k <= length; k++){
+					Block change = c.getWorld().getBlockAt(start.getBlockX() + i, start.getBlockY() + j, start.getBlockZ() + k);
+					
+					//if(change.getType() != Material.AIR){
+						ArenaBlock bl = new ArenaBlock(change);
+
+						try {
+							oos.writeObject(bl);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}	
+					//}
+
+				}
+			}
+		}
+		
+		try {
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		getLogger().info("saved");
+    }
+    
+    public void loadArenaFromFileASYNC(String arena){
+    	File f = new File(this.getDataFolder() + "/" + arena);
+		FileInputStream fis = null;
+		BukkitObjectInputStream ois = null;
+		try {
+			fis = new FileInputStream(f);
+			ois = new BukkitObjectInputStream(fis);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			while(true)  
+			{ 
+				Object b = null;
+				try{
+					b = ois.readObject();
+				}catch(EOFException e){
+					getLogger().info("Finished restoring map for " + arena + ".");
+				}
+				
+				if(b != null){
+					ArenaBlock ablock = (ArenaBlock) b;
+					World w = ablock.getBlock().getWorld();
+
+					if(!w.getBlockAt(ablock.getBlock().getLocation()).getType().toString().equalsIgnoreCase(ablock.getMaterial().toString())){
+						ablock.getBlock().getWorld().getBlockAt(ablock.getBlock().getLocation()).setType(ablock.getMaterial());
+					}
+				}else{
+					break;
+				}
+			} 
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+            
+
+		try {
+			ois.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+		
+    }
+    
+    
+    public void loadArenaFromFileSYNC(String arena){
+    	int failcount = 0;
+    	final ArrayList<ArenaBlock> failedblocks = new ArrayList<ArenaBlock>();
+    	
+    	File f = new File(this.getDataFolder() + "/" + arena);
+		FileInputStream fis = null;
+		BukkitObjectInputStream ois = null;
+		try {
+			fis = new FileInputStream(f);
+			ois = new BukkitObjectInputStream(fis);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			while(true)  
+			{ 
+				Object b = null;
+				try{
+					b = ois.readObject();
+				}catch(EOFException e){
+					getLogger().info("Finished restoring map for " + arena + ".");
+				}
+				
+				if(b != null){
+					ArenaBlock ablock = (ArenaBlock) b;
+					try{
+						if(!ablock.getBlock().getWorld().getBlockAt(ablock.getBlock().getLocation()).getType().toString().equalsIgnoreCase(ablock.getMaterial().toString())){
+							ablock.getBlock().getWorld().getBlockAt(ablock.getBlock().getLocation()).setType(ablock.getMaterial());
+						}
+					}catch(IllegalStateException e){
+						failcount += 1;
+						failedblocks.add(ablock);
+					}
+				}else{
+					break;
+				}
+			} 
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+            
+
+		try {
+			ois.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		getLogger().warning("Failed to update " + Integer.toString(failcount) + " blocks due to spigots async exception.");
+		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			public void run() {
+				// restore spigot blocks!
+				getLogger().info("Trying to restore blocks affected by spigot exception..");
+				for(ArenaBlock ablock : failedblocks){
+					getServer().getWorld(ablock.world).getBlockAt(new Location(getServer().getWorld(ablock.world), ablock.x, ablock.y, ablock.z)).setType(Material.WOOL);
+					getServer().getWorld(ablock.world).getBlockAt(new Location(getServer().getWorld(ablock.world), ablock.x, ablock.y, ablock.z)).getTypeId();
+					getServer().getWorld(ablock.world).getBlockAt(new Location(getServer().getWorld(ablock.world), ablock.x, ablock.y, ablock.z)).setType(ablock.getMaterial());
+				}
+				getLogger().info("Successfully finished!");
+			}
+		}, 40L);
+		
+		return;
+    }
 
 }
