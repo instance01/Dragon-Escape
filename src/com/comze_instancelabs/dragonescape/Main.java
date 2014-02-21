@@ -258,7 +258,9 @@ public class Main extends JavaPlugin implements Listener {
 							getConfig().set(arenaname + ".name", arenaname);
 							this.saveConfig();
 							sender.sendMessage(saved_arena);
-						}
+						}else{
+                            sender.sendMessage(noperm);
+                        }
 					}else{
                         sender.sendMessage("§cNo arena submitted. Usage: /de createarena [name]");
 					}
@@ -272,6 +274,8 @@ public class Main extends JavaPlugin implements Listener {
 	                            	this.saveConfig();
 		                            sender.sendMessage(removed_arena);
 	                            }
+	                        }else{
+	                            sender.sendMessage(noperm);
 	                        }
 	                    }else{
 	                        sender.sendMessage("§cNo arena submitted. Usage: /de createarena [name]");
@@ -324,7 +328,9 @@ public class Main extends JavaPlugin implements Listener {
 						}else{
 							sender.sendMessage("§cUsage: /de setbounds [arena] [count].");
 						}
-					}
+					}else{
+                        sender.sendMessage(noperm);
+                    }
     			} else if (action.equalsIgnoreCase("setlobby")) {
 					if (args.length > 1) {
 						if (sender.hasPermission("dragonescape.setup")) {
@@ -336,7 +342,9 @@ public class Main extends JavaPlugin implements Listener {
 							getConfig().set(arenaname + ".lobby.loc.z", p.getLocation().getBlockZ());
 							this.saveConfig();
 							sender.sendMessage(saved_lobby);
-						}
+						}else{
+                            sender.sendMessage(noperm);
+                        }
 					}
 				} else if (action.equalsIgnoreCase("setfinish")) {
 					if (args.length > 1) {
@@ -350,7 +358,9 @@ public class Main extends JavaPlugin implements Listener {
 							this.saveConfig();
 							//TODO Setfinish msg
 							sender.sendMessage("Successfully set finish.");
-						}
+						}else{
+                            sender.sendMessage(noperm);
+                        }
 					}
 				} else if (action.equalsIgnoreCase("setspawn")) {
 					if (args.length > 1) {
@@ -364,7 +374,9 @@ public class Main extends JavaPlugin implements Listener {
 							this.saveConfig();
 							//TODO Setfinish msg
 							sender.sendMessage("Successfully set spawn.");
-						}
+						}else{
+                            sender.sendMessage(noperm);
+                        }
 					}
 				} else if (action.equalsIgnoreCase("setmainlobby")) {
 					if (sender.hasPermission("dragonescape.setup")) {
@@ -375,7 +387,9 @@ public class Main extends JavaPlugin implements Listener {
 						getConfig().set("mainlobby.loc.z", p.getLocation().getBlockZ());
 						this.saveConfig();
 						sender.sendMessage(saved_mainlobby);
-					}
+					}else{
+                        sender.sendMessage(noperm);
+                    }
 				} else if (action.equalsIgnoreCase("leave")) {
 					Player p = (Player) sender;
 					if (arenap.containsKey(p)) {
@@ -394,7 +408,9 @@ public class Main extends JavaPlugin implements Listener {
 						}
 						ingame.clear();
 						Bukkit.getScheduler().cancelAllTasks();
-					}
+					}else{
+                        sender.sendMessage(noperm);
+                    }
 				} else if (action.equalsIgnoreCase("setmaxplayers")) {
 					if (sender.hasPermission("dragonescape.setup")) {
 						if (args.length > 2) {
@@ -432,7 +448,9 @@ public class Main extends JavaPlugin implements Listener {
 						}else{
 							sender.sendMessage("§cUsage: /de setminplayers [arena] [count].");
 						}
-					}
+					}else{
+                        sender.sendMessage(noperm);
+                    }
 				} else if (action.equalsIgnoreCase("setdifficulty")) {
 					if (sender.hasPermission("dragonescape.setup")) {
 						if (args.length > 2) {
@@ -508,14 +526,18 @@ public class Main extends JavaPlugin implements Listener {
 									}
 								}, 10);
 							}
-						}
+						}else{
+                            sender.sendMessage(noperm);
+                        }
 					}
 				} else if (action.equalsIgnoreCase("reload")) {
 					if (sender.hasPermission("dragonescape.reload")) {
 						this.reloadConfig();
 						getConfigVars();
 						sender.sendMessage(reloaded);
-					}
+					}else{
+                        sender.sendMessage(noperm);
+                    }
 				} else if (action.equalsIgnoreCase("list")) {
 					if (sender.hasPermission("dragonescape.list")) {
 						sender.sendMessage("§6-= Arenas =-");
@@ -524,7 +546,9 @@ public class Main extends JavaPlugin implements Listener {
 								sender.sendMessage("§2" + arena);
 							}
 						}
-					}
+					}else{
+                        sender.sendMessage(noperm);
+                    }
 				} else {
 					sender.sendMessage("§6-= DragonEscape §2help: §6=-");
 					sender.sendMessage("§2To §6setup the main lobby §2, type in §c/de setmainlobby");
@@ -791,7 +815,9 @@ public class Main extends JavaPlugin implements Listener {
 					event.setLine(2, arena);
 					event.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 				}
-			}
+			}else{
+			    event.getPlayer().sendMessage(noperm);
+            }
 		}
 	}
 
