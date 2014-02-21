@@ -148,7 +148,7 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.start_announcement", false);
 		getConfig().addDefault("config.winner_announcement", false);
 		
-		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
+		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");	
 		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
 		getConfig().addDefault("strings.saved.setup", "&6Successfully saved spawn. Now setting up, might &2lag&6 a little bit.");
 		getConfig().addDefault("strings.removed_arena", "&cSuccessfully removed arena.");
@@ -220,6 +220,7 @@ public class Main extends JavaPlugin implements Listener {
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
 		
 		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");
+        removed_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");		
 		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "§");
 		saved_setup = getConfig().getString("strings.saved.setup").replaceAll("&", "§");
 		saved_mainlobby = "§aSuccessfully saved main lobby";
@@ -254,9 +255,26 @@ public class Main extends JavaPlugin implements Listener {
 							this.saveConfig();
 							sender.sendMessage(saved_arena);
 						}
+					}else{
+					       //no arena in command
+                        sender.sendMessage("§cNo arena submitted. Usage: /de createarena [name]");
+
 					}
+					    
 				} else if (action.equalsIgnoreCase("removearena")) {
-					//TODO removearena
+	                   if (args.length > 1) {
+	                        if (sender.hasPermission("dragonescape.setup")) {
+	                            String arenaname = args[1];
+	                            getConfig().set(arenaname, null);
+	                            this.saveConfig();
+	                            sender.sendMessage(removed_arena);
+	                        }
+	                    }else{
+	                           //no arena in command
+	                        sender.sendMessage("§cNo arena submitted. Usage: /de createarena [name]");
+
+	                    }
+                    
 				} else if (action.equalsIgnoreCase("savearena")) {
 					if(args.length > 1){
 						if(!(sender instanceof Player)){
