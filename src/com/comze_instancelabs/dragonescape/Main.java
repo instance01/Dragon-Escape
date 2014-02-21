@@ -122,6 +122,7 @@ public class Main extends JavaPlugin implements Listener {
 	public String arena_full = "";
 	public String removed_arena = "";
 	public String winner_an = "";
+	public String noperm = "";
 	
 	// anouncements
 	public String starting = "";
@@ -166,6 +167,7 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("strings.starting_announcement", "&aStarting a new DragonEscape Game in &6");
 		getConfig().addDefault("strings.started_announcement", "&aA new DragonEscape Round has started!");
 		getConfig().addDefault("strings.winner_announcement", "&6<player> &awon the game on arena &6<arena>!");
+		getConfig().addDefault("strings.noperm", "&cYou don't have permission.");
 
 		getConfig().options().copyDefaults(true);
 		if(getConfig().isSet("config.min_players")){
@@ -238,6 +240,8 @@ public class Main extends JavaPlugin implements Listener {
 		started = getConfig().getString("strings.started_announcement").replaceAll("&", "§");
 		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
 		winner_an = getConfig().getString("strings.winner_announcement").replaceAll("&", "§");
+		noperm = getConfig().getString("strings.noperm").replaceAll("&", "§");
+	
 	}
 
 
