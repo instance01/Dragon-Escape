@@ -7,12 +7,17 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import net.minecraft.server.v1_7_R1.AttributeInstance;
+import net.minecraft.server.v1_7_R1.EntityInsentient;
+import net.minecraft.server.v1_7_R1.EntityTypes;
+import net.minecraft.server.v1_7_R1.GenericAttributes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -25,6 +30,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -34,6 +41,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -50,6 +58,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
+
 public class Main extends JavaPlugin implements Listener {
 
 
@@ -59,6 +68,17 @@ public class Main extends JavaPlugin implements Listener {
 	 * 
 	 */
 	
+	/*
+	 * de setmainlobby
+	 * 
+	 * de createarena [name]
+	 * de setlobby [name]
+	 * de setfinish [name]
+	 * de setbounds [name] [low/high]
+	 * de savearena [name]
+	 * 
+	 * 
+	 */
 	
 	public static Economy econ = null;
 
@@ -68,7 +88,7 @@ public class Main extends JavaPlugin implements Listener {
 	public static HashMap<String, String> arenap_ = new HashMap<String, String>(); // player -> arena
 	public static HashMap<Player, ItemStack[]> pinv = new HashMap<Player, ItemStack[]>(); // player -> inventory
 	public static HashMap<Player, String> lost = new HashMap<Player, String>(); // player -> whether lost or not
-	public static HashMap<String, EnderDragon> dragons = new HashMap<String, EnderDragon>();
+	public static HashMap<String, Test> dragons = new HashMap<String, Test>();
 
 
 	int default_max_players = 4;
@@ -107,11 +127,12 @@ public class Main extends JavaPlugin implements Listener {
 	public String starting = "";
 	public String started = "";
 	
-	
 	@Override
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(this, this);
 
+		registerEntity();
+		
 		getConfig().options().header("I recommend you to set auto_updating to true for possible future bugfixes. If use_economy is set to false, the winner will get the item reward.");
 		getConfig().addDefault("config.auto_updating", true);
 		getConfig().addDefault("config.rounds_per_game", 10);
@@ -219,6 +240,7 @@ public class Main extends JavaPlugin implements Listener {
 		winner_an = getConfig().getString("strings.winner_announcement").replaceAll("&", "§");
 	}
 
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (cmd.getName().equalsIgnoreCase("de") || cmd.getName().equalsIgnoreCase("dragonescape")) {
 			if (args.length > 0) {
@@ -296,6 +318,34 @@ public class Main extends JavaPlugin implements Listener {
 							getConfig().set(arenaname + ".lobby.loc.z", p.getLocation().getBlockZ());
 							this.saveConfig();
 							sender.sendMessage(saved_lobby);
+						}
+					}
+				} else if (action.equalsIgnoreCase("setfinish")) {
+					if (args.length > 1) {
+						if (sender.hasPermission("dragonescape.setup")) {
+							Player p = (Player) sender;
+							String arenaname = args[1];
+							getConfig().set(arenaname + ".finish.world", p.getWorld().getName());
+							getConfig().set(arenaname + ".finish.loc.x", p.getLocation().getBlockX());
+							getConfig().set(arenaname + ".finish.loc.y", p.getLocation().getBlockY());
+							getConfig().set(arenaname + ".finish.loc.z", p.getLocation().getBlockZ());
+							this.saveConfig();
+							//TODO Setfinish msg
+							sender.sendMessage("Successfully set finish.");
+						}
+					}
+				} else if (action.equalsIgnoreCase("setspawn")) {
+					if (args.length > 1) {
+						if (sender.hasPermission("dragonescape.setup")) {
+							Player p = (Player) sender;
+							String arenaname = args[1];
+							getConfig().set(arenaname + ".spawn.world", p.getWorld().getName());
+							getConfig().set(arenaname + ".spawn.loc.x", p.getLocation().getBlockX());
+							getConfig().set(arenaname + ".spawn.loc.y", p.getLocation().getBlockY());
+							getConfig().set(arenaname + ".spawn.loc.z", p.getLocation().getBlockZ());
+							this.saveConfig();
+							//TODO Setfinish msg
+							sender.sendMessage("Successfully set spawn.");
 						}
 					}
 				} else if (action.equalsIgnoreCase("setmainlobby")) {
@@ -458,23 +508,29 @@ public class Main extends JavaPlugin implements Listener {
 						}
 					}
 				} else {
-					sender.sendMessage("§6-= dragonescape §2help: §6=-");
+					sender.sendMessage("§6-= DragonEscape §2help: §6=-");
 					sender.sendMessage("§2To §6setup the main lobby §2, type in §c/de setmainlobby");
 					sender.sendMessage("§2To §6setup §2a new arena, type in the following commands:");
 					sender.sendMessage("§2/de createarena [name]");
 					sender.sendMessage("§2/de setlobby [name] §6 - for the waiting lobby");
-					sender.sendMessage("§2/de setup [name]");
+					sender.sendMessage("§2/de setspawn [name] §6 - players spawn here");
+					sender.sendMessage("§2/de setfinish [name] §6 - the finish line");
+					sender.sendMessage("§2/de setbounds [name] §6 - don't forget to set both high and low boundaries.");
+					sender.sendMessage("§2/de savearena [name] §6 - save the arena");
 					sender.sendMessage("");
 					sender.sendMessage("§2You can join with §c/de join [name] §2and leave with §c/de leave§2.");
 					sender.sendMessage("§2You can force an arena to start with §c/de start [name]§2.");
 				}
-			} else {
-				sender.sendMessage("§6-= dragonescape §2help: §6=-");
+			} else {				
+				sender.sendMessage("§6-= DragonEscape §2help: §6=-");
 				sender.sendMessage("§2To §6setup the main lobby §2, type in §c/de setmainlobby");
 				sender.sendMessage("§2To §6setup §2a new arena, type in the following commands:");
 				sender.sendMessage("§2/de createarena [name]");
 				sender.sendMessage("§2/de setlobby [name] §6 - for the waiting lobby");
-				sender.sendMessage("§2/de setup [name]");
+				sender.sendMessage("§2/de setspawn [name] §6 - players spawn here");
+				sender.sendMessage("§2/de setfinish [name] §6 - the finish line");
+				sender.sendMessage("§2/de setbounds [name] §6 - don't forget to set both high and low boundaries.");
+				sender.sendMessage("§2/de savearena [name] §6 - save the arena");
 				sender.sendMessage("");
 				sender.sendMessage("§2You can join with §c/de join [name] §2and leave with §c/de leave§2.");
 				sender.sendMessage("§2You can force an arena to start with §c/de start [name]§2.");
@@ -483,6 +539,60 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		return false;
 	}
+	
+	public Float rideSpeed = 0.0F;
+	private boolean registerEntity() {
+        try {
+            Class entityTypeClass = EntityTypes.class;
+
+            Field c = entityTypeClass.getDeclaredField("c");
+            c.setAccessible(true);
+            HashMap c_map = (HashMap) c.get(null);
+            c_map.put("Test", Test.class);
+
+            Field d = entityTypeClass.getDeclaredField("d");
+            d.setAccessible(true);
+            HashMap d_map = (HashMap) d.get(null);
+            d_map.put(Test.class, "Test");
+
+            Field e = entityTypeClass.getDeclaredField("e");
+            e.setAccessible(true);
+            HashMap e_map = (HashMap) e.get(null);
+            e_map.put(Integer.valueOf(63), Test.class);
+
+            Field f = entityTypeClass.getDeclaredField("f");
+            f.setAccessible(true);
+            HashMap f_map = (HashMap) f.get(null);
+            f_map.put(Test.class, Integer.valueOf(63));
+
+            Field g = entityTypeClass.getDeclaredField("g");
+            g.setAccessible(true);
+            HashMap g_map = (HashMap) g.get(null);
+            g_map.put("Test", Integer.valueOf(63));
+
+            return true;
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+	
+	public Test spawnEnderdragon(Location t){
+		Object w = ((CraftWorld)t.getWorld()).getHandle();
+		Test t_ = new Test(this, t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld)t.getWorld()).getHandle());
+		((net.minecraft.server.v1_7_R1.World)w).addEntity(t_, CreatureSpawnEvent.SpawnReason.CUSTOM);
+		return t_;
+	}
+	
+	public void removeEnderdragon(Test t){
+		t.getBukkitEntity().remove();
+	}
+	
+	public void setDragonSpeed(EnderDragon s,double speed){
+        AttributeInstance attributes = ((EntityInsentient)((CraftLivingEntity)s).getHandle()).getAttributeInstance(GenericAttributes.d);
+        attributes.setValue(speed);
+    }
+	
 
 	public ArrayList<String> left_players = new ArrayList<String>();
 
@@ -645,7 +755,7 @@ public class Main extends JavaPlugin implements Listener {
 		Player p = event.getPlayer();
 		if (event.getLine(0).toLowerCase().equalsIgnoreCase("dragonescape")) {
 			if (event.getPlayer().hasPermission("dragonescape.sign") || event.getPlayer().isOp()) {
-				event.setLine(0, "§6§ldragonescape");
+				event.setLine(0, "§6DragonEscape");
 				if (!event.getLine(2).equalsIgnoreCase("")) {
 					String arena = event.getLine(2);
 					if (isValidArena(arena)) {
@@ -987,10 +1097,7 @@ public class Main extends JavaPlugin implements Listener {
 
 
 		// spawn enderdragon
-		EnderDragon test = (EnderDragon) getSpawn(arena).getWorld().spawnEntity(getSpawn(arena), EntityType.ENDER_DRAGON);
-		test.teleport(getSpawn(arena));
-		test.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 999999, 50));
-		dragons.put(arena, test);
+		dragons.put(arena, spawnEnderdragon(getSpawn(arena)));
 		
 		final int d = 1;
 		
@@ -1063,6 +1170,12 @@ public class Main extends JavaPlugin implements Listener {
 
 		}
 
+		try {
+			removeEnderdragon(dragons.get(arena));
+		} catch (Exception e) {
+
+		}
+		
 		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 
 			public void run() {
