@@ -380,8 +380,8 @@ public class Main extends JavaPlugin implements Listener {
                             ItemMeta im = (ItemMeta)is.getItemMeta();
                             im.setDisplayName("§aBoundary tool for arena §e"  + arenaname);
                             is.setItemMeta(im);
-                            inv.addItem(is);
-                            sender.sendMessage("§eYou got the boundary tool.");
+                            inv.addItem(is);//TODO t
+                            sender.sendMessage("§eHere's the boundary tool. Left click the lower left point and right click the higher right point.");
                         } else {
                             sender.sendMessage(noperm);
                         }
@@ -883,6 +883,47 @@ public class Main extends JavaPlugin implements Listener {
 					}
 				}
 			}
+			
+			if (event.getItem().getTypeId() == 369){
+		        if (event.getItem().hasItemMeta()){
+			        ItemMeta im = event.getItem().getItemMeta();
+			        String itemname = im.getDisplayName();
+			        String arenaname = itemname.split("§e")[1];
+			        if (getConfig().isSet(arenaname)){
+			            if (event.getPlayer().hasPermission("dragonescape.setup")){
+			                try{
+				                Block b = event.getClickedBlock();
+				                Location l = b.getLocation();
+				                if (event.getAction() == Action.LEFT_CLICK_BLOCK){
+				                    String count = "low";
+			                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
+			                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
+			                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY() - 1);
+			                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
+			                        this.saveConfig();
+			                        event.setCancelled(true);
+			                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
+				                } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
+				                    String count = "high";
+			                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
+			                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
+			                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY());
+			                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
+			                        this.saveConfig();
+			                        event.setCancelled(true);
+			                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
+				                }
+			                } catch ( NullPointerException e){
+			                    event.getPlayer().sendMessage("§cYou must hit a block.");
+			                }
+			            } else {
+			                event.getPlayer().sendMessage(noperm);
+			            }
+			        } else {
+		                event.getPlayer().sendMessage("§cCould not find this arena.");
+			        }
+			    }
+		    }
 		}
 	}
 
@@ -933,50 +974,7 @@ public class Main extends JavaPlugin implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
-	@EventHandler
-	public void OnPlayerInteractEvent(PlayerInteractEvent event){
-	    if (event.getItem().getTypeId() == 369){
-	        if (event.getItem().hasItemMeta()){
-	        ItemMeta im = event.getItem().getItemMeta();
-	        String itemname = im.getDisplayName();
-	        String arenaname = itemname.split("§e")[1];
-	        if (getConfig().isSet(arenaname)){
-	            if (event.getPlayer().hasPermission("dragonescape.setup")){
-	                try{
-	                Block b = event.getClickedBlock();
-	                Location l = b.getLocation();
-	                if (event.getAction() == Action.LEFT_CLICK_BLOCK){
-	                    String count = "low";
-                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
-                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
-                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY() - 1);
-                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
-                        this.saveConfig();
-                        event.setCancelled(true);
-                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
-	                } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
-	                    String count = "high";
-                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
-                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
-                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY());
-                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
-                        this.saveConfig();
-                        event.setCancelled(true);
-                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
-	                }
-	                } catch ( NullPointerException e){
-	                    event.getPlayer().sendMessage("§cYou must hit a block");
-	                }
-	            } else {
-	                event.getPlayer().sendMessage(noperm);
-	            }
-	        } else {
-                event.getPlayer().sendMessage("§cCould not find this arena.");
-	        }
-	    }
-	    }
-	}
+
 
 	public Sign getSignFromArena(String arena) {
 		Location b_ = new Location(getServer().getWorld(getConfig().getString(arena + ".sign.world")), getConfig().getInt(arena + ".sign.loc.x"), getConfig().getInt(arena + ".sign.loc.y"), getConfig().getInt(arena + ".sign.loc.z"));
