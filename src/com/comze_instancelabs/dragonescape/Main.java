@@ -167,8 +167,8 @@ public class Main extends JavaPlugin implements Listener {
 
 		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
 		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
-		getConfig().addDefault("strings.saved.finish", "&6Successfully saved finishline.");
-		getConfig().addDefault("strings.saved.spawn", "&6Successfully saved spawn.");
+		getConfig().addDefault("strings.saved.finish", "&aSuccessfully saved finishline.");
+		getConfig().addDefault("strings.saved.spawn", "&aSuccessfully saved spawn.");
 		getConfig().addDefault("strings.removed_arena", "&cSuccessfully removed arena.");
 		getConfig().addDefault("strings.not_in_arena", "&cYou don't seem to be in an arena right now.");
 		getConfig().addDefault("strings.config_reloaded", "&6Successfully reloaded config.");
@@ -759,7 +759,16 @@ public class Main extends JavaPlugin implements Listener {
 						}
 					}, 5);
 					p.sendMessage(you_fell);
+					return;
 				}
+			}
+			if (event.getPlayer().getLocation().getBlockZ() > getFinish(arenap_.get(event.getPlayer().getName())).getBlockZ()) {
+				//TODO this assumes south direction again.
+				String arena = arenap_.get(event.getPlayer().getName());
+				if(ingame.get(arena)){
+					stop(h.get(arena), arena);
+				}
+				return;
 			}
 			if (event.getPlayer().getLocation().getBlockY() < getSpawn(arenap_.get(event.getPlayer().getName())).getBlockY() - 2) {
 				lost.put(event.getPlayer(), arenap.get(event.getPlayer()));
@@ -792,6 +801,8 @@ public class Main extends JavaPlugin implements Listener {
 					// last man standing!
 					stop(h.get(arena), arena);
 				}
+				
+				return;
 			}
 		}
 	}
@@ -1189,7 +1200,7 @@ public class Main extends JavaPlugin implements Listener {
 						}
 					}
 
-					Location l = getSpawn(arena);
+					final Location l = getSpawn(arena);
 					if(dragon_move_increment.containsKey(arena)){
 						dragon_move_increment.put(arena, dragon_move_increment.get(arena) + 0.2D);
 					}else{
@@ -1205,14 +1216,23 @@ public class Main extends JavaPlugin implements Listener {
 					
 					Location l1 = getHighBoundary(arena);
 					Location l2 = getLowBoundary(arena);
-										
-					for(int i = 0; i < l2.getBlockX() - l1.getBlockX(); i++){
-						for(int j = 0; j < l1.getBlockY() - l2.getBlockY(); j++){
-							Block b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j, dragons.get(arena).locZ));
-							if(b.getType() != Material.AIR){
-								l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
-							}
-							b.setType(Material.AIR);
+					
+					int length1 = l2.getBlockX() - l1.getBlockX();
+					int length2 = l1.getBlockY() - l2.getBlockY();
+					
+					for(int i = 0; i < length1; i++){
+						for(int j = 0; j < length2; j++){
+							final Block b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j, dragons.get(arena).locZ));
+							
+								Bukkit.getScheduler().runTask(m, new Runnable(){
+									public void run(){
+										if(b.getType() != Material.AIR){
+											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+											b.setType(Material.AIR);
+										}
+									}
+								});
+							
 						}
 					}
 					
@@ -1248,8 +1268,9 @@ public class Main extends JavaPlugin implements Listener {
 
 		try {
 			removeEnderdragon(dragons.get(arena));
+			dragons.put(arena, null);
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		
 		dragon_move_increment.put(arena, 0.0D);
