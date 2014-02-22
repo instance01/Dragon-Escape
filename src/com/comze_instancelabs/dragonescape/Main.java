@@ -49,6 +49,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -845,6 +846,14 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 	}
+	
+	
+	@EventHandler
+	public void EntityChangeBlockEvent(org.bukkit.event.entity.EntityChangeBlockEvent event) {
+		if (event.getEntityType() == EntityType.FALLING_BLOCK) {
+			event.setCancelled(true);
+		}
+	}
 
 	public Sign getSignFromArena(String arena) {
 		Location b_ = new Location(getServer().getWorld(getConfig().getString(arena + ".sign.world")), getConfig().getInt(arena + ".sign.loc.x"), getConfig().getInt(arena + ".sign.loc.y"), getConfig().getInt(arena + ".sign.loc.z"));
@@ -1185,7 +1194,6 @@ public class Main extends JavaPlugin implements Listener {
 						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - 0.5D);
 					}
 					
-					//TODO add falling block entities
 					// This assumes south too.
 					
 					Location l1 = getHighBoundary(arena);
@@ -1193,7 +1201,11 @@ public class Main extends JavaPlugin implements Listener {
 										
 					for(int i = 0; i < l2.getBlockX() - l1.getBlockX(); i++){
 						for(int j = 0; j < l1.getBlockY() - l2.getBlockY(); j++){
-							l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j, dragons.get(arena).locZ)).setType(Material.AIR);;
+							Block b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j, dragons.get(arena).locZ));
+							if(b.getType() != Material.AIR){
+								l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+							}
+							b.setType(Material.AIR);
 						}
 					}
 					
@@ -1232,6 +1244,8 @@ public class Main extends JavaPlugin implements Listener {
 		} catch (Exception e) {
 
 		}
+		
+		dragon_move_increment.put(arena, 0.0D);
 
 		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 
