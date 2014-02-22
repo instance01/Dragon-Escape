@@ -42,25 +42,7 @@ public class Test extends EntityEnderDragon {
 
 	@Override
 	public void e() {
-
-		if (passenger == null) {
-			if (!onGround) {
-
-				double myY = locY - plugin.rideSpeed;
-				int imyY = (int) myY;
-				if (imyY < 1) {
-					onGround = true;
-				}
-				if (imyY < 1 || (imyY < world.getWorld().getMaxHeight() && world.getWorld().getBlockAt((int) locX, imyY, (int) locZ).getType() != Material.AIR)) {
-					onGround = true;
-				} else {
-					this.setPosition(locX, myY, locZ);
-				}
-			}
-			return;
-		}
-		onGround = false;
-
+		return;
 	}
 
 	public boolean damageEntity(DamageSource damagesource, int i) {

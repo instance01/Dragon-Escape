@@ -342,7 +342,11 @@ public class Main extends JavaPlugin implements Listener {
 
 							getConfig().set(arena + ".boundary" + count + ".world", p.getWorld().getName());
 							getConfig().set(arena + ".boundary" + count + ".loc.x", p.getLocation().getBlockX());
-							getConfig().set(arena + ".boundary" + count + ".loc.y", p.getLocation().getBlockY());
+							if(count.equalsIgnoreCase("low")){
+								getConfig().set(arena + ".boundary" + count + ".loc.y", p.getLocation().getBlockY() - 1);
+							}else{
+								getConfig().set(arena + ".boundary" + count + ".loc.y", p.getLocation().getBlockY());
+							}
 							getConfig().set(arena + ".boundary" + count + ".loc.z", p.getLocation().getBlockZ());
 							this.saveConfig();
 
@@ -604,8 +608,7 @@ public class Main extends JavaPlugin implements Listener {
 		return false;
 	}
 
-	public Float rideSpeed = 0.0F;
-
+	
 	private boolean registerEntity() {
 		try {
 			Class entityTypeClass = EntityTypes.class;
@@ -650,7 +653,9 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public void removeEnderdragon(Test t) {
-		t.getBukkitEntity().remove();
+		if(t != null){
+			t.getBukkitEntity().remove();
+		}
 	}
 
 	public void setDragonSpeed(EnderDragon s, double speed) {
@@ -762,14 +767,40 @@ public class Main extends JavaPlugin implements Listener {
 					return;
 				}
 			}
-			if (event.getPlayer().getLocation().getBlockZ() > getFinish(arenap_.get(event.getPlayer().getName())).getBlockZ()) {
-				//TODO this assumes south direction again.
-				String arena = arenap_.get(event.getPlayer().getName());
-				if(ingame.get(arena)){
-					stop(h.get(arena), arena);
+			
+			//TODO: try out
+			String arena_ = arenap_.get(event.getPlayer().getName());
+			String dir = m.getDirection(getSpawn(arena_).getYaw());
+			if(dir.equalsIgnoreCase("south")){
+				if (event.getPlayer().getLocation().getBlockZ() > getFinish(arenap_.get(event.getPlayer().getName())).getBlockZ()) {
+					if(ingame.get(arena_)){
+						stop(h.get(arena_), arena_);
+					}
+					return;
 				}
-				return;
+			}else if(dir.equalsIgnoreCase("north")){
+				if (event.getPlayer().getLocation().getBlockZ() < getFinish(arenap_.get(event.getPlayer().getName())).getBlockZ()) {
+					if(ingame.get(arena_)){
+						stop(h.get(arena_), arena_);
+					}
+					return;
+				}
+			}else if(dir.equalsIgnoreCase("east")){
+				if (event.getPlayer().getLocation().getBlockX() > getFinish(arenap_.get(event.getPlayer().getName())).getBlockX()) {
+					if(ingame.get(arena_)){
+						stop(h.get(arena_), arena_);
+					}
+					return;
+				}
+			}else if(dir.equalsIgnoreCase("west")){
+				if (event.getPlayer().getLocation().getBlockX() < getFinish(arenap_.get(event.getPlayer().getName())).getBlockX()) {
+					if(ingame.get(arena_)){
+						stop(h.get(arena_), arena_);
+					}
+					return;
+				}
 			}
+			
 			if (event.getPlayer().getLocation().getBlockY() < getSpawn(arenap_.get(event.getPlayer().getName())).getBlockY() - 2) {
 				lost.put(event.getPlayer(), arenap.get(event.getPlayer()));
 				final Player p__ = event.getPlayer();
@@ -1186,11 +1217,31 @@ public class Main extends JavaPlugin implements Listener {
 			@Override
 			public void run() {
 				try {
-					//TODO add directions support
-					// assuming it's pointing to south
-					if(dragons.get(arena).locZ > getFinish(arena).getBlockZ()){
-						stop(h.get(arena), arena);
+					//TODO try out directions support
+					String dir = m.getDirection(getSpawn(arena).getYaw());
+
+					if(dir.equalsIgnoreCase("south")){
+						if(dragons.get(arena).locZ > getFinish(arena).getBlockZ()){
+							stop(h.get(arena), arena);
+							return;
+						}
+					}else if(dir.equalsIgnoreCase("north")){
+						if(dragons.get(arena).locZ < getFinish(arena).getBlockZ()){
+							stop(h.get(arena), arena);
+							return;
+						}
+					}else if(dir.equalsIgnoreCase("east")){
+						if(dragons.get(arena).locX > getFinish(arena).getBlockX()){
+							stop(h.get(arena), arena);
+							return;
+						}
+					}else if(dir.equalsIgnoreCase("west")){
+						if(dragons.get(arena).locX < getFinish(arena).getBlockX()){
+							stop(h.get(arena), arena);
+							return;
+						}
 					}
+					
 					
 					for (final Player p : arenap.keySet()) {
 						if (p.isOnline()) {
@@ -1206,24 +1257,40 @@ public class Main extends JavaPlugin implements Listener {
 					}else{
 						dragon_move_increment.put(arena, 0.2D);
 					}
-					if(m.getDirection(getSpawn(arena).getYaw()).equalsIgnoreCase("SOUTH")){
-						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() + dragon_move_increment.get(arena));
-					}else if(m.getDirection(getSpawn(arena).getYaw()).equalsIgnoreCase("NORTH")){
-						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - 0.5D);
-					}
 					
-					// This assumes south too.
 					
 					Location l1 = getHighBoundary(arena);
 					Location l2 = getLowBoundary(arena);
-					
-					int length1 = l2.getBlockX() - l1.getBlockX();
+					int length1 = l1.getBlockX() - l2.getBlockX();
 					int length2 = l1.getBlockY() - l2.getBlockY();
+					int length3 = l1.getBlockZ() - l2.getBlockZ();
+					boolean f = false;
+					boolean f_ = false;
 					
-					for(int i = 0; i < length1; i++){
-						for(int j = 0; j < length2; j++){
-							final Block b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j, dragons.get(arena).locZ));
-							
+					if(l2.getBlockX() > l1.getBlockX()){
+						length1 = l2.getBlockX() - l1.getBlockX();
+						f = true;
+					}
+					
+					if(l2.getBlockZ() > l1.getBlockZ()){
+						length3 = l2.getBlockZ() - l1.getBlockZ();
+						f_ = true;
+					}
+					
+					
+					
+					if(dir.equalsIgnoreCase("south")){
+						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() + dragon_move_increment.get(arena));
+						
+						for(int i = 0; i < length1; i++){
+							for(int j = 0; j < length2; j++){
+								final Block b;
+								if(f){
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+								}else{
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+								}
+								
 								Bukkit.getScheduler().runTask(m, new Runnable(){
 									public void run(){
 										if(b.getType() != Material.AIR){
@@ -1232,9 +1299,77 @@ public class Main extends JavaPlugin implements Listener {
 										}
 									}
 								});
-							
+							}
+						}
+					}else if(dir.equalsIgnoreCase("north")){
+						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - dragon_move_increment.get(arena));
+						
+						for(int i = 0; i < length1; i++){
+							for(int j = 0; j < length2; j++){
+								final Block b;
+								if(f){
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() + i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+								}else{
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() + i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+								}
+								
+								Bukkit.getScheduler().runTask(m, new Runnable(){
+									public void run(){
+										if(b.getType() != Material.AIR){
+											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+											b.setType(Material.AIR);
+										}
+									}
+								});
+							}
+						}
+					}else if(dir.equalsIgnoreCase("east")){
+						dragons.get(arena).setPosition(l.getX() + dragon_move_increment.get(arena), l.getY(), l.getZ());
+						
+						for(int i = 0; i < length3; i++){
+							for(int j = 0; j < length2; j++){
+								final Block b;
+								if(f_){
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
+								}else{
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
+								}
+								
+								Bukkit.getScheduler().runTask(m, new Runnable(){
+									public void run(){
+										if(b.getType() != Material.AIR){
+											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+											b.setType(Material.AIR);
+										}
+									}
+								});
+							}
+						}
+					}else if(dir.equalsIgnoreCase("west")){
+						dragons.get(arena).setPosition(l.getX() - dragon_move_increment.get(arena), l.getY(), l.getZ());
+						
+						for(int i = 0; i < length3; i++){
+							for(int j = 0; j < length2; j++){
+								final Block b;
+								if(f_){
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
+								}else{
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
+								}
+								
+								Bukkit.getScheduler().runTask(m, new Runnable(){
+									public void run(){
+										if(b.getType() != Material.AIR){
+											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+											b.setType(Material.AIR);
+										}
+									}
+								});
+							}
 						}
 					}
+
+					
 					
 				} catch (Exception e) {
 					e.printStackTrace();
