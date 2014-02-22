@@ -282,9 +282,12 @@ public class Main extends JavaPlugin implements Listener {
 						if (sender.hasPermission("dragonescape.setup")) {
 							String arenaname = args[1];
 							if (getConfig().isSet(arenaname)) {
-								// TODO also remove arena file
 								getConfig().set(arenaname, null);
 								this.saveConfig();
+								File f = new File(this.getDataFolder() + "/" + arenaname);
+								if(f.exists()){
+									f.delete();
+								}
 								sender.sendMessage(removed_arena);
 							}
 						} else {
