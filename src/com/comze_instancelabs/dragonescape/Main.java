@@ -53,6 +53,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -884,46 +885,48 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 			
-			if (event.getItem().getTypeId() == 369){
-		        if (event.getItem().hasItemMeta()){
-			        ItemMeta im = event.getItem().getItemMeta();
-			        String itemname = im.getDisplayName();
-			        String arenaname = itemname.split("§e")[1];
-			        if (getConfig().isSet(arenaname)){
-			            if (event.getPlayer().hasPermission("dragonescape.setup")){
-			                try{
-				                Block b = event.getClickedBlock();
-				                Location l = b.getLocation();
-				                if (event.getAction() == Action.LEFT_CLICK_BLOCK){
-				                    String count = "low";
-			                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
-			                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
-			                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY() - 1);
-			                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
-			                        this.saveConfig();
-			                        event.setCancelled(true);
-			                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
-				                } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
-				                    String count = "high";
-			                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
-			                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
-			                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY());
-			                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
-			                        this.saveConfig();
-			                        event.setCancelled(true);
-			                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
+			if(event.hasItem()){
+				if (event.getItem().getTypeId() == 369){
+			        if (event.getItem().hasItemMeta()){
+				        ItemMeta im = event.getItem().getItemMeta();
+				        String itemname = im.getDisplayName();
+				        String arenaname = itemname.split("§e")[1];
+				        if (getConfig().isSet(arenaname)){
+				            if (event.getPlayer().hasPermission("dragonescape.setup")){
+				                try{
+					                Block b = event.getClickedBlock();
+					                Location l = b.getLocation();
+					                if (event.getAction() == Action.LEFT_CLICK_BLOCK){
+					                    String count = "low";
+				                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
+				                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
+				                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY() - 1);
+				                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
+				                        this.saveConfig();
+				                        event.setCancelled(true);
+				                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
+					                } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
+					                    String count = "high";
+				                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
+				                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
+				                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY());
+				                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
+				                        this.saveConfig();
+				                        event.setCancelled(true);
+				                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
+					                }
+				                } catch ( NullPointerException e){
+				                    event.getPlayer().sendMessage("§cYou must hit a block.");
 				                }
-			                } catch ( NullPointerException e){
-			                    event.getPlayer().sendMessage("§cYou must hit a block.");
-			                }
-			            } else {
-			                event.getPlayer().sendMessage(noperm);
-			            }
-			        } else {
-		                event.getPlayer().sendMessage("§cCould not find this arena.");
-			        }
+				            } else {
+				                event.getPlayer().sendMessage(noperm);
+				            }
+				        } else {
+			                event.getPlayer().sendMessage("§cCould not find this arena.");
+				        }
+				    }
 			    }
-		    }
+			}
 		}
 	}
 
@@ -1063,7 +1066,7 @@ public class Main extends JavaPlugin implements Listener {
 						p.teleport(getMainLobby());
 					}
 				}
-			}, 5);
+			}, 9);
 
 			if (lost.containsKey(p)) {
 				lost.remove(p);
@@ -1076,7 +1079,7 @@ public class Main extends JavaPlugin implements Listener {
 						p.setFlying(false);
 					}
 				}
-			}, 10);
+			}, 15);
 
 			final String arena = arenap.get(p);
 
