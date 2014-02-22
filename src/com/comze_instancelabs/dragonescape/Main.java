@@ -1159,9 +1159,7 @@ public class Main extends JavaPlugin implements Listener {
 			@Override
 			public void run() {
 				try {
-					// TODO
-					// if is at finishline -> stop game
-
+					//TODO add directions support
 					// assuming it's pointing to south
 					if(dragons.get(arena).locZ > getFinish(arena).getBlockZ()){
 						stop(h.get(arena), arena);
@@ -1187,8 +1185,18 @@ public class Main extends JavaPlugin implements Listener {
 						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - 0.5D);
 					}
 					
-					// TODO destroy blocks
-
+					//TODO add falling block entities
+					// This assumes south too.
+					
+					Location l1 = getHighBoundary(arena);
+					Location l2 = getLowBoundary(arena);
+										
+					for(int i = 0; i < l2.getBlockX() - l1.getBlockX(); i++){
+						for(int j = 0; j < l1.getBlockY() - l2.getBlockY(); j++){
+							l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j, dragons.get(arena).locZ)).setType(Material.AIR);;
+						}
+					}
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1202,9 +1210,13 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	
-	public void reset(String arena) {
-		// TODO reset arena from file
-		loadArenaFromFileSYNC(arena);
+	public void reset(final String arena) {
+		Runnable r = new Runnable() {
+	        public void run() {
+	        	loadArenaFromFileSYNC(arena);
+	        }
+	    };
+	    new Thread(r).start();
 	}
 
 	public void stop(BukkitTask t, final String arena) {
