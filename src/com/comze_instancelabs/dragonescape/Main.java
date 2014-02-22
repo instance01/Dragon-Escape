@@ -200,6 +200,7 @@ public class Main extends JavaPlugin implements Listener {
 		} catch (IOException e) {
 		}
 
+		//TODO ADD UPDATER
 		/*
 		 * if (getConfig().getBoolean("config.auto_updating")) { Updater updater
 		 * = new Updater(this, 71774, this.getFile(),
@@ -640,7 +641,7 @@ public class Main extends JavaPlugin implements Listener {
 			g_map.put("Test", Integer.valueOf(63));
 
 			return true;
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
 		}
