@@ -313,6 +313,7 @@ public class Main extends JavaPlugin implements Listener {
 						if (isValidArena(args[1])) {
 							File f = new File(this.getDataFolder() + "/" + args[1]);
 							f.delete();
+							sender.sendMessage("§aArena is now saving, §6this might take a while§a.");
 							saveArenaToFile(p.getName(), args[1]);
 						} else {
 							sender.sendMessage("§cThe arena appears to be invalid (missing components)!");
@@ -768,7 +769,6 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 			
-			//TODO: try out
 			String arena_ = arenap_.get(event.getPlayer().getName());
 			String dir = m.getDirection(getSpawn(arena_).getYaw());
 			if(dir.equalsIgnoreCase("south")){
@@ -953,7 +953,7 @@ public class Main extends JavaPlugin implements Listener {
 	public Location getSpawnForPlayer(String arena) {
 		Location ret = null;
 		if (isValidArena(arena)) {
-			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".spawn.world")), getConfig().getInt(arena + ".spawn.loc.x"), getConfig().getInt(arena + ".spawn.loc.y") + 2, getConfig().getInt(arena + ".spawn.loc.z"));
+			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".spawn.world")), getConfig().getInt(arena + ".spawn.loc.x"), getConfig().getInt(arena + ".spawn.loc.y") + 2, getConfig().getInt(arena + ".spawn.loc.z"), getConfig().getInt(arena + ".spawn.loc.yaw"), getConfig().getInt(arena + ".spawn.loc.pitch"));
 		}
 		return ret;
 	}
@@ -1207,8 +1207,18 @@ public class Main extends JavaPlugin implements Listener {
 		}, 0, 20).getTaskId();
 		countdown_id.put(arena, t);
 
+		final String dir = m.getDirection(getSpawn(arena).getYaw());
 		// spawn enderdragon
-		dragons.put(arena, spawnEnderdragon(getSpawn(arena)));
+		if(dir.equalsIgnoreCase("south")){
+			dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(0.0D, 0.0D, -1.0D)));
+		}else if(dir.equalsIgnoreCase("north")){
+			dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(0.0D, 0.0D, +1.0D)));
+		}else if(dir.equalsIgnoreCase("east")){
+			dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(-1.0D, 0.0D, 0.0D)));
+		}else if(dir.equalsIgnoreCase("west")){
+			dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(1.0D, 0.0D, 0.0D)));
+		}
+		
 
 		final int d = 1;
 
@@ -1217,9 +1227,6 @@ public class Main extends JavaPlugin implements Listener {
 			@Override
 			public void run() {
 				try {
-					//TODO try out directions support
-					String dir = m.getDirection(getSpawn(arena).getYaw());
-
 					if(dir.equalsIgnoreCase("south")){
 						if(dragons.get(arena).locZ > getFinish(arena).getBlockZ()){
 							stop(h.get(arena), arena);
@@ -1253,9 +1260,9 @@ public class Main extends JavaPlugin implements Listener {
 
 					final Location l = getSpawn(arena);
 					if(dragon_move_increment.containsKey(arena)){
-						dragon_move_increment.put(arena, dragon_move_increment.get(arena) + 0.2D);
+						dragon_move_increment.put(arena, dragon_move_increment.get(arena) + 0.25D);
 					}else{
-						dragon_move_increment.put(arena, 0.2D);
+						dragon_move_increment.put(arena, 0.25D);
 					}
 					
 					
@@ -1308,9 +1315,9 @@ public class Main extends JavaPlugin implements Listener {
 							for(int j = 0; j < length2; j++){
 								final Block b;
 								if(f){
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() + i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
 								}else{
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() + i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
 								}
 								
 								Bukkit.getScheduler().runTask(m, new Runnable(){
@@ -1356,7 +1363,7 @@ public class Main extends JavaPlugin implements Listener {
 								}else{
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
 								}
-								
+
 								Bukkit.getScheduler().runTask(m, new Runnable(){
 									public void run(){
 										if(b.getType() != Material.AIR){
@@ -1437,7 +1444,7 @@ public class Main extends JavaPlugin implements Listener {
 
 				Sign s = getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, "§2[Join]");
+					s.setLine(1, "§6[Restarting]");
 					s.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
@@ -1555,6 +1562,8 @@ public class Main extends JavaPlugin implements Listener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		Bukkit.getPlayerExact(player).sendMessage("§aSuccessfully saved arena to file.");
 	}
 
 	public void saveArenaToFile(String arena) {
@@ -1653,7 +1662,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	}
 
-	public void loadArenaFromFileSYNC(String arena) {
+	public void loadArenaFromFileSYNC(final String arena) {
 		int failcount = 0;
 		final ArrayList<ArenaBlock> failedblocks = new ArrayList<ArenaBlock>();
 
@@ -1714,6 +1723,13 @@ public class Main extends JavaPlugin implements Listener {
 					getServer().getWorld(ablock.world).getBlockAt(new Location(getServer().getWorld(ablock.world), ablock.x, ablock.y, ablock.z)).setType(ablock.getMaterial());
 				}
 				getLogger().info("Successfully finished!");
+				
+				Sign s = getSignFromArena(arena);
+				if (s != null) {
+					s.setLine(1, "§2[Join]");
+					s.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
+					s.update();
+				}
 			}
 		}, 40L);
 
