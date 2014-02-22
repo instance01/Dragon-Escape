@@ -68,39 +68,42 @@ public class Main extends JavaPlugin implements Listener {
 	/*
 	 * de setmainlobby
 	 * 
-	 * de createarena [name] de setlobby [name] de setfinish [name] de setbounds
-	 * [name] [low/high] de savearena [name]
+	 * de createarena [name] 
+	 * de setlobby [name] 
+	 * de setfinish [name] 
+	 * de setbounds [name] [low/high] 
+	 * de savearena [name]
+	 * 
 	 */
 
 	public static Economy econ = null;
 
-	public static HashMap<String, Boolean> ingame = new HashMap<String, Boolean>(); // arena
-																					// ->
-																					// whether
-																					// arena
-																					// is
-																					// ingame
-																					// or
-																					// not
-	public static HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>(); // arena
-																							// ->
-																							// task/
-																							// task
-	public static HashMap<Player, String> arenap = new HashMap<Player, String>(); // player
-																					// ->
-																					// arena
-	public static HashMap<String, String> arenap_ = new HashMap<String, String>(); // player
-																					// ->
-																					// arena
-	public static HashMap<Player, ItemStack[]> pinv = new HashMap<Player, ItemStack[]>(); // player
-																							// ->
-																							// inventory
-	public static HashMap<Player, String> lost = new HashMap<Player, String>(); // player
-																				// ->
-																				// whether
-																				// lost
-																				// or
-																				// not
+	/**
+	 * arena -> wether ingame or not
+	 */
+	public static HashMap<String, Boolean> ingame = new HashMap<String, Boolean>();
+	
+	/**
+	 * arena -> task
+	 */
+	public static HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
+	
+	/**
+	 * player -> arena
+	 */
+	public static HashMap<Player, String> arenap = new HashMap<Player, String>();
+	public static HashMap<String, String> arenap_ = new HashMap<String, String>();
+	
+	/**
+	 * player -> inventory
+	 */
+	public static HashMap<Player, ItemStack[]> pinv = new HashMap<Player, ItemStack[]>();
+	
+	/**
+	 * player -> wether lost or not
+	 */
+	public static HashMap<Player, String> lost = new HashMap<Player, String>();
+	
 	public static HashMap<String, Test> dragons = new HashMap<String, Test>();
 
 	int default_max_players = 4;
@@ -119,7 +122,6 @@ public class Main extends JavaPlugin implements Listener {
 
 	public String saved_arena = "";
 	public String saved_lobby = "";
-	public String saved_setup = "";
 	public String saved_mainlobby = "";
 	public String not_in_arena = "";
 	public String reloaded = "";
@@ -135,7 +137,9 @@ public class Main extends JavaPlugin implements Listener {
 	public String removed_arena = "";
 	public String winner_an = "";
 	public String noperm = "";
-
+	public String saved_finish = "";
+	public String saved_spawn = "";
+	
 	// anouncements
 	public String starting = "";
 	public String started = "";
@@ -163,7 +167,8 @@ public class Main extends JavaPlugin implements Listener {
 
 		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
 		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
-		getConfig().addDefault("strings.saved.setup", "&6Successfully saved spawn. Now setting up, might &2lag&6 a little bit.");
+		getConfig().addDefault("strings.saved.finish", "&6Successfully saved finishline.");
+		getConfig().addDefault("strings.saved.spawn", "&6Successfully saved spawn.");
 		getConfig().addDefault("strings.removed_arena", "&cSuccessfully removed arena.");
 		getConfig().addDefault("strings.not_in_arena", "&cYou don't seem to be in an arena right now.");
 		getConfig().addDefault("strings.config_reloaded", "&6Successfully reloaded config.");
@@ -238,7 +243,8 @@ public class Main extends JavaPlugin implements Listener {
 		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");
 		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
 		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "§");
-		saved_setup = getConfig().getString("strings.saved.setup").replaceAll("&", "§");
+		saved_finish = getConfig().getString("strings.saved.finish").replaceAll("&", "§");
+		saved_spawn = getConfig().getString("strings.saved.spawn").replaceAll("&", "§");
 		saved_mainlobby = "§aSuccessfully saved main lobby";
 		not_in_arena = getConfig().getString("strings.not_in_arena").replaceAll("&", "§");
 		reloaded = getConfig().getString("strings.config_reloaded").replaceAll("&", "§");
@@ -372,8 +378,7 @@ public class Main extends JavaPlugin implements Listener {
 							getConfig().set(arenaname + ".finish.loc.y", p.getLocation().getBlockY());
 							getConfig().set(arenaname + ".finish.loc.z", p.getLocation().getBlockZ());
 							this.saveConfig();
-							// TODO Setfinish msg
-							sender.sendMessage("Successfully set finish.");
+							sender.sendMessage(saved_finish);
 						} else {
 							sender.sendMessage(noperm);
 						}
@@ -390,8 +395,7 @@ public class Main extends JavaPlugin implements Listener {
 							getConfig().set(arenaname + ".spawn.loc.yaw", p.getLocation().getYaw());
 							getConfig().set(arenaname + ".spawn.loc.pitch", p.getLocation().getPitch());
 							this.saveConfig();
-							// TODO Setfinish msg
-							sender.sendMessage("Successfully set spawn.");
+							sender.sendMessage(saved_spawn);
 						} else {
 							sender.sendMessage(noperm);
 						}
