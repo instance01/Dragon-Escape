@@ -160,7 +160,6 @@ public class Main extends JavaPlugin implements Listener {
 
 		getConfig().options().header("I recommend you to set auto_updating to true for possible future bugfixes. If use_economy is set to false, the winner will get the item reward.");
 		getConfig().addDefault("config.auto_updating", true);
-		getConfig().addDefault("config.rounds_per_game", 10);
 		getConfig().addDefault("config.start_countdown", 5);
 		getConfig().addDefault("config.default_max_players", 4);
 		getConfig().addDefault("config.default_min_players", 3);
@@ -381,7 +380,7 @@ public class Main extends JavaPlugin implements Listener {
                             ItemMeta im = (ItemMeta)is.getItemMeta();
                             im.setDisplayName("§aBoundary tool for arena §e"  + arenaname);
                             is.setItemMeta(im);
-                            inv.addItem(is);//TODO t
+                            inv.addItem(is);
                             sender.sendMessage("§eHere's the boundary tool. Left click the lower left point and right click the higher right point.");
                         } else {
                             sender.sendMessage(noperm);
@@ -1470,9 +1469,6 @@ public class Main extends JavaPlugin implements Listener {
 							}
 						}
 					}
-
-					
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
