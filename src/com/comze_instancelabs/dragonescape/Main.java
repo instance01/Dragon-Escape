@@ -1063,7 +1063,12 @@ public class Main extends JavaPlugin implements Listener {
 			Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 				public void run() {
 					if (p.isOnline()) {
-						p.teleport(getMainLobby());
+						try {
+							p.teleport(getMainLobby());
+						}catch(Exception e){
+							getServer().getLogger().severe("Please send this error to the developers on bukkitdev!");
+							e.printStackTrace();
+						}
 					}
 				}
 			}, 9);
