@@ -1289,16 +1289,31 @@ public class Main extends JavaPlugin implements Listener {
 
 		final String dir = m.getDirection(getSpawn(arena).getYaw());
 		// spawn enderdragon
-		if(dir.equalsIgnoreCase("south")){
-			dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(0.0D, 0.0D, -1.0D)));
-		}else if(dir.equalsIgnoreCase("north")){
-			dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(0.0D, 0.0D, +1.0D)));
-		}else if(dir.equalsIgnoreCase("east")){
-			dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(-1.0D, 0.0D, 0.0D)));
-		}else if(dir.equalsIgnoreCase("west")){
-			dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(1.0D, 0.0D, 0.0D)));
+		if (dir.equalsIgnoreCase("south")) {
+			Bukkit.getScheduler().runTask(this, new Runnable() {
+				public void run() {
+					dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(0.0D, 0.0D, -1.0D)));
+				}
+			});
+		} else if (dir.equalsIgnoreCase("north")) {
+			Bukkit.getScheduler().runTask(this, new Runnable() {
+				public void run() {
+					dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(0.0D, 0.0D, +1.0D)));
+				}
+			});
+		} else if (dir.equalsIgnoreCase("east")) {
+			Bukkit.getScheduler().runTask(this, new Runnable() {
+				public void run() {
+					dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(-1.0D, 0.0D, 0.0D)));
+				}
+			});
+		} else if (dir.equalsIgnoreCase("west")) {
+			Bukkit.getScheduler().runTask(this, new Runnable() {
+				public void run() {
+					dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(1.0D, 0.0D, 0.0D)));
+				}
+			});
 		}
-		
 
 		final int d = 1;
 
@@ -1340,7 +1355,7 @@ public class Main extends JavaPlugin implements Listener {
 
 					final Location l = getSpawn(arena);
 					if(dragon_move_increment.containsKey(arena)){
-						dragon_move_increment.put(arena, dragon_move_increment.get(arena) + 0.25D);
+						dragon_move_increment.put(arena, dragon_move_increment.get(arena) + 0.35D);
 					}else{
 						dragon_move_increment.put(arena, 0.25D);
 					}
@@ -1373,9 +1388,9 @@ public class Main extends JavaPlugin implements Listener {
 							for(int j = 0; j < length2; j++){
 								final Block b;
 								if(f){
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
 								}else{
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
 								}
 								
 								Bukkit.getScheduler().runTask(m, new Runnable(){
@@ -1395,9 +1410,9 @@ public class Main extends JavaPlugin implements Listener {
 							for(int j = 0; j < length2; j++){
 								final Block b;
 								if(f){
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
 								}else{
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
 								}
 								
 								Bukkit.getScheduler().runTask(m, new Runnable(){
@@ -1417,9 +1432,9 @@ public class Main extends JavaPlugin implements Listener {
 							for(int j = 0; j < length2; j++){
 								final Block b;
 								if(f_){
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
 								}else{
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
 								}
 								
 								Bukkit.getScheduler().runTask(m, new Runnable(){
@@ -1439,9 +1454,9 @@ public class Main extends JavaPlugin implements Listener {
 							for(int j = 0; j < length2; j++){
 								final Block b;
 								if(f_){
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
 								}else{
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
 								}
 
 								Bukkit.getScheduler().runTask(m, new Runnable(){
