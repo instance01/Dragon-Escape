@@ -248,28 +248,28 @@ public class Main extends JavaPlugin implements Listener {
 		start_announcement = getConfig().getBoolean("config.start_announcement");
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
 
-		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");
-		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
-		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "§");
-		saved_finish = getConfig().getString("strings.saved.finish").replaceAll("&", "§");
-		saved_spawn = getConfig().getString("strings.saved.spawn").replaceAll("&", "§");
-		saved_mainlobby = "§aSuccessfully saved main lobby";
-		not_in_arena = getConfig().getString("strings.not_in_arena").replaceAll("&", "§");
-		reloaded = getConfig().getString("strings.config_reloaded").replaceAll("&", "§");
-		arena_ingame = getConfig().getString("strings.arena_is_ingame").replaceAll("&", "§");
-		arena_invalid = getConfig().getString("strings.arena_invalid").replaceAll("&", "§");
-		arena_invalid_sign = getConfig().getString("strings.arena_invalid_sign").replaceAll("&", "§");
-		you_fell = getConfig().getString("strings.you_fell").replaceAll("&", "§");
-		arena_invalid_component = getConfig().getString("strings.arena_invalid_component").replace("&", "§");
-		you_won = getConfig().getString("strings.you_won").replaceAll("&", "§");
-		starting_in = getConfig().getString("strings.starting_in").replaceAll("&", "§");
-		starting_in2 = getConfig().getString("strings.starting_in2").replaceAll("&", "§");
-		arena_full = getConfig().getString("strings.arena_full").replaceAll("&", "§");
-		starting = getConfig().getString("strings.starting_announcement").replaceAll("&", "§");
-		started = getConfig().getString("strings.started_announcement").replaceAll("&", "§");
-		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
-		winner_an = getConfig().getString("strings.winner_announcement").replaceAll("&", "§");
-		noperm = getConfig().getString("strings.noperm").replaceAll("&", "§");
+		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "ï¿½");
+		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "ï¿½");
+		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "ï¿½");
+		saved_finish = getConfig().getString("strings.saved.finish").replaceAll("&", "ï¿½");
+		saved_spawn = getConfig().getString("strings.saved.spawn").replaceAll("&", "ï¿½");
+		saved_mainlobby = "ï¿½aSuccessfully saved main lobby";
+		not_in_arena = getConfig().getString("strings.not_in_arena").replaceAll("&", "ï¿½");
+		reloaded = getConfig().getString("strings.config_reloaded").replaceAll("&", "ï¿½");
+		arena_ingame = getConfig().getString("strings.arena_is_ingame").replaceAll("&", "ï¿½");
+		arena_invalid = getConfig().getString("strings.arena_invalid").replaceAll("&", "ï¿½");
+		arena_invalid_sign = getConfig().getString("strings.arena_invalid_sign").replaceAll("&", "ï¿½");
+		you_fell = getConfig().getString("strings.you_fell").replaceAll("&", "ï¿½");
+		arena_invalid_component = getConfig().getString("strings.arena_invalid_component").replace("&", "ï¿½");
+		you_won = getConfig().getString("strings.you_won").replaceAll("&", "ï¿½");
+		starting_in = getConfig().getString("strings.starting_in").replaceAll("&", "ï¿½");
+		starting_in2 = getConfig().getString("strings.starting_in2").replaceAll("&", "ï¿½");
+		arena_full = getConfig().getString("strings.arena_full").replaceAll("&", "ï¿½");
+		starting = getConfig().getString("strings.starting_announcement").replaceAll("&", "ï¿½");
+		started = getConfig().getString("strings.started_announcement").replaceAll("&", "ï¿½");
+		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "ï¿½");
+		winner_an = getConfig().getString("strings.winner_announcement").replaceAll("&", "ï¿½");
+		noperm = getConfig().getString("strings.noperm").replaceAll("&", "ï¿½");
 
 	}
 
@@ -289,7 +289,7 @@ public class Main extends JavaPlugin implements Listener {
 							sender.sendMessage(noperm);
 						}
 					} else {
-						sender.sendMessage("§cNo arena submitted. Usage: /de createarena [name]");
+						sender.sendMessage("ï¿½cNo arena submitted. Usage: /de createarena [name]");
 					}
 				} else if (action.equalsIgnoreCase("removearena")) {
 					if (args.length > 1) {
@@ -308,7 +308,7 @@ public class Main extends JavaPlugin implements Listener {
 							sender.sendMessage(noperm);
 						}
 					} else {
-						sender.sendMessage("§cNo arena submitted. Usage: /de createarena [name]");
+						sender.sendMessage("ï¿½cNo arena submitted. Usage: /de createarena [name]");
 					}
 				} else if (action.equalsIgnoreCase("savearena")) {
 					if (args.length > 1) {
@@ -321,13 +321,13 @@ public class Main extends JavaPlugin implements Listener {
 						if (isValidArena(args[1])) {
 							File f = new File(this.getDataFolder() + "/" + args[1]);
 							f.delete();
-							sender.sendMessage("§aArena is now saving, §6this might take a while§a.");
+							sender.sendMessage("ï¿½aArena is now saving, ï¿½6this might take a whileï¿½a.");
 							saveArenaToFile(p.getName(), args[1]);
 						} else {
-							sender.sendMessage("§cThe arena appears to be invalid (missing components)!");
+							sender.sendMessage("ï¿½cThe arena appears to be invalid (missing components)!");
 						}
 					} else {
-						sender.sendMessage("§cUsage: §2/de savearena [name]");
+						sender.sendMessage("ï¿½cUsage: ï¿½2/de savearena [name]");
 					}
 				} else if (action.equalsIgnoreCase("setbounds")) {
 					if (sender.hasPermission("dragonescape.setup")) {
@@ -335,11 +335,11 @@ public class Main extends JavaPlugin implements Listener {
 							String arena = args[1];
 							String count = args[2];
 							if (!count.equalsIgnoreCase("low") && !count.equalsIgnoreCase("high")) {
-								sender.sendMessage("§cSecond parameter invalid. Usage: /de setbounds [arena] [low/high]");
+								sender.sendMessage("ï¿½cSecond parameter invalid. Usage: /de setbounds [arena] [low/high]");
 								return true;
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage("§cCould not find this arena.");
+								sender.sendMessage("ï¿½cCould not find this arena.");
 								return true;
 							}
 
@@ -359,9 +359,9 @@ public class Main extends JavaPlugin implements Listener {
 							getConfig().set(arena + ".boundary" + count + ".loc.z", p.getLocation().getBlockZ());
 							this.saveConfig();
 
-							sender.sendMessage("§eSuccessfully saved " + count + " boundary!");
+							sender.sendMessage("ï¿½eSuccessfully saved " + count + " boundary!");
 						} else {
-							sender.sendMessage("§cUsage: /de setbounds [arena] [count].");
+							sender.sendMessage("ï¿½cUsage: /de setbounds [arena] [count].");
 						}
 					} else {
 						sender.sendMessage(noperm);
@@ -372,21 +372,21 @@ public class Main extends JavaPlugin implements Listener {
                             Player p = (Player) sender;
                             String arenaname = args[1];
                             if (!getConfig().isSet(arenaname)) {
-                                sender.sendMessage("§cCould not find this arena.");
+                                sender.sendMessage("ï¿½cCould not find this arena.");
                                 return true;
                             }
                             Inventory inv = p.getInventory();
                             ItemStack is = new ItemStack(369, 1);
                             ItemMeta im = (ItemMeta)is.getItemMeta();
-                            im.setDisplayName("§aBoundary tool for arena §e"  + arenaname);
+                            im.setDisplayName("ï¿½aBoundary tool for arena ï¿½e"  + arenaname);
                             is.setItemMeta(im);
                             inv.addItem(is);
-                            sender.sendMessage("§eHere's the boundary tool. Left click the lower left point and right click the higher right point.");
+                            sender.sendMessage("ï¿½eHere's the boundary tool. Left click the lower left point and right click the higher right point.");
                         } else {
                             sender.sendMessage(noperm);
                         }
                     } else {
-                        sender.sendMessage("§cUsage: /de boundstool [arena].");
+                        sender.sendMessage("ï¿½cUsage: /de boundstool [arena].");
                     }
 				} else if (action.equalsIgnoreCase("setlobby")) {
 					if (args.length > 1) {
@@ -475,16 +475,16 @@ public class Main extends JavaPlugin implements Listener {
 							String playercount = args[2];
 							if (!isNumeric(playercount)) {
 								playercount = Integer.toString(default_max_players);
-								sender.sendMessage("§cPlayercount is invalid. Setting to default value.");
+								sender.sendMessage("ï¿½cPlayercount is invalid. Setting to default value.");
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage("§cCould not find this arena.");
+								sender.sendMessage("ï¿½cCould not find this arena.");
 								return true;
 							}
 							this.setArenaMaxPlayers(arena, Integer.parseInt(playercount));
-							sender.sendMessage("§eSuccessfully set!");
+							sender.sendMessage("ï¿½eSuccessfully set!");
 						} else {
-							sender.sendMessage("§cUsage: /de setmaxplayers [arena] [count].");
+							sender.sendMessage("ï¿½cUsage: /de setmaxplayers [arena] [count].");
 						}
 					}
 				} else if (action.equalsIgnoreCase("setminplayers")) {
@@ -494,16 +494,16 @@ public class Main extends JavaPlugin implements Listener {
 							String playercount = args[2];
 							if (!isNumeric(playercount)) {
 								playercount = Integer.toString(default_min_players);
-								sender.sendMessage("§cPlayercount is invalid. Setting to default value.");
+								sender.sendMessage("ï¿½cPlayercount is invalid. Setting to default value.");
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage("§cCould not find this arena.");
+								sender.sendMessage("ï¿½cCould not find this arena.");
 								return true;
 							}
 							this.setArenaMinPlayers(arena, Integer.parseInt(playercount));
-							sender.sendMessage("§eSuccessfully set!");
+							sender.sendMessage("ï¿½eSuccessfully set!");
 						} else {
-							sender.sendMessage("§cUsage: /de setminplayers [arena] [count].");
+							sender.sendMessage("ï¿½cUsage: /de setminplayers [arena] [count].");
 						}
 					} else {
 						sender.sendMessage(noperm);
@@ -515,15 +515,15 @@ public class Main extends JavaPlugin implements Listener {
 							String difficulty = args[2];
 							if (!isNumeric(difficulty)) {
 								difficulty = "1";
-								sender.sendMessage("§cDifficulty is invalid. Possible difficulties: 0, 1, 2.");
+								sender.sendMessage("ï¿½cDifficulty is invalid. Possible difficulties: 0, 1, 2.");
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage("§cCould not find this arena.");
+								sender.sendMessage("ï¿½cCould not find this arena.");
 								return true;
 							}
-							sender.sendMessage("§eSuccessfully set!");
+							sender.sendMessage("ï¿½eSuccessfully set!");
 						} else {
-							sender.sendMessage("§cUsage: /de setdifficulty [arena] [difficulty]. Difficulty can be 0, 1 or 2.");
+							sender.sendMessage("ï¿½cUsage: /de setdifficulty [arena] [difficulty]. Difficulty can be 0, 1 or 2.");
 						}
 					}
 				} else if (action.equalsIgnoreCase("join")) {
@@ -536,7 +536,7 @@ public class Main extends JavaPlugin implements Listener {
 								getLogger().warning("No sign found for arena " + args[1] + ". May lead to errors.");
 							}
 							if (s != null) {
-								if (s.getLine(1).equalsIgnoreCase("§2[join]")) {
+								if (s.getLine(1).equalsIgnoreCase("ï¿½2[join]")) {
 									joinLobby((Player) sender, args[1]);
 								} else {
 									sender.sendMessage(arena_ingame);
@@ -562,7 +562,7 @@ public class Main extends JavaPlugin implements Listener {
 								}
 							}
 							if (count < 1) {
-								sender.sendMessage("§cNoone is in this arena.");
+								sender.sendMessage("ï¿½cNoone is in this arena.");
 								return true;
 							}
 							if (!ingame.get(arena)) {
@@ -597,42 +597,42 @@ public class Main extends JavaPlugin implements Listener {
 					}
 				} else if (action.equalsIgnoreCase("list")) {
 					if (sender.hasPermission("dragonescape.list")) {
-						sender.sendMessage("§6-= Arenas =-");
+						sender.sendMessage("ï¿½6-= Arenas =-");
 						for (String arena : getConfig().getKeys(false)) {
 							if (!arena.equalsIgnoreCase("mainlobby") && !arena.equalsIgnoreCase("strings") && !arena.equalsIgnoreCase("config")) {
-								sender.sendMessage("§2" + arena);
+								sender.sendMessage("ï¿½2" + arena);
 							}
 						}
 					} else {
 						sender.sendMessage(noperm);
 					}
 				} else {
-					sender.sendMessage("§6-= DragonEscape §2help: §6=-");
-					sender.sendMessage("§2To §6setup the main lobby §2, type in §c/de setmainlobby");
-					sender.sendMessage("§2To §6setup §2a new arena, type in the following commands:");
-					sender.sendMessage("§2/de createarena [name]");
-					sender.sendMessage("§2/de setlobby [name] §6 - for the waiting lobby");
-					sender.sendMessage("§2/de setspawn [name] §6 - players spawn here");
-					sender.sendMessage("§2/de setfinish [name] §6 - the finish line");
-					sender.sendMessage("§2/de setbounds [name] §6 - don't forget to set both high and low boundaries.");
-					sender.sendMessage("§2/de savearena [name] §6 - save the arena");
+					sender.sendMessage("ï¿½6-= DragonEscape ï¿½2help: ï¿½6=-");
+					sender.sendMessage("ï¿½2To ï¿½6setup the main lobby ï¿½2, type in ï¿½c/de setmainlobby");
+					sender.sendMessage("ï¿½2To ï¿½6setup ï¿½2a new arena, type in the following commands:");
+					sender.sendMessage("ï¿½2/de createarena [name]");
+					sender.sendMessage("ï¿½2/de setlobby [name] ï¿½6 - for the waiting lobby");
+					sender.sendMessage("ï¿½2/de setspawn [name] ï¿½6 - players spawn here");
+					sender.sendMessage("ï¿½2/de setfinish [name] ï¿½6 - the finish line");
+					sender.sendMessage("ï¿½2/de setbounds [name] ï¿½6 - don't forget to set both high and low boundaries.");
+					sender.sendMessage("ï¿½2/de savearena [name] ï¿½6 - save the arena");
 					sender.sendMessage("");
-					sender.sendMessage("§2You can join with §c/de join [name] §2and leave with §c/de leave§2.");
-					sender.sendMessage("§2You can force an arena to start with §c/de start [name]§2.");
+					sender.sendMessage("ï¿½2You can join with ï¿½c/de join [name] ï¿½2and leave with ï¿½c/de leaveï¿½2.");
+					sender.sendMessage("ï¿½2You can force an arena to start with ï¿½c/de start [name]ï¿½2.");
 				}
 			} else {
-				sender.sendMessage("§6-= DragonEscape §2help: §6=-");
-				sender.sendMessage("§2To §6setup the main lobby §2, type in §c/de setmainlobby");
-				sender.sendMessage("§2To §6setup §2a new arena, type in the following commands:");
-				sender.sendMessage("§2/de createarena [name]");
-				sender.sendMessage("§2/de setlobby [name] §6 - for the waiting lobby");
-				sender.sendMessage("§2/de setspawn [name] §6 - players spawn here");
-				sender.sendMessage("§2/de setfinish [name] §6 - the finish line");
-				sender.sendMessage("§2/de setbounds [name] §6 - don't forget to set both high and low boundaries.");
-				sender.sendMessage("§2/de savearena [name] §6 - save the arena");
+				sender.sendMessage("ï¿½6-= DragonEscape ï¿½2help: ï¿½6=-");
+				sender.sendMessage("ï¿½2To ï¿½6setup the main lobby ï¿½2, type in ï¿½c/de setmainlobby");
+				sender.sendMessage("ï¿½2To ï¿½6setup ï¿½2a new arena, type in the following commands:");
+				sender.sendMessage("ï¿½2/de createarena [name]");
+				sender.sendMessage("ï¿½2/de setlobby [name] ï¿½6 - for the waiting lobby");
+				sender.sendMessage("ï¿½2/de setspawn [name] ï¿½6 - players spawn here");
+				sender.sendMessage("ï¿½2/de setfinish [name] ï¿½6 - the finish line");
+				sender.sendMessage("ï¿½2/de setbounds [name] ï¿½6 - don't forget to set both high and low boundaries.");
+				sender.sendMessage("ï¿½2/de savearena [name] ï¿½6 - save the arena");
 				sender.sendMessage("");
-				sender.sendMessage("§2You can join with §c/de join [name] §2and leave with §c/de leave§2.");
-				sender.sendMessage("§2You can force an arena to start with §c/de start [name]§2.");
+				sender.sendMessage("ï¿½2You can join with ï¿½c/de join [name] ï¿½2and leave with ï¿½c/de leaveï¿½2.");
+				sender.sendMessage("ï¿½2You can force an arena to start with ï¿½c/de start [name]ï¿½2.");
 			}
 			return true;
 		}
@@ -711,7 +711,7 @@ public class Main extends JavaPlugin implements Listener {
 			try {
 				Sign s = this.getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, "§2[Join]");
+					s.setLine(1, "ï¿½2[Join]");
 					s.setLine(3, Integer.toString(count - 1) + "/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
@@ -874,7 +874,7 @@ public class Main extends JavaPlugin implements Listener {
 			if (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) {
 				final Sign s = (Sign) event.getClickedBlock().getState();
 				if (s.getLine(0).toLowerCase().contains("dragonescape")) {
-					if (s.getLine(1).equalsIgnoreCase("§2[join]")) {
+					if (s.getLine(1).equalsIgnoreCase("ï¿½2[join]")) {
 						if (isValidArena(s.getLine(2))) {
 							joinLobby(event.getPlayer(), s.getLine(2));
 						} else {
@@ -889,7 +889,7 @@ public class Main extends JavaPlugin implements Listener {
 			        if (event.getItem().hasItemMeta()){
 				        ItemMeta im = event.getItem().getItemMeta();
 				        String itemname = im.getDisplayName();
-				        String arenaname = itemname.split("§e")[1];
+				        String arenaname = itemname.split("ï¿½e")[1];
 				        if (getConfig().isSet(arenaname)){
 				            if (event.getPlayer().hasPermission("dragonescape.setup")){
 				                try{
@@ -903,7 +903,7 @@ public class Main extends JavaPlugin implements Listener {
 				                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
 				                        this.saveConfig();
 				                        event.setCancelled(true);
-				                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
+				                        event.getPlayer().sendMessage("ï¿½eSuccessfully saved " + count + " boundary!");
 					                } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					                    String count = "high";
 				                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
@@ -912,16 +912,16 @@ public class Main extends JavaPlugin implements Listener {
 				                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
 				                        this.saveConfig();
 				                        event.setCancelled(true);
-				                        event.getPlayer().sendMessage("§eSuccessfully saved " + count + " boundary!");
+				                        event.getPlayer().sendMessage("ï¿½eSuccessfully saved " + count + " boundary!");
 					                }
 				                } catch ( NullPointerException e){
-				                    event.getPlayer().sendMessage("§cYou must hit a block.");
+				                    event.getPlayer().sendMessage("ï¿½cYou must hit a block.");
 				                }
 				            } else {
 				                event.getPlayer().sendMessage(noperm);
 				            }
 				        } else {
-			                event.getPlayer().sendMessage("§cCould not find this arena.");
+			                event.getPlayer().sendMessage("ï¿½cCould not find this arena.");
 				        }
 				    }
 			    }
@@ -934,7 +934,7 @@ public class Main extends JavaPlugin implements Listener {
 		Player p = event.getPlayer();
 		if (event.getLine(0).toLowerCase().equalsIgnoreCase("dragonescape")) {
 			if (event.getPlayer().hasPermission("dragonescape.sign") || event.getPlayer().isOp()) {
-				event.setLine(0, "§6DragonEscape");
+				event.setLine(0, "ï¿½6DragonEscape");
 				if (!event.getLine(2).equalsIgnoreCase("")) {
 					String arena = event.getLine(2);
 					if (isValidArena(arena)) {
@@ -943,12 +943,12 @@ public class Main extends JavaPlugin implements Listener {
 						getConfig().set(arena + ".sign.loc.y", event.getBlock().getLocation().getBlockY());
 						getConfig().set(arena + ".sign.loc.z", event.getBlock().getLocation().getBlockZ());
 						this.saveConfig();
-						p.sendMessage("§2Successfully created arena sign.");
+						p.sendMessage("ï¿½2Successfully created arena sign.");
 					} else {
 						p.sendMessage(arena_invalid_component);
 						event.getBlock().breakNaturally();
 					}
-					event.setLine(1, "§2[Join]");
+					event.setLine(1, "ï¿½2[Join]");
 					event.setLine(2, arena);
 					event.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 				}
@@ -962,7 +962,7 @@ public class Main extends JavaPlugin implements Listener {
 	public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
 		if (arenap.containsKey(event.getPlayer())) {
 			if (!event.getMessage().startsWith("/de") && !event.getMessage().startsWith("/dragonescape")) {
-				event.getPlayer().sendMessage("§cPlease use §6/de leave §cto leave this minigame.");
+				event.getPlayer().sendMessage("ï¿½cPlease use ï¿½6/de leave ï¿½cto leave this minigame.");
 				event.setCancelled(true);
 				return;
 			}
@@ -1063,11 +1063,17 @@ public class Main extends JavaPlugin implements Listener {
 				public void run() {
 					if (p.isOnline()) {
 						try {
-							p.teleport(getMainLobby());
-						}catch(Exception e){
-							getServer().getLogger().severe("Please send this error to the developers on bukkitdev!");
-							e.printStackTrace();
-						}
+							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mvtp e:"+getMainLobby().getWorld()+":"+getMainLobby().getX()+","+getMainLobby().getY()+","+getMainLobby().getZ()+":0:0");
+								
+							}catch(CommandException ce){
+								
+								try {
+									p.teleport(getMainLobby()); 
+								}catch(Exception e){
+									getServer().getLogger().severe("Please send this error to the developers on bukkitdev!");
+									e.printStackTrace();
+								}
+							}
 					}
 				}
 			}, 9);
@@ -1276,7 +1282,7 @@ public class Main extends JavaPlugin implements Listener {
 					// update sign
 					Sign s = getSignFromArena(arena);
 					if (s != null) {
-						s.setLine(1, "§4[Ingame]");
+						s.setLine(1, "ï¿½4[Ingame]");
 						s.update();
 					}
 
@@ -1535,7 +1541,7 @@ public class Main extends JavaPlugin implements Listener {
 
 				Sign s = getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, "§6[Restarting]");
+					s.setLine(1, "ï¿½6[Restarting]");
 					s.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
@@ -1654,7 +1660,7 @@ public class Main extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 		
-		Bukkit.getPlayerExact(player).sendMessage("§aSuccessfully saved arena to file.");
+		Bukkit.getPlayerExact(player).sendMessage("ï¿½aSuccessfully saved arena to file.");
 	}
 
 	public void saveArenaToFile(String arena) {
@@ -1817,7 +1823,7 @@ public class Main extends JavaPlugin implements Listener {
 				
 				Sign s = getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, "§2[Join]");
+					s.setLine(1, "ï¿½2[Join]");
 					s.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
