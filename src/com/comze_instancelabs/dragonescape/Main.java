@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -66,6 +67,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -247,28 +249,28 @@ public class Main extends JavaPlugin implements Listener {
 		start_announcement = getConfig().getBoolean("config.start_announcement");
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
 
-		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "ยง");
-		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "ยง");
-		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "ยง");
-		saved_finish = getConfig().getString("strings.saved.finish").replaceAll("&", "ยง");
-		saved_spawn = getConfig().getString("strings.saved.spawn").replaceAll("&", "ยง");
+		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "ง");
+		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "ง");
+		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "ง");
+		saved_finish = getConfig().getString("strings.saved.finish").replaceAll("&", "ง");
+		saved_spawn = getConfig().getString("strings.saved.spawn").replaceAll("&", "ง");
 		saved_mainlobby = "" + ChatColor.GREEN + "Successfully saved main lobby";
-		not_in_arena = getConfig().getString("strings.not_in_arena").replaceAll("&", "ยง");
-		reloaded = getConfig().getString("strings.config_reloaded").replaceAll("&", "ยง");
-		arena_ingame = getConfig().getString("strings.arena_is_ingame").replaceAll("&", "ยง");
-		arena_invalid = getConfig().getString("strings.arena_invalid").replaceAll("&", "ยง");
-		arena_invalid_sign = getConfig().getString("strings.arena_invalid_sign").replaceAll("&", "ยง");
-		you_fell = getConfig().getString("strings.you_fell").replaceAll("&", "ยง");
-		arena_invalid_component = getConfig().getString("strings.arena_invalid_component").replace("&", "ยง");
-		you_won = getConfig().getString("strings.you_won").replaceAll("&", "ยง");
-		starting_in = getConfig().getString("strings.starting_in").replaceAll("&", "ยง");
-		starting_in2 = getConfig().getString("strings.starting_in2").replaceAll("&", "ยง");
-		arena_full = getConfig().getString("strings.arena_full").replaceAll("&", "ยง");
-		starting = getConfig().getString("strings.starting_announcement").replaceAll("&", "ยง");
-		started = getConfig().getString("strings.started_announcement").replaceAll("&", "ยง");
-		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "ยง");
-		winner_an = getConfig().getString("strings.winner_announcement").replaceAll("&", "ยง");
-		noperm = getConfig().getString("strings.noperm").replaceAll("&", "ยง");
+		not_in_arena = getConfig().getString("strings.not_in_arena").replaceAll("&", "ง");
+		reloaded = getConfig().getString("strings.config_reloaded").replaceAll("&", "ง");
+		arena_ingame = getConfig().getString("strings.arena_is_ingame").replaceAll("&", "ง");
+		arena_invalid = getConfig().getString("strings.arena_invalid").replaceAll("&", "ง");
+		arena_invalid_sign = getConfig().getString("strings.arena_invalid_sign").replaceAll("&", "ง");
+		you_fell = getConfig().getString("strings.you_fell").replaceAll("&", "ง");
+		arena_invalid_component = getConfig().getString("strings.arena_invalid_component").replace("&", "ง");
+		you_won = getConfig().getString("strings.you_won").replaceAll("&", "ง");
+		starting_in = getConfig().getString("strings.starting_in").replaceAll("&", "ง");
+		starting_in2 = getConfig().getString("strings.starting_in2").replaceAll("&", "ง");
+		arena_full = getConfig().getString("strings.arena_full").replaceAll("&", "ง");
+		starting = getConfig().getString("strings.starting_announcement").replaceAll("&", "ง");
+		started = getConfig().getString("strings.started_announcement").replaceAll("&", "ง");
+		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "ง");
+		winner_an = getConfig().getString("strings.winner_announcement").replaceAll("&", "ง");
+		noperm = getConfig().getString("strings.noperm").replaceAll("&", "ง");
 
 	}
 
@@ -395,12 +397,12 @@ public class Main extends JavaPlugin implements Listener {
 							String arenaname = args[1];
 							
 							//TODO get current count
-							String count = "0";
+							String count = Integer.toString(this.getCurrentFlyPoint(arenaname));
 							
-							getConfig().set(arenaname + ".flypoint" + count + ".world", p.getWorld().getName());
-							getConfig().set(arenaname + ".flypoint" + count + ".x", p.getLocation().getBlockX());
-							getConfig().set(arenaname + ".flypoint" + count + ".y", p.getLocation().getBlockY());
-							getConfig().set(arenaname + ".flypoint" + count + ".z", p.getLocation().getBlockZ());
+							getConfig().set(arenaname + ".flypoint." + count + ".world", p.getWorld().getName());
+							getConfig().set(arenaname + ".flypoint." + count + ".x", p.getLocation().getBlockX());
+							getConfig().set(arenaname + ".flypoint." + count + ".y", p.getLocation().getBlockY());
+							getConfig().set(arenaname + ".flypoint." + count + ".z", p.getLocation().getBlockZ());
 							this.saveConfig();
 							sender.sendMessage("Saved Fly point " + count);
 						} else {
@@ -694,9 +696,9 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	public Test spawnEnderdragon(Location t) {
+	public Test spawnEnderdragon(String arena, Location t) {
 		Object w = ((CraftWorld) t.getWorld()).getHandle();
-		Test t_ = new Test(this, t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle());
+		Test t_ = new Test(t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle(), this.getDragonWayPoints(arena));
 		((net.minecraft.server.v1_7_R1.World) w).addEntity(t_, CreatureSpawnEvent.SpawnReason.CUSTOM);
 		return t_;
 	}
@@ -1308,25 +1310,25 @@ public class Main extends JavaPlugin implements Listener {
 		if (dir.equalsIgnoreCase("south")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
-					dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(0.0D, 0.0D, -1.0D)));
+					dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, -1.0D)));
 				}
 			});
 		} else if (dir.equalsIgnoreCase("north")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
-					dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(0.0D, 0.0D, +1.0D)));
+					dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, +1.0D)));
 				}
 			});
 		} else if (dir.equalsIgnoreCase("east")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
-					dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(-1.0D, 0.0D, 0.0D)));
+					dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(-1.0D, 0.0D, 0.0D)));
 				}
 			});
 		} else if (dir.equalsIgnoreCase("west")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
-					dragons.put(arena, spawnEnderdragon(getSpawn(arena).add(1.0D, 0.0D, 0.0D)));
+					dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(1.0D, 0.0D, 0.0D)));
 				}
 			});
 		}
@@ -1393,8 +1395,13 @@ public class Main extends JavaPlugin implements Listener {
 					}
 
 					if (dir.equalsIgnoreCase("south")) {
-						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() + dragon_move_increment.get(arena));
+						//dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() + dragon_move_increment.get(arena));
 
+						Vector v = dragons.get(arena).getNextPosition();
+						if(v != null){
+							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
+						}
+						
 						for (int i = 0; i < length1; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
@@ -1415,8 +1422,13 @@ public class Main extends JavaPlugin implements Listener {
 							}
 						}
 					} else if (dir.equalsIgnoreCase("north")) {
-						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - dragon_move_increment.get(arena));
+						//dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - dragon_move_increment.get(arena));
 
+						Vector v = dragons.get(arena).getNextPosition();
+						if(v != null){
+							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
+						}
+						
 						for (int i = 0; i < length1; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
@@ -1437,8 +1449,13 @@ public class Main extends JavaPlugin implements Listener {
 							}
 						}
 					} else if (dir.equalsIgnoreCase("east")) {
-						dragons.get(arena).setPosition(l.getX() + dragon_move_increment.get(arena), l.getY(), l.getZ());
+						//dragons.get(arena).setPosition(l.getX() + dragon_move_increment.get(arena), l.getY(), l.getZ());
 
+						Vector v = dragons.get(arena).getNextPosition();
+						if(v != null){
+							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
+						}
+						
 						for (int i = 0; i < length3; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
@@ -1459,8 +1476,13 @@ public class Main extends JavaPlugin implements Listener {
 							}
 						}
 					} else if (dir.equalsIgnoreCase("west")) {
-						dragons.get(arena).setPosition(l.getX() - dragon_move_increment.get(arena), l.getY(), l.getZ());
+						//dragons.get(arena).setPosition(l.getX() - dragon_move_increment.get(arena), l.getY(), l.getZ());
 
+						Vector v = dragons.get(arena).getNextPosition();
+						if(v != null){
+							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
+						}
+						
 						for (int i = 0; i < length3; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
@@ -1857,4 +1879,33 @@ public class Main extends JavaPlugin implements Listener {
 		return "";
 	}
 
+	
+	public ArrayList<Vector> getDragonWayPoints(String arena){
+		ArrayList<Vector> ret = new ArrayList<Vector>();
+		if(!getConfig().isSet(arena + ".flypoint")){
+			return null;
+		}else{
+			Set<String> f = getConfig().getConfigurationSection(arena + ".flypoint").getKeys(false);
+			for(String key : f){
+
+				ret.add(new Vector(getConfig().getDouble(arena + ".flypoint." + key + ".x"), getConfig().getDouble(arena + ".flypoint." + key + ".y"), getConfig().getDouble(arena + ".flypoint." + key + ".z")));
+			}
+			return ret;
+		}
+	}
+	
+	public int getCurrentFlyPoint(String arena){
+		if(!getConfig().isSet(arena + ".flypoint")){
+			return 0;
+		}else{
+			int count = 0;
+			Set<String> f = getConfig().getConfigurationSection(arena + ".flypoint").getKeys(false);
+			for(String key : f){
+				count ++;
+			}
+			return count;
+		}
+	}
+	
+	
 }
