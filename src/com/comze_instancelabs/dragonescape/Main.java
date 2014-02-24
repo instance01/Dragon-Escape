@@ -388,6 +388,25 @@ public class Main extends JavaPlugin implements Listener {
 					} else {
 						sender.sendMessage("" + ChatColor.RED + "Usage: /de boundstool [arena].");
 					}
+				} else if (action.equalsIgnoreCase("setflypoint")) {
+					if (args.length > 1) {
+						if (sender.hasPermission("dragonescape.setup")) {
+							Player p = (Player) sender;
+							String arenaname = args[1];
+							
+							//TODO get current count
+							String count = "0";
+							
+							getConfig().set(arenaname + ".flypoint" + count + ".world", p.getWorld().getName());
+							getConfig().set(arenaname + ".flypoint" + count + ".x", p.getLocation().getBlockX());
+							getConfig().set(arenaname + ".flypoint" + count + ".y", p.getLocation().getBlockY());
+							getConfig().set(arenaname + ".flypoint" + count + ".z", p.getLocation().getBlockZ());
+							this.saveConfig();
+							sender.sendMessage("Saved Fly point " + count);
+						} else {
+							sender.sendMessage(noperm);
+						}
+					}
 				} else if (action.equalsIgnoreCase("setlobby")) {
 					if (args.length > 1) {
 						if (sender.hasPermission("dragonescape.setup")) {
