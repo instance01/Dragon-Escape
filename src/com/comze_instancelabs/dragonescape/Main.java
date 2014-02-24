@@ -278,7 +278,7 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (cmd.getName().equalsIgnoreCase("de") || cmd.getName().equalsIgnoreCase("dragonescape")) {
+		if (cmd.getName().equalsIgnoreCase("dragonescape")) {
 			if (args.length > 0) {
 				String action = args[0];
 				if (action.equalsIgnoreCase("createarena")) {
