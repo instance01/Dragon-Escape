@@ -831,7 +831,7 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 			
-			if (event.getPlayer().getLocation().getBlockY() < getSpawn(arenap_.get(event.getPlayer().getName())).getBlockY() - 2) {
+			if (event.getPlayer().getLocation().getBlockY() < getSpawn(arenap_.get(event.getPlayer().getName())).getBlockY() - 5) {
 				lost.put(event.getPlayer(), arenap.get(event.getPlayer()));
 				final Player p__ = event.getPlayer();
 				final String arena = arenap.get(event.getPlayer());
