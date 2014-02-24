@@ -79,43 +79,38 @@ public class Main extends JavaPlugin implements Listener {
 	/*
 	 * de setmainlobby
 	 * 
-	 * de createarena [name] 
-	 * de setlobby [name] 
-	 * de setfinish [name] 
-	 * de setbounds [name] [low/high] 
-	 * de savearena [name]
-	 * 
+	 * de createarena [name] de setlobby [name] de setfinish [name] de setbounds
+	 * [name] [low/high] de savearena [name]
 	 */
 
-	
 	public static Economy econ = null;
 
 	/**
 	 * arena -> wether ingame or not
 	 */
 	public static HashMap<String, Boolean> ingame = new HashMap<String, Boolean>();
-	
+
 	/**
 	 * arena -> task
 	 */
 	public static HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
-	
+
 	/**
 	 * player -> arena
 	 */
 	public static HashMap<Player, String> arenap = new HashMap<Player, String>();
 	public static HashMap<String, String> arenap_ = new HashMap<String, String>();
-	
+
 	/**
 	 * player -> inventory
 	 */
 	public static HashMap<Player, ItemStack[]> pinv = new HashMap<Player, ItemStack[]>();
-	
+
 	/**
 	 * player -> wether lost or not
 	 */
 	public static HashMap<Player, String> lost = new HashMap<Player, String>();
-	
+
 	public static HashMap<String, Test> dragons = new HashMap<String, Test>();
 
 	int default_max_players = 4;
@@ -151,7 +146,7 @@ public class Main extends JavaPlugin implements Listener {
 	public String noperm = "";
 	public String saved_finish = "";
 	public String saved_spawn = "";
-	
+
 	// anouncements
 	public String starting = "";
 	public String started = "";
@@ -211,7 +206,7 @@ public class Main extends JavaPlugin implements Listener {
 		} catch (IOException e) {
 		}
 
-		//TODO ADD UPDATER
+		// TODO ADD UPDATER
 		/*
 		 * if (getConfig().getBoolean("config.auto_updating")) { Updater updater
 		 * = new Updater(this, 71774, this.getFile(),
@@ -257,7 +252,7 @@ public class Main extends JavaPlugin implements Listener {
 		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "§");
 		saved_finish = getConfig().getString("strings.saved.finish").replaceAll("&", "§");
 		saved_spawn = getConfig().getString("strings.saved.spawn").replaceAll("&", "§");
-		saved_mainlobby = ""+ChatColor.GREEN+"Successfully saved main lobby";
+		saved_mainlobby = "" + ChatColor.GREEN + "Successfully saved main lobby";
 		not_in_arena = getConfig().getString("strings.not_in_arena").replaceAll("&", "§");
 		reloaded = getConfig().getString("strings.config_reloaded").replaceAll("&", "§");
 		arena_ingame = getConfig().getString("strings.arena_is_ingame").replaceAll("&", "§");
@@ -293,7 +288,7 @@ public class Main extends JavaPlugin implements Listener {
 							sender.sendMessage(noperm);
 						}
 					} else {
-						sender.sendMessage(""+ChatColor.RED+"No arena submitted. Usage: /de createarena [name]");
+						sender.sendMessage("" + ChatColor.RED + "No arena submitted. Usage: /de createarena [name]");
 					}
 				} else if (action.equalsIgnoreCase("removearena")) {
 					if (args.length > 1) {
@@ -303,7 +298,7 @@ public class Main extends JavaPlugin implements Listener {
 								getConfig().set(arenaname, null);
 								this.saveConfig();
 								File f = new File(this.getDataFolder() + "/" + arenaname);
-								if(f.exists()){
+								if (f.exists()) {
 									f.delete();
 								}
 								sender.sendMessage(removed_arena);
@@ -312,7 +307,7 @@ public class Main extends JavaPlugin implements Listener {
 							sender.sendMessage(noperm);
 						}
 					} else {
-						sender.sendMessage(""+ChatColor.RED+"No arena submitted. Usage: /de createarena [name]");
+						sender.sendMessage("" + ChatColor.RED + "No arena submitted. Usage: /de createarena [name]");
 					}
 				} else if (action.equalsIgnoreCase("savearena")) {
 					if (args.length > 1) {
@@ -325,14 +320,14 @@ public class Main extends JavaPlugin implements Listener {
 						if (isValidArena(args[1])) {
 							File f = new File(this.getDataFolder() + "/" + args[1]);
 							f.delete();
-							
-							sender.sendMessage(""+ChatColor.GREEN+"Arena is now saving, "+ChatColor.GOLD+"this might take a while"+ChatColor.GREEN+".");
+
+							sender.sendMessage("" + ChatColor.GREEN + "Arena is now saving, " + ChatColor.GOLD + "this might take a while" + ChatColor.GREEN + ".");
 							saveArenaToFile(p.getName(), args[1]);
 						} else {
-							sender.sendMessage(""+ChatColor.RED+"The arena appears to be invalid (missing components)!");
+							sender.sendMessage("" + ChatColor.RED + "The arena appears to be invalid (missing components)!");
 						}
 					} else {
-						sender.sendMessage(""+ChatColor.RED+"Usage: "+ChatColor.DARK_GREEN+"/de savearena [name]");
+						sender.sendMessage("" + ChatColor.RED + "Usage: " + ChatColor.DARK_GREEN + "/de savearena [name]");
 					}
 				} else if (action.equalsIgnoreCase("setbounds")) {
 					if (sender.hasPermission("dragonescape.setup")) {
@@ -340,11 +335,11 @@ public class Main extends JavaPlugin implements Listener {
 							String arena = args[1];
 							String count = args[2];
 							if (!count.equalsIgnoreCase("low") && !count.equalsIgnoreCase("high")) {
-								sender.sendMessage(""+ChatColor.RED+"Second parameter invalid. Usage: /de setbounds [arena] [low/high]");
+								sender.sendMessage("" + ChatColor.RED + "Second parameter invalid. Usage: /de setbounds [arena] [low/high]");
 								return true;
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage(""+ChatColor.RED+"Could not find this arena.");
+								sender.sendMessage("" + ChatColor.RED + "Could not find this arena.");
 								return true;
 							}
 
@@ -356,43 +351,43 @@ public class Main extends JavaPlugin implements Listener {
 
 							getConfig().set(arena + ".boundary" + count + ".world", p.getWorld().getName());
 							getConfig().set(arena + ".boundary" + count + ".loc.x", p.getLocation().getBlockX());
-							if(count.equalsIgnoreCase("low")){
+							if (count.equalsIgnoreCase("low")) {
 								getConfig().set(arena + ".boundary" + count + ".loc.y", p.getLocation().getBlockY() - 1);
-							}else{
+							} else {
 								getConfig().set(arena + ".boundary" + count + ".loc.y", p.getLocation().getBlockY());
 							}
 							getConfig().set(arena + ".boundary" + count + ".loc.z", p.getLocation().getBlockZ());
 							this.saveConfig();
 
-							sender.sendMessage(""+ChatColor.YELLOW+"Successfully saved " + count + " boundary!");
+							sender.sendMessage("" + ChatColor.YELLOW + "Successfully saved " + count + " boundary!");
 						} else {
-							sender.sendMessage(""+ChatColor.RED+"Usage: /de setbounds [arena] [count].");
+							sender.sendMessage("" + ChatColor.RED + "Usage: /de setbounds [arena] [count].");
 						}
 					} else {
 						sender.sendMessage(noperm);
 					}
-                } else if (action.equalsIgnoreCase("boundstool")) {
-                    if (args.length > 1) {
-                        if (sender.hasPermission("dragonescape.setup")) {
-                            Player p = (Player) sender;
-                            String arenaname = args[1];
-                            if (!getConfig().isSet(arenaname)) {
-                                sender.sendMessage(""+ChatColor.RED+"Could not find this arena.");
-                                return true;
-                            }
-                            Inventory inv = p.getInventory();
-                            ItemStack is = new ItemStack(369, 1);
-                            ItemMeta im = (ItemMeta)is.getItemMeta();
-                            im.setDisplayName(""+ChatColor.GREEN+"Boundary tool for arena "+ChatColor.YELLOW+""  + arenaname);
-                            is.setItemMeta(im);
-                            inv.addItem(is);
-                            sender.sendMessage(""+ChatColor.YELLOW+"Here's the boundary tool. Left click the lower left point and right click the higher right point.");
-                        } else {
-                            sender.sendMessage(noperm);
-                        }
-                    } else {
-                        sender.sendMessage(""+ChatColor.RED+"Usage: /de boundstool [arena].");
-                    }
+				} else if (action.equalsIgnoreCase("boundstool")) {
+					if (args.length > 1) {
+						if (sender.hasPermission("dragonescape.setup")) {
+							Player p = (Player) sender;
+							String arenaname = args[1];
+							if (!getConfig().isSet(arenaname)) {
+								sender.sendMessage("" + ChatColor.RED + "Could not find this arena.");
+								return true;
+							}
+							Inventory inv = p.getInventory();
+							ItemStack is = new ItemStack(369, 1);
+							ItemMeta im = (ItemMeta) is.getItemMeta();
+							im.setDisplayName("" + ChatColor.GREEN + "Boundary tool for arena " + ChatColor.YELLOW + "" + arenaname);
+							is.setItemMeta(im);
+							inv.addItem(is);
+							sender.sendMessage("" + ChatColor.YELLOW + "Here's the boundary tool. Left click the lower left point and right click the higher right point.");
+						} else {
+							sender.sendMessage(noperm);
+						}
+					} else {
+						sender.sendMessage("" + ChatColor.RED + "Usage: /de boundstool [arena].");
+					}
 				} else if (action.equalsIgnoreCase("setlobby")) {
 					if (args.length > 1) {
 						if (sender.hasPermission("dragonescape.setup")) {
@@ -480,16 +475,16 @@ public class Main extends JavaPlugin implements Listener {
 							String playercount = args[2];
 							if (!isNumeric(playercount)) {
 								playercount = Integer.toString(default_max_players);
-								sender.sendMessage(""+ChatColor.RED+"Playercount is invalid. Setting to default value.");
+								sender.sendMessage("" + ChatColor.RED + "Playercount is invalid. Setting to default value.");
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage(""+ChatColor.RED+"Could not find this arena.");
+								sender.sendMessage("" + ChatColor.RED + "Could not find this arena.");
 								return true;
 							}
 							this.setArenaMaxPlayers(arena, Integer.parseInt(playercount));
-							sender.sendMessage(""+ChatColor.YELLOW+"Successfully set!");
+							sender.sendMessage("" + ChatColor.YELLOW + "Successfully set!");
 						} else {
-							sender.sendMessage(""+ChatColor.RED+"Usage: /de setmaxplayers [arena] [count].");
+							sender.sendMessage("" + ChatColor.RED + "Usage: /de setmaxplayers [arena] [count].");
 						}
 					}
 				} else if (action.equalsIgnoreCase("setminplayers")) {
@@ -499,16 +494,16 @@ public class Main extends JavaPlugin implements Listener {
 							String playercount = args[2];
 							if (!isNumeric(playercount)) {
 								playercount = Integer.toString(default_min_players);
-								sender.sendMessage(""+ChatColor.RED+"Playercount is invalid. Setting to default value.");
+								sender.sendMessage("" + ChatColor.RED + "Playercount is invalid. Setting to default value.");
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage(""+ChatColor.RED+"Could not find this arena.");
+								sender.sendMessage("" + ChatColor.RED + "Could not find this arena.");
 								return true;
 							}
 							this.setArenaMinPlayers(arena, Integer.parseInt(playercount));
-							sender.sendMessage(""+ChatColor.YELLOW+"Successfully set!");
+							sender.sendMessage("" + ChatColor.YELLOW + "Successfully set!");
 						} else {
-							sender.sendMessage(""+ChatColor.RED+"Usage: /de setminplayers [arena] [count].");
+							sender.sendMessage("" + ChatColor.RED + "Usage: /de setminplayers [arena] [count].");
 						}
 					} else {
 						sender.sendMessage(noperm);
@@ -520,15 +515,15 @@ public class Main extends JavaPlugin implements Listener {
 							String difficulty = args[2];
 							if (!isNumeric(difficulty)) {
 								difficulty = "1";
-								sender.sendMessage(""+ChatColor.RED+"Difficulty is invalid. Possible difficulties: 0, 1, 2.");
+								sender.sendMessage("" + ChatColor.RED + "Difficulty is invalid. Possible difficulties: 0, 1, 2.");
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage(""+ChatColor.RED+"Could not find this arena.");
+								sender.sendMessage("" + ChatColor.RED + "Could not find this arena.");
 								return true;
 							}
-							sender.sendMessage(""+ChatColor.YELLOW+"Successfully set!");
+							sender.sendMessage("" + ChatColor.YELLOW + "Successfully set!");
 						} else {
-							sender.sendMessage(""+ChatColor.RED+"Usage: /de setdifficulty [arena] [difficulty]. Difficulty can be 0, 1 or 2.");
+							sender.sendMessage("" + ChatColor.RED + "Usage: /de setdifficulty [arena] [difficulty]. Difficulty can be 0, 1 or 2.");
 						}
 					}
 				} else if (action.equalsIgnoreCase("join")) {
@@ -541,7 +536,7 @@ public class Main extends JavaPlugin implements Listener {
 								getLogger().warning("No sign found for arena " + args[1] + ". May lead to errors.");
 							}
 							if (s != null) {
-								if (s.getLine(1).equalsIgnoreCase(""+ChatColor.DARK_GREEN+"[join]")) {
+								if (s.getLine(1).equalsIgnoreCase("" + ChatColor.DARK_GREEN + "[join]")) {
 									joinLobby((Player) sender, args[1]);
 								} else {
 									sender.sendMessage(arena_ingame);
@@ -567,7 +562,7 @@ public class Main extends JavaPlugin implements Listener {
 								}
 							}
 							if (count < 1) {
-								sender.sendMessage(""+ChatColor.RED+"Noone is in this arena.");
+								sender.sendMessage("" + ChatColor.RED + "Noone is in this arena.");
 								return true;
 							}
 							if (!ingame.get(arena)) {
@@ -602,49 +597,48 @@ public class Main extends JavaPlugin implements Listener {
 					}
 				} else if (action.equalsIgnoreCase("list")) {
 					if (sender.hasPermission("dragonescape.list")) {
-						sender.sendMessage(""+ChatColor.GOLD+"-= Arenas =-");
+						sender.sendMessage("" + ChatColor.GOLD + "-= Arenas =-");
 						for (String arena : getConfig().getKeys(false)) {
 							if (!arena.equalsIgnoreCase("mainlobby") && !arena.equalsIgnoreCase("strings") && !arena.equalsIgnoreCase("config")) {
-								sender.sendMessage(""+ChatColor.DARK_GREEN+"" + arena);
+								sender.sendMessage("" + ChatColor.DARK_GREEN + "" + arena);
 							}
 						}
 					} else {
 						sender.sendMessage(noperm);
 					}
 				} else {
-					sender.sendMessage(""+ChatColor.GOLD+"-= DragonEscape "+ChatColor.DARK_GREEN+"help: "+ChatColor.GOLD+"=-");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"To "+ChatColor.GOLD+"setup the main lobby "+ChatColor.DARK_GREEN+", type in "+ChatColor.RED+"/de setmainlobby");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"To "+ChatColor.GOLD+"setup "+ChatColor.DARK_GREEN+"a new arena, type in the following commands:");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"/de createarena [name]");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"/de setlobby [name] "+ChatColor.GOLD+" - for the waiting lobby");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"/de setspawn [name] "+ChatColor.GOLD+" - players spawn here");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"/de setfinish [name] "+ChatColor.GOLD+" - the finish line");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"/de setbounds [name] "+ChatColor.GOLD+" - don't forget to set both high and low boundaries.");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"/de savearena [name] "+ChatColor.GOLD+" - save the arena");
+					sender.sendMessage("" + ChatColor.GOLD + "-= DragonEscape " + ChatColor.DARK_GREEN + "help: " + ChatColor.GOLD + "=-");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "To " + ChatColor.GOLD + "setup the main lobby " + ChatColor.DARK_GREEN + ", type in " + ChatColor.RED + "/de setmainlobby");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "To " + ChatColor.GOLD + "setup " + ChatColor.DARK_GREEN + "a new arena, type in the following commands:");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de createarena [name]");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setlobby [name] " + ChatColor.GOLD + " - for the waiting lobby");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setspawn [name] " + ChatColor.GOLD + " - players spawn here");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setfinish [name] " + ChatColor.GOLD + " - the finish line");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setbounds [name] " + ChatColor.GOLD + " - don't forget to set both high and low boundaries.");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de savearena [name] " + ChatColor.GOLD + " - save the arena");
 					sender.sendMessage("");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"You can join with "+ChatColor.RED+"/de join [name] "+ChatColor.DARK_GREEN+"and leave with "+ChatColor.RED+"/de leave"+ChatColor.DARK_GREEN+".");
-					sender.sendMessage(""+ChatColor.DARK_GREEN+"You can force an arena to start with "+ChatColor.RED+"/de start [name]"+ChatColor.DARK_GREEN+".");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "You can join with " + ChatColor.RED + "/de join [name] " + ChatColor.DARK_GREEN + "and leave with " + ChatColor.RED + "/de leave" + ChatColor.DARK_GREEN + ".");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "You can force an arena to start with " + ChatColor.RED + "/de start [name]" + ChatColor.DARK_GREEN + ".");
 				}
 			} else {
-				sender.sendMessage(""+ChatColor.GOLD+"-= DragonEscape "+ChatColor.DARK_GREEN+"help: "+ChatColor.GOLD+"=-");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"To "+ChatColor.GOLD+"setup the main lobby "+ChatColor.DARK_GREEN+", type in "+ChatColor.RED+"/de setmainlobby");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"To "+ChatColor.GOLD+"setup "+ChatColor.DARK_GREEN+"a new arena, type in the following commands:");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"/de createarena [name]");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"/de setlobby [name] "+ChatColor.GOLD+" - for the waiting lobby");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"/de setspawn [name] "+ChatColor.GOLD+" - players spawn here");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"/de setfinish [name] "+ChatColor.GOLD+" - the finish line");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"/de setbounds [name] "+ChatColor.GOLD+" - don't forget to set both high and low boundaries.");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"/de savearena [name] "+ChatColor.GOLD+" - save the arena");
+				sender.sendMessage("" + ChatColor.GOLD + "-= DragonEscape " + ChatColor.DARK_GREEN + "help: " + ChatColor.GOLD + "=-");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "To " + ChatColor.GOLD + "setup the main lobby " + ChatColor.DARK_GREEN + ", type in " + ChatColor.RED + "/de setmainlobby");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "To " + ChatColor.GOLD + "setup " + ChatColor.DARK_GREEN + "a new arena, type in the following commands:");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de createarena [name]");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setlobby [name] " + ChatColor.GOLD + " - for the waiting lobby");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setspawn [name] " + ChatColor.GOLD + " - players spawn here");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setfinish [name] " + ChatColor.GOLD + " - the finish line");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setbounds [name] " + ChatColor.GOLD + " - don't forget to set both high and low boundaries.");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de savearena [name] " + ChatColor.GOLD + " - save the arena");
 				sender.sendMessage("");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"You can join with "+ChatColor.RED+"/de join [name] "+ChatColor.DARK_GREEN+"and leave with "+ChatColor.RED+"/de leave"+ChatColor.DARK_GREEN+".");
-				sender.sendMessage(""+ChatColor.DARK_GREEN+"You can force an arena to start with "+ChatColor.RED+"/de start [name]"+ChatColor.DARK_GREEN+".");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "You can join with " + ChatColor.RED + "/de join [name] " + ChatColor.DARK_GREEN + "and leave with " + ChatColor.RED + "/de leave" + ChatColor.DARK_GREEN + ".");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "You can force an arena to start with " + ChatColor.RED + "/de start [name]" + ChatColor.DARK_GREEN + ".");
 			}
 			return true;
 		}
 		return false;
 	}
 
-	
 	private boolean registerEntity() {
 		try {
 			Class entityTypeClass = EntityTypes.class;
@@ -689,7 +683,7 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public void removeEnderdragon(Test t) {
-		if(t != null){
+		if (t != null) {
 			t.getBukkitEntity().remove();
 		}
 	}
@@ -716,7 +710,7 @@ public class Main extends JavaPlugin implements Listener {
 			try {
 				Sign s = this.getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, ""+ChatColor.DARK_GREEN+"[Join]");
+					s.setLine(1, "" + ChatColor.DARK_GREEN + "[Join]");
 					s.setLine(3, Integer.toString(count - 1) + "/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
@@ -803,39 +797,39 @@ public class Main extends JavaPlugin implements Listener {
 					return;
 				}
 			}
-			
+
 			String arena_ = arenap_.get(event.getPlayer().getName());
 			String dir = m.getDirection(getSpawn(arena_).getYaw());
-			if(dir.equalsIgnoreCase("south")){
+			if (dir.equalsIgnoreCase("south")) {
 				if (event.getPlayer().getLocation().getBlockZ() > getFinish(arenap_.get(event.getPlayer().getName())).getBlockZ()) {
-					if(ingame.get(arena_)){
+					if (ingame.get(arena_)) {
 						stop(h.get(arena_), arena_);
 					}
 					return;
 				}
-			}else if(dir.equalsIgnoreCase("north")){
+			} else if (dir.equalsIgnoreCase("north")) {
 				if (event.getPlayer().getLocation().getBlockZ() < getFinish(arenap_.get(event.getPlayer().getName())).getBlockZ()) {
-					if(ingame.get(arena_)){
+					if (ingame.get(arena_)) {
 						stop(h.get(arena_), arena_);
 					}
 					return;
 				}
-			}else if(dir.equalsIgnoreCase("east")){
+			} else if (dir.equalsIgnoreCase("east")) {
 				if (event.getPlayer().getLocation().getBlockX() > getFinish(arenap_.get(event.getPlayer().getName())).getBlockX()) {
-					if(ingame.get(arena_)){
+					if (ingame.get(arena_)) {
 						stop(h.get(arena_), arena_);
 					}
 					return;
 				}
-			}else if(dir.equalsIgnoreCase("west")){
+			} else if (dir.equalsIgnoreCase("west")) {
 				if (event.getPlayer().getLocation().getBlockX() < getFinish(arenap_.get(event.getPlayer().getName())).getBlockX()) {
-					if(ingame.get(arena_)){
+					if (ingame.get(arena_)) {
 						stop(h.get(arena_), arena_);
 					}
 					return;
 				}
 			}
-			
+
 			if (event.getPlayer().getLocation().getBlockY() < getSpawn(arenap_.get(event.getPlayer().getName())).getBlockY() - 5) {
 				lost.put(event.getPlayer(), arenap.get(event.getPlayer()));
 				final Player p__ = event.getPlayer();
@@ -867,7 +861,7 @@ public class Main extends JavaPlugin implements Listener {
 					// last man standing!
 					stop(h.get(arena), arena);
 				}
-				
+
 				return;
 			}
 		}
@@ -879,7 +873,7 @@ public class Main extends JavaPlugin implements Listener {
 			if (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) {
 				final Sign s = (Sign) event.getClickedBlock().getState();
 				if (s.getLine(0).toLowerCase().contains("dragonescape")) {
-					if (s.getLine(1).equalsIgnoreCase(""+ChatColor.DARK_GREEN+"[join]")) {
+					if (s.getLine(1).equalsIgnoreCase("" + ChatColor.DARK_GREEN + "[join]")) {
 						if (isValidArena(s.getLine(2))) {
 							joinLobby(event.getPlayer(), s.getLine(2));
 						} else {
@@ -888,48 +882,48 @@ public class Main extends JavaPlugin implements Listener {
 					}
 				}
 			}
-			
-			if(event.hasItem()){
-				if (event.getItem().getTypeId() == 369){
-			        if (event.getItem().hasItemMeta()){
-				        ItemMeta im = event.getItem().getItemMeta();
-				        String itemname = im.getDisplayName();
-				        String arenaname = itemname.split(""+ChatColor.YELLOW+"")[1];
-				        if (getConfig().isSet(arenaname)){
-				            if (event.getPlayer().hasPermission("dragonescape.setup")){
-				                try{
-					                Block b = event.getClickedBlock();
-					                Location l = b.getLocation();
-					                if (event.getAction() == Action.LEFT_CLICK_BLOCK){
-					                    String count = "low";
-				                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
-				                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
-				                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY() - 1);
-				                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
-				                        this.saveConfig();
-				                        event.setCancelled(true);
-				                        event.getPlayer().sendMessage(""+ChatColor.YELLOW+"Successfully saved " + count + " boundary!");
-					                } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK){
-					                    String count = "high";
-				                        getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
-				                        getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
-				                        getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY());
-				                        getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
-				                        this.saveConfig();
-				                        event.setCancelled(true);
-				                        event.getPlayer().sendMessage(""+ChatColor.YELLOW+"Successfully saved " + count + " boundary!");
-					                }
-				                } catch ( NullPointerException e){
-				                    event.getPlayer().sendMessage(""+ChatColor.RED+"You must hit a block.");
-				                }
-				            } else {
-				                event.getPlayer().sendMessage(noperm);
-				            }
-				        } else {
-			                event.getPlayer().sendMessage(""+ChatColor.RED+"Could not find this arena.");
-				        }
-				    }
-			    }
+
+			if (event.hasItem()) {
+				if (event.getItem().getTypeId() == 369) {
+					if (event.getItem().hasItemMeta()) {
+						ItemMeta im = event.getItem().getItemMeta();
+						String itemname = im.getDisplayName();
+						String arenaname = itemname.split("" + ChatColor.YELLOW + "")[1];
+						if (getConfig().isSet(arenaname)) {
+							if (event.getPlayer().hasPermission("dragonescape.setup")) {
+								try {
+									Block b = event.getClickedBlock();
+									Location l = b.getLocation();
+									if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+										String count = "low";
+										getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
+										getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
+										getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY() - 1);
+										getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
+										this.saveConfig();
+										event.setCancelled(true);
+										event.getPlayer().sendMessage("" + ChatColor.YELLOW + "Successfully saved " + count + " boundary!");
+									} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+										String count = "high";
+										getConfig().set(arenaname + ".boundary" + count + ".world", l.getWorld().getName());
+										getConfig().set(arenaname + ".boundary" + count + ".loc.x", l.getBlockX());
+										getConfig().set(arenaname + ".boundary" + count + ".loc.y", l.getBlockY());
+										getConfig().set(arenaname + ".boundary" + count + ".loc.z", l.getBlockZ());
+										this.saveConfig();
+										event.setCancelled(true);
+										event.getPlayer().sendMessage("" + ChatColor.YELLOW + "Successfully saved " + count + " boundary!");
+									}
+								} catch (NullPointerException e) {
+									event.getPlayer().sendMessage("" + ChatColor.RED + "You must hit a block.");
+								}
+							} else {
+								event.getPlayer().sendMessage(noperm);
+							}
+						} else {
+							event.getPlayer().sendMessage("" + ChatColor.RED + "Could not find this arena.");
+						}
+					}
+				}
 			}
 		}
 	}
@@ -939,7 +933,7 @@ public class Main extends JavaPlugin implements Listener {
 		Player p = event.getPlayer();
 		if (event.getLine(0).toLowerCase().equalsIgnoreCase("dragonescape")) {
 			if (event.getPlayer().hasPermission("dragonescape.sign") || event.getPlayer().isOp()) {
-				event.setLine(0, ""+ChatColor.GOLD+"DragonEscape");
+				event.setLine(0, "" + ChatColor.GOLD + "DragonEscape");
 				if (!event.getLine(2).equalsIgnoreCase("")) {
 					String arena = event.getLine(2);
 					if (isValidArena(arena)) {
@@ -948,12 +942,12 @@ public class Main extends JavaPlugin implements Listener {
 						getConfig().set(arena + ".sign.loc.y", event.getBlock().getLocation().getBlockY());
 						getConfig().set(arena + ".sign.loc.z", event.getBlock().getLocation().getBlockZ());
 						this.saveConfig();
-						p.sendMessage(""+ChatColor.DARK_GREEN+"Successfully created arena sign.");
+						p.sendMessage("" + ChatColor.DARK_GREEN + "Successfully created arena sign.");
 					} else {
 						p.sendMessage(arena_invalid_component);
 						event.getBlock().breakNaturally();
 					}
-					event.setLine(1, ""+ChatColor.DARK_GREEN+"[Join]");
+					event.setLine(1, "" + ChatColor.DARK_GREEN + "[Join]");
 					event.setLine(2, arena);
 					event.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 				}
@@ -967,21 +961,19 @@ public class Main extends JavaPlugin implements Listener {
 	public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
 		if (arenap.containsKey(event.getPlayer())) {
 			if (!event.getMessage().startsWith("/de") && !event.getMessage().startsWith("/dragonescape")) {
-				event.getPlayer().sendMessage(""+ChatColor.RED+"Please use "+ChatColor.GOLD+"/de leave "+ChatColor.RED+"to leave this minigame.");
+				event.getPlayer().sendMessage("" + ChatColor.RED + "Please use " + ChatColor.GOLD + "/de leave " + ChatColor.RED + "to leave this minigame.");
 				event.setCancelled(true);
 				return;
 			}
 		}
 	}
-	
-	
+
 	@EventHandler
 	public void EntityChangeBlockEvent(org.bukkit.event.entity.EntityChangeBlockEvent event) {
 		if (event.getEntityType() == EntityType.FALLING_BLOCK) {
 			event.setCancelled(true);
 		}
 	}
-
 
 	public Sign getSignFromArena(String arena) {
 		Location b_ = new Location(getServer().getWorld(getConfig().getString(arena + ".sign.world")), getConfig().getInt(arena + ".sign.loc.x"), getConfig().getInt(arena + ".sign.loc.y"), getConfig().getInt(arena + ".sign.loc.z"));
@@ -1020,7 +1012,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		return ret;
 	}
-	
+
 	public Location getFinish(String arena) {
 		Location ret = null;
 		if (isValidArena(arena)) {
@@ -1067,20 +1059,13 @@ public class Main extends JavaPlugin implements Listener {
 			Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 				public void run() {
 					if (p.isOnline()) {
-						
-							try {
-							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mvtp e:"+getMainLobby().getWorld()+":"+getMainLobby().getX()+","+getMainLobby().getY()+","+getMainLobby().getZ()+":0:0");
-								
-							}catch(CommandException ce){
-								
-								try {
-									p.teleport(getMainLobby()); 
-								}catch(Exception e){
-									getServer().getLogger().severe("Please send this error to the developers on bukkitdev!");
-									e.printStackTrace();
-								}
-							}
-						
+						try {
+							p.teleport(getMainLobby());
+						} catch (Exception e) {
+							getServer().getLogger().severe("Please send this error to the developers on bukkitdev!");
+							e.printStackTrace();
+							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mvtp e:" + getMainLobby().getWorld() + ":" + getMainLobby().getX() + "," + getMainLobby().getY() + "," + getMainLobby().getZ() + ":0:0");
+						}
 					}
 				}
 			}, 9);
@@ -1289,10 +1274,10 @@ public class Main extends JavaPlugin implements Listener {
 					// update sign
 					Sign s = getSignFromArena(arena);
 					if (s != null) {
-						s.setLine(1, ""+ChatColor.DARK_RED+"[Ingame]");
+						s.setLine(1, "" + ChatColor.DARK_RED + "[Ingame]");
 						s.update();
 					}
-					
+
 					Bukkit.getServer().getScheduler().cancelTask(countdown_id.get(arena));
 				}
 			}
@@ -1334,29 +1319,28 @@ public class Main extends JavaPlugin implements Listener {
 			@Override
 			public void run() {
 				try {
-					if(dir.equalsIgnoreCase("south")){
-						if(dragons.get(arena).locZ > getFinish(arena).getBlockZ()){
+					if (dir.equalsIgnoreCase("south")) {
+						if (dragons.get(arena).locZ > getFinish(arena).getBlockZ()) {
 							stop(h.get(arena), arena);
 							return;
 						}
-					}else if(dir.equalsIgnoreCase("north")){
-						if(dragons.get(arena).locZ < getFinish(arena).getBlockZ()){
+					} else if (dir.equalsIgnoreCase("north")) {
+						if (dragons.get(arena).locZ < getFinish(arena).getBlockZ()) {
 							stop(h.get(arena), arena);
 							return;
 						}
-					}else if(dir.equalsIgnoreCase("east")){
-						if(dragons.get(arena).locX > getFinish(arena).getBlockX()){
+					} else if (dir.equalsIgnoreCase("east")) {
+						if (dragons.get(arena).locX > getFinish(arena).getBlockX()) {
 							stop(h.get(arena), arena);
 							return;
 						}
-					}else if(dir.equalsIgnoreCase("west")){
-						if(dragons.get(arena).locX < getFinish(arena).getBlockX()){
+					} else if (dir.equalsIgnoreCase("west")) {
+						if (dragons.get(arena).locX < getFinish(arena).getBlockX()) {
 							stop(h.get(arena), arena);
 							return;
 						}
 					}
-					
-					
+
 					for (final Player p : arenap.keySet()) {
 						if (p.isOnline()) {
 							if (arenap.get(p).equalsIgnoreCase(arena)) {
@@ -1366,13 +1350,12 @@ public class Main extends JavaPlugin implements Listener {
 					}
 
 					final Location l = getSpawn(arena);
-					if(dragon_move_increment.containsKey(arena)){
+					if (dragon_move_increment.containsKey(arena)) {
 						dragon_move_increment.put(arena, dragon_move_increment.get(arena) + 0.35D);
-					}else{
+					} else {
 						dragon_move_increment.put(arena, 0.25D);
 					}
-					
-					
+
 					Location l1 = getHighBoundary(arena);
 					Location l2 = getLowBoundary(arena);
 					int length1 = l1.getBlockX() - l2.getBlockX();
@@ -1380,33 +1363,31 @@ public class Main extends JavaPlugin implements Listener {
 					int length3 = l1.getBlockZ() - l2.getBlockZ();
 					boolean f = false;
 					boolean f_ = false;
-					if(l2.getBlockX() > l1.getBlockX()){
+					if (l2.getBlockX() > l1.getBlockX()) {
 						length1 = l2.getBlockX() - l1.getBlockX();
 						f = true;
 					}
-					
-					if(l2.getBlockZ() > l1.getBlockZ()){
+
+					if (l2.getBlockZ() > l1.getBlockZ()) {
 						length3 = l2.getBlockZ() - l1.getBlockZ();
 						f_ = true;
 					}
-					
-					
-					
-					if(dir.equalsIgnoreCase("south")){
+
+					if (dir.equalsIgnoreCase("south")) {
 						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() + dragon_move_increment.get(arena));
-						
-						for(int i = 0; i < length1; i++){
-							for(int j = 0; j < length2; j++){
+
+						for (int i = 0; i < length1; i++) {
+							for (int j = 0; j < length2; j++) {
 								final Block b;
-								if(f){
+								if (f) {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
-								}else{
+								} else {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
 								}
-								
-								Bukkit.getScheduler().runTask(m, new Runnable(){
-									public void run(){
-										if(b.getType() != Material.AIR){
+
+								Bukkit.getScheduler().runTask(m, new Runnable() {
+									public void run() {
+										if (b.getType() != Material.AIR) {
 											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
 											b.setType(Material.AIR);
 										}
@@ -1414,21 +1395,21 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}
-					}else if(dir.equalsIgnoreCase("north")){
+					} else if (dir.equalsIgnoreCase("north")) {
 						dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - dragon_move_increment.get(arena));
-						
-						for(int i = 0; i < length1; i++){
-							for(int j = 0; j < length2; j++){
+
+						for (int i = 0; i < length1; i++) {
+							for (int j = 0; j < length2; j++) {
 								final Block b;
-								if(f){
+								if (f) {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
-								}else{
+								} else {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
 								}
-								
-								Bukkit.getScheduler().runTask(m, new Runnable(){
-									public void run(){
-										if(b.getType() != Material.AIR){
+
+								Bukkit.getScheduler().runTask(m, new Runnable() {
+									public void run() {
+										if (b.getType() != Material.AIR) {
 											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
 											b.setType(Material.AIR);
 										}
@@ -1436,21 +1417,21 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}
-					}else if(dir.equalsIgnoreCase("east")){
+					} else if (dir.equalsIgnoreCase("east")) {
 						dragons.get(arena).setPosition(l.getX() + dragon_move_increment.get(arena), l.getY(), l.getZ());
-						
-						for(int i = 0; i < length3; i++){
-							for(int j = 0; j < length2; j++){
+
+						for (int i = 0; i < length3; i++) {
+							for (int j = 0; j < length2; j++) {
 								final Block b;
-								if(f_){
+								if (f_) {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
-								}else{
+								} else {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
 								}
-								
-								Bukkit.getScheduler().runTask(m, new Runnable(){
-									public void run(){
-										if(b.getType() != Material.AIR){
+
+								Bukkit.getScheduler().runTask(m, new Runnable() {
+									public void run() {
+										if (b.getType() != Material.AIR) {
 											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
 											b.setType(Material.AIR);
 										}
@@ -1458,21 +1439,21 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}
-					}else if(dir.equalsIgnoreCase("west")){
+					} else if (dir.equalsIgnoreCase("west")) {
 						dragons.get(arena).setPosition(l.getX() - dragon_move_increment.get(arena), l.getY(), l.getZ());
-						
-						for(int i = 0; i < length3; i++){
-							for(int j = 0; j < length2; j++){
+
+						for (int i = 0; i < length3; i++) {
+							for (int j = 0; j < length2; j++) {
 								final Block b;
-								if(f_){
+								if (f_) {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
-								}else{
+								} else {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
 								}
 
-								Bukkit.getScheduler().runTask(m, new Runnable(){
-									public void run(){
-										if(b.getType() != Material.AIR){
+								Bukkit.getScheduler().runTask(m, new Runnable() {
+									public void run() {
+										if (b.getType() != Material.AIR) {
 											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
 											b.setType(Material.AIR);
 										}
@@ -1493,14 +1474,13 @@ public class Main extends JavaPlugin implements Listener {
 		return id__;
 	}
 
-	
 	public void reset(final String arena) {
 		Runnable r = new Runnable() {
-	        public void run() {
-	        	loadArenaFromFileSYNC(arena);
-	        }
-	    };
-	    new Thread(r).start();
+			public void run() {
+				loadArenaFromFileSYNC(arena);
+			}
+		};
+		new Thread(r).start();
 	}
 
 	public void stop(BukkitTask t, final String arena) {
@@ -1517,7 +1497,7 @@ public class Main extends JavaPlugin implements Listener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		dragon_move_increment.put(arena, 0.0D);
 
 		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
@@ -1547,7 +1527,7 @@ public class Main extends JavaPlugin implements Listener {
 
 				Sign s = getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, ""+ChatColor.GOLD+"[Restarting]");
+					s.setLine(1, "" + ChatColor.GOLD + "[Restarting]");
 					s.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
@@ -1665,8 +1645,8 @@ public class Main extends JavaPlugin implements Listener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		Bukkit.getPlayerExact(player).sendMessage(""+ChatColor.GREEN+"Successfully saved arena to file.");
+
+		Bukkit.getPlayerExact(player).sendMessage("" + ChatColor.GREEN + "Successfully saved arena to file.");
 	}
 
 	public void saveArenaToFile(String arena) {
@@ -1826,10 +1806,10 @@ public class Main extends JavaPlugin implements Listener {
 					getServer().getWorld(ablock.world).getBlockAt(new Location(getServer().getWorld(ablock.world), ablock.x, ablock.y, ablock.z)).setType(ablock.getMaterial());
 				}
 				getLogger().info("Successfully finished!");
-				
+
 				Sign s = getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, ""+ChatColor.DARK_GREEN+"[Join]");
+					s.setLine(1, "" + ChatColor.DARK_GREEN + "[Join]");
 					s.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
@@ -1838,18 +1818,24 @@ public class Main extends JavaPlugin implements Listener {
 
 		return;
 	}
-	
-	
-	public String getDirection(Float yaw)
-	{
-	    yaw = yaw / 90;
-	    yaw = (float)Math.round(yaw);
-	 
-	    if (yaw == -4 || yaw == 0 || yaw == 4) {return "SOUTH";}
-	    if (yaw == -1 || yaw == 3) {return "EAST";}
-	    if (yaw == -2 || yaw == 2) {return "NORTH";}
-	    if (yaw == -3 || yaw == 1) {return "WEST";}
-	    return "";
+
+	public String getDirection(Float yaw) {
+		yaw = yaw / 90;
+		yaw = (float) Math.round(yaw);
+
+		if (yaw == -4 || yaw == 0 || yaw == 4) {
+			return "SOUTH";
+		}
+		if (yaw == -1 || yaw == 3) {
+			return "EAST";
+		}
+		if (yaw == -2 || yaw == 2) {
+			return "NORTH";
+		}
+		if (yaw == -3 || yaw == 1) {
+			return "WEST";
+		}
+		return "";
 	}
 
 }
