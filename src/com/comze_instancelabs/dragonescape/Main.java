@@ -1489,6 +1489,11 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}*/
+
+						if(dragons.get(arena) == null){
+							return;
+						}
+						
 						for (int i = 0; i < 10; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
@@ -1530,6 +1535,11 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}*/
+						
+						if(dragons.get(arena) == null){
+							return;
+						}
+						
 						for (int i = 0; i < 10; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
@@ -1572,6 +1582,11 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}*/
+						
+						if(dragons.get(arena) == null){
+							return;
+						}
+						
 						for (int i = 0; i < 10; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
@@ -1614,6 +1629,11 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}*/
+						
+						if(dragons.get(arena) == null){
+							return;
+						}
+						
 						for (int i = 0; i < 10; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
