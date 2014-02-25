@@ -398,6 +398,15 @@ public class Main extends JavaPlugin implements Listener {
 							
 							String count = Integer.toString(this.getCurrentFlyPoint(arenaname));
 							
+							// overwrite functionality
+							if(args.length > 2){
+								if(isNumeric(args[2])){
+									if(Integer.parseInt(args[2]) <= getCurrentFlyPoint(arenaname)){
+										count = args[2];
+									}
+								}
+							}
+							
 							getConfig().set(arenaname + ".flypoint." + count + ".world", p.getWorld().getName());
 							getConfig().set(arenaname + ".flypoint." + count + ".x", p.getLocation().getBlockX());
 							getConfig().set(arenaname + ".flypoint." + count + ".y", p.getLocation().getBlockY());
