@@ -22,6 +22,7 @@ import net.minecraft.server.v1_7_R1.EntityTypes;
 import net.minecraft.server.v1_7_R1.GenericAttributes;
 import net.minecraft.server.v1_7_R1.Item;
 import net.minecraft.server.v1_7_R1.NBTTagString;
+import net.minecraft.server.v1_7_R1.PacketPlayOutWorldEvent;
 
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.bukkit.Bukkit;
@@ -39,6 +40,7 @@ import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -1501,6 +1503,7 @@ public class Main extends JavaPlugin implements Listener {
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
 										if (b.getType() != Material.AIR) {
+											playBlockBreakParticles(b.getLocation(), b.getType());
 											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
 											b.setType(Material.AIR);
 										}
@@ -1548,6 +1551,7 @@ public class Main extends JavaPlugin implements Listener {
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
 										if (b.getType() != Material.AIR) {
+											playBlockBreakParticles(b.getLocation(), b.getType());
 											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
 											b.setType(Material.AIR);
 										}
@@ -1595,6 +1599,7 @@ public class Main extends JavaPlugin implements Listener {
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
 										if (b.getType() != Material.AIR) {
+											playBlockBreakParticles(b.getLocation(), b.getType());
 											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
 											b.setType(Material.AIR);
 										}
@@ -1642,6 +1647,7 @@ public class Main extends JavaPlugin implements Listener {
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
 										if (b.getType() != Material.AIR) {
+											playBlockBreakParticles(b.getLocation(), b.getType());
 											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
 											b.setType(Material.AIR);
 										}
@@ -2050,6 +2056,19 @@ public class Main extends JavaPlugin implements Listener {
 				count ++;
 			}
 			return count;
+		}
+	}
+	
+	
+	public static final void playBlockBreakParticles(final Location loc, final Material m) {
+		playBlockBreakParticles(loc, m, Bukkit.getOnlinePlayers());
+	}
+
+	public static final void playBlockBreakParticles(final Location loc, final Material m, final Player... players) {
+		@SuppressWarnings("deprecation")
+		PacketPlayOutWorldEvent packet = new PacketPlayOutWorldEvent(2001, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), m.getId(), false);
+		for (final Player p : players) {
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
 		}
 	}
 }
