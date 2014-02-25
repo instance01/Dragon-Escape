@@ -396,7 +396,6 @@ public class Main extends JavaPlugin implements Listener {
 							Player p = (Player) sender;
 							String arenaname = args[1];
 							
-							//TODO get current count
 							String count = Integer.toString(this.getCurrentFlyPoint(arenaname));
 							
 							getConfig().set(arenaname + ".flypoint." + count + ".world", p.getWorld().getName());
@@ -404,7 +403,32 @@ public class Main extends JavaPlugin implements Listener {
 							getConfig().set(arenaname + ".flypoint." + count + ".y", p.getLocation().getBlockY());
 							getConfig().set(arenaname + ".flypoint." + count + ".z", p.getLocation().getBlockZ());
 							this.saveConfig();
-							sender.sendMessage("Saved Fly point " + count);
+							sender.sendMessage(ChatColor.GREEN + "Saved Fly point " + count);
+						} else {
+							sender.sendMessage(noperm);
+						}
+					}
+				} else if (action.equalsIgnoreCase("removeflypoint")) {
+					if (args.length > 2) {
+						if (sender.hasPermission("dragonescape.setup")) {
+							Player p = (Player) sender;
+							String arenaname = args[1];
+							if(!isNumeric(args[2])){
+								sender.sendMessage(ChatColor.RED + "Usage: /de removeflypoint [arena] [count]");
+								return true;
+							}
+							if(!getConfig().isSet(arenaname + ".flypoint")){
+								sender.sendMessage(ChatColor.RED + "Could not find any flypoints for this arena.");
+								return true;
+							}
+							
+							int rem_count = Integer.parseInt(args[2]);
+							
+							if(rem_count < this.getCurrentFlyPoint(arenaname)){
+								getConfig().set(arenaname + ".flypoint." + Integer.toString(rem_count), null);
+								this.saveConfig();
+								sender.sendMessage(ChatColor.RED + "Removed Fly point " + Integer.toString(rem_count));
+							}
 						} else {
 							sender.sendMessage(noperm);
 						}
