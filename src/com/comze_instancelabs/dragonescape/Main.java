@@ -726,7 +726,7 @@ public class Main extends JavaPlugin implements Listener {
 			getLogger().severe("You forgot to set any FlyPoints! You need to have min. 2 and one of them has to be at finish.");
 			return null;
 		}
-		Test t_ = new Test(t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle(), this.getDragonWayPoints(arena));
+		Test t_ = new Test(this, arena, t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle(), this.getDragonWayPoints(arena));
 		((net.minecraft.server.v1_7_R1.World) w).addEntity(t_, CreatureSpawnEvent.SpawnReason.CUSTOM);
 		return t_;
 	}
@@ -1117,7 +1117,7 @@ public class Main extends JavaPlugin implements Listener {
 						}
 					}
 				}
-			}, 9);
+			}, 8);
 
 			if (lost.containsKey(p)) {
 				lost.remove(p);
@@ -1130,7 +1130,7 @@ public class Main extends JavaPlugin implements Listener {
 						p.setFlying(false);
 					}
 				}
-			}, 15);
+			}, 16);
 
 			final String arena = arenap.get(p);
 
@@ -1275,6 +1275,8 @@ public class Main extends JavaPlugin implements Listener {
 	final public HashMap<String, Integer> countdown_id = new HashMap<String, Integer>();
 	final public HashMap<String, Double> dragon_move_increment = new HashMap<String, Double>();
 
+	String dir_ = "";
+	
 	public BukkitTask start(final String arena) {
 		ingame.put(arena, true);
 
@@ -1334,49 +1336,68 @@ public class Main extends JavaPlugin implements Listener {
 		countdown_id.put(arena, t);
 
 		final String dir = m.getDirection(getSpawn(arena).getYaw());
+		
 		// spawn enderdragon
 		if (dir.equalsIgnoreCase("south")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
 					try{
-						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, -1.0D)));
-					}catch(Exception e){}
+						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, -3.0D)));
+					}catch(Exception e){
+						stop(h.get(arena), arena);
+						return;
+					}
 				}
 			});
 		} else if (dir.equalsIgnoreCase("north")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
 					try{
-						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, +1.0D)));
-					}catch(Exception e){}
+						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, +3.0D)));
+					}catch(Exception e){
+						stop(h.get(arena), arena);
+						return;
+					}
 				}
 			});
 		} else if (dir.equalsIgnoreCase("east")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
 					try{
-						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(-1.0D, 0.0D, 0.0D)));
-					}catch(Exception e){}
+						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
+					}catch(Exception e){
+						stop(h.get(arena), arena);
+						return;
+					}
 				}
 			});
 		} else if (dir.equalsIgnoreCase("west")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
 					try{
-						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(1.0D, 0.0D, 0.0D)));
-					}catch(Exception e){}
+						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
+					}catch(Exception e){
+						stop(h.get(arena), arena);
+						return;
+					}
 				}
 			});
 		}
 
 		final int d = 1;
 
+		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+			public void run() {
+				dir_ = getDirection(dragons.get(arena).getBukkitEntity().getLocation().getYaw());
+			}
+		}, 2L);
+		
 		BukkitTask id__ = null;
 		id__ = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(m, new Runnable() {
 			@Override
 			public void run() {
 				try {
-					if (dir.equalsIgnoreCase("south")) {
+					/*if (dir.equalsIgnoreCase("south")) {
 						if (dragons.get(arena).locZ > getFinish(arena).getBlockZ()) {
 							stop(h.get(arena), arena);
 							return;
@@ -1396,7 +1417,7 @@ public class Main extends JavaPlugin implements Listener {
 							stop(h.get(arena), arena);
 							return;
 						}
-					}
+					}*/
 
 					for (final Player p : arenap.keySet()) {
 						if (p.isOnline()) {
@@ -1430,11 +1451,18 @@ public class Main extends JavaPlugin implements Listener {
 						f_ = true;
 					}
 
-					if (dir.equalsIgnoreCase("south")) {
+					if(!dragons.containsKey(arena)){
+						return;
+					}
+					if(dragons.get(arena) == null){
+						return;
+					}
+					
+					if (dir_.equalsIgnoreCase("south")) {
 						//dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() + dragon_move_increment.get(arena));
 
 						Vector v = dragons.get(arena).getNextPosition();
-						if(v != null){
+						if(v != null && dragons.get(arena) != null){
 							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
@@ -1457,11 +1485,11 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}
-					} else if (dir.equalsIgnoreCase("north")) {
+					} else if (dir_.equalsIgnoreCase("north")) {
 						//dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - dragon_move_increment.get(arena));
 
 						Vector v = dragons.get(arena).getNextPosition();
-						if(v != null){
+						if(v != null && dragons.get(arena) != null){
 							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
@@ -1484,11 +1512,11 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}
-					} else if (dir.equalsIgnoreCase("east")) {
+					} else if (dir_.equalsIgnoreCase("east")) {
 						//dragons.get(arena).setPosition(l.getX() + dragon_move_increment.get(arena), l.getY(), l.getZ());
 
 						Vector v = dragons.get(arena).getNextPosition();
-						if(v != null){
+						if(v != null && dragons.get(arena) != null){
 							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
@@ -1511,11 +1539,11 @@ public class Main extends JavaPlugin implements Listener {
 								});
 							}
 						}
-					} else if (dir.equalsIgnoreCase("west")) {
+					} else if (dir_.equalsIgnoreCase("west")) {
 						//dragons.get(arena).setPosition(l.getX() - dragon_move_increment.get(arena), l.getY(), l.getZ());
 
 						Vector v = dragons.get(arena).getNextPosition();
-						if(v != null){
+						if(v != null && dragons.get(arena) != null){
 							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
