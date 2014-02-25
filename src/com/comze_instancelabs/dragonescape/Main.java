@@ -128,6 +128,7 @@ public class Main extends JavaPlugin implements Listener {
 	String cmd = "";
 	boolean start_announcement = false;
 	boolean winner_announcement = false;
+	String dragon_name = "Ender Dragon";
 
 	int start_countdown = 5;
 
@@ -174,6 +175,7 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.command_reward", "pex user [user] group set DragonPro");
 		getConfig().addDefault("config.start_announcement", false);
 		getConfig().addDefault("config.winner_announcement", false);
+	    getConfig().addDefault("config.dragonname", "Ender Dragon");
 
 		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
 		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
@@ -250,7 +252,8 @@ public class Main extends JavaPlugin implements Listener {
 		start_countdown = getConfig().getInt("config.start_countdown");
 		start_announcement = getConfig().getBoolean("config.start_announcement");
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
-
+        dragon_name = getConfig().getString("config.dragonname").replaceAll("&", "§");
+        
 		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");
 		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
 		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "§");
@@ -739,6 +742,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		Test t_ = new Test(this, arena, t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle(), this.getDragonWayPoints(arena));
 		((net.minecraft.server.v1_7_R1.World) w).addEntity(t_, CreatureSpawnEvent.SpawnReason.CUSTOM);
+		t_.setCustomName(dragon_name);
 		return t_;
 	}
 
