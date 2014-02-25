@@ -1017,7 +1017,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
-		if (arenap.containsKey(event.getPlayer())) {
+		if (arenap.containsKey(event.getPlayer()) && !event.getPlayer().isOp()) {
 			if (!event.getMessage().startsWith("/de") && !event.getMessage().startsWith("/dragonescape")) {
 				event.getPlayer().sendMessage("" + ChatColor.RED + "Please use " + ChatColor.GOLD + "/de leave " + ChatColor.RED + "to leave this minigame.");
 				event.setCancelled(true);
