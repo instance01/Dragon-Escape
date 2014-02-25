@@ -22,6 +22,7 @@ import net.minecraft.server.v1_7_R1.EntityTypes;
 import net.minecraft.server.v1_7_R1.GenericAttributes;
 import net.minecraft.server.v1_7_R1.Item;
 import net.minecraft.server.v1_7_R1.NBTTagString;
+import net.minecraft.server.v1_7_R1.PacketPlayOutEntityMetadata;
 import net.minecraft.server.v1_7_R1.PacketPlayOutWorldEvent;
 
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
@@ -705,6 +706,39 @@ public class Main extends JavaPlugin implements Listener {
 			Field c = entityTypeClass.getDeclaredField("c");
 			c.setAccessible(true);
 			HashMap c_map = (HashMap) c.get(null);
+			c_map.put("Slimey", Slimey.class);
+
+			Field d = entityTypeClass.getDeclaredField("d");
+			d.setAccessible(true);
+			HashMap d_map = (HashMap) d.get(null);
+			d_map.put(Slimey.class, "Slimey");
+
+			Field e = entityTypeClass.getDeclaredField("e");
+			e.setAccessible(true);
+			HashMap e_map = (HashMap) e.get(null);
+			e_map.put(Integer.valueOf(55), Slimey.class);
+
+			Field f = entityTypeClass.getDeclaredField("f");
+			f.setAccessible(true);
+			HashMap f_map = (HashMap) f.get(null);
+			f_map.put(Slimey.class, Integer.valueOf(55));
+
+			Field g = entityTypeClass.getDeclaredField("g");
+			g.setAccessible(true);
+			HashMap g_map = (HashMap) g.get(null);
+			g_map.put("Slimey", Integer.valueOf(55));
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		
+		try {
+			Class entityTypeClass = EntityTypes.class;
+
+			Field c = entityTypeClass.getDeclaredField("c");
+			c.setAccessible(true);
+			HashMap c_map = (HashMap) c.get(null);
 			c_map.put("Test", Test.class);
 
 			Field d = entityTypeClass.getDeclaredField("d");
@@ -743,6 +777,14 @@ public class Main extends JavaPlugin implements Listener {
 		Test t_ = new Test(this, arena, t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle(), this.getDragonWayPoints(arena));
 		((net.minecraft.server.v1_7_R1.World) w).addEntity(t_, CreatureSpawnEvent.SpawnReason.CUSTOM);
 		t_.setCustomName(dragon_name);
+		
+		//TODO: send entity invisibility packet
+		//TODO: might get possible though with HoloAPI when MC 1.8 is released
+		/*Slimey b = new Slimey(this, t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle());
+		((net.minecraft.server.v1_7_R1.World) w).addEntity(b, CreatureSpawnEvent.SpawnReason.CUSTOM);
+		b.setCustomName(dragon_name);
+		b.setInvisible(true);*/
+		
 		return t_;
 	}
 
@@ -751,7 +793,7 @@ public class Main extends JavaPlugin implements Listener {
 			t.getBukkitEntity().remove();
 		}
 	}
-
+	
 	public void setDragonSpeed(EnderDragon s, double speed) {
 		AttributeInstance attributes = ((EntityInsentient) ((CraftLivingEntity) s).getHandle()).getAttributeInstance(GenericAttributes.d);
 		attributes.setValue(speed);
