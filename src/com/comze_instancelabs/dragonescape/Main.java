@@ -698,6 +698,10 @@ public class Main extends JavaPlugin implements Listener {
 
 	public Test spawnEnderdragon(String arena, Location t) {
 		Object w = ((CraftWorld) t.getWorld()).getHandle();
+		if(this.getDragonWayPoints(arena) == null){
+			getLogger().severe("You forgot to set any FlyPoints! You need to have min. 2 and one of them has to be at finish.");
+			return null;
+		}
 		Test t_ = new Test(t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle(), this.getDragonWayPoints(arena));
 		((net.minecraft.server.v1_7_R1.World) w).addEntity(t_, CreatureSpawnEvent.SpawnReason.CUSTOM);
 		return t_;
@@ -1310,25 +1314,33 @@ public class Main extends JavaPlugin implements Listener {
 		if (dir.equalsIgnoreCase("south")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
-					dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, -1.0D)));
+					try{
+						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, -1.0D)));
+					}catch(Exception e){}
 				}
 			});
 		} else if (dir.equalsIgnoreCase("north")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
-					dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, +1.0D)));
+					try{
+						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, +1.0D)));
+					}catch(Exception e){}
 				}
 			});
 		} else if (dir.equalsIgnoreCase("east")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
-					dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(-1.0D, 0.0D, 0.0D)));
+					try{
+						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(-1.0D, 0.0D, 0.0D)));
+					}catch(Exception e){}
 				}
 			});
 		} else if (dir.equalsIgnoreCase("west")) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
-					dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(1.0D, 0.0D, 0.0D)));
+					try{
+						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(1.0D, 0.0D, 0.0D)));
+					}catch(Exception e){}
 				}
 			});
 		}
