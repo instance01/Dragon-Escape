@@ -126,10 +126,8 @@ public class Test extends EntityEnderDragon {
 			
 			if (this.locX < points.get(currentid).getX()) {
 				if (this.locZ > points.get(currentid).getZ()) {
-					System.out.println("A");
 					this.yaw = getLookAtYaw(new Vector(this.X, this.Y, this.Z)) + 180F;
 				} else {
-					System.out.println("B");
 					this.yaw = getLookAtYaw(new Vector(this.X, this.Y, this.Z)) - 90F;
 				}
 			} else { // (this.locX > points.get(currentid).getX())
@@ -144,10 +142,8 @@ public class Test extends EntityEnderDragon {
 
 		if (this.locX < points.get(currentid).getX()) {
 			if (this.locZ > points.get(currentid).getZ()) {
-				System.out.println("A");
 				this.yaw = getLookAtYaw(new Vector(this.X, this.Y, this.Z)) + 180F;
 			} else {
-				System.out.println("B");
 				this.yaw = getLookAtYaw(new Vector(this.X, this.Y, this.Z)) - 90F;
 			}
 		} else { // (this.locX > points.get(currentid).getX())

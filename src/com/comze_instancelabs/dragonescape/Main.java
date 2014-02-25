@@ -1274,8 +1274,6 @@ public class Main extends JavaPlugin implements Listener {
 	final public HashMap<String, Integer> countdown_count = new HashMap<String, Integer>();
 	final public HashMap<String, Integer> countdown_id = new HashMap<String, Integer>();
 	final public HashMap<String, Double> dragon_move_increment = new HashMap<String, Double>();
-
-	String dir_ = "";
 	
 	public BukkitTask start(final String arena) {
 		ingame.put(arena, true);
@@ -1385,12 +1383,6 @@ public class Main extends JavaPlugin implements Listener {
 		}
 
 		final int d = 1;
-
-		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-			public void run() {
-				dir_ = getDirection(dragons.get(arena).getBukkitEntity().getLocation().getYaw());
-			}
-		}, 2L);
 		
 		BukkitTask id__ = null;
 		id__ = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(m, new Runnable() {
@@ -1458,6 +1450,9 @@ public class Main extends JavaPlugin implements Listener {
 						return;
 					}
 					
+					String dir_ = getDirection(dragons.get(arena).getBukkitEntity().getLocation().getYaw());
+
+					
 					if (dir_.equalsIgnoreCase("south")) {
 						//dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() + dragon_move_increment.get(arena));
 
@@ -1466,7 +1461,7 @@ public class Main extends JavaPlugin implements Listener {
 							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
-						for (int i = 0; i < length1; i++) {
+						/*for (int i = 0; i < length1; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								if (f) {
@@ -1475,6 +1470,20 @@ public class Main extends JavaPlugin implements Listener {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
 								}
 
+								Bukkit.getScheduler().runTask(m, new Runnable() {
+									public void run() {
+										if (b.getType() != Material.AIR) {
+											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+											b.setType(Material.AIR);
+										}
+									}
+								});
+							}
+						}*/
+						for (int i = 0; i < 10; i++) {
+							for (int j = 0; j < length2; j++) {
+								final Block b;
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 5 - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
 										if (b.getType() != Material.AIR) {
@@ -1493,7 +1502,7 @@ public class Main extends JavaPlugin implements Listener {
 							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
-						for (int i = 0; i < length1; i++) {
+						/*for (int i = 0; i < length1; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								if (f) {
@@ -1501,6 +1510,21 @@ public class Main extends JavaPlugin implements Listener {
 								} else {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
 								}
+
+								Bukkit.getScheduler().runTask(m, new Runnable() {
+									public void run() {
+										if (b.getType() != Material.AIR) {
+											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+											b.setType(Material.AIR);
+										}
+									}
+								});
+							}
+						}*/
+						for (int i = 0; i < 10; i++) {
+							for (int j = 0; j < length2; j++) {
+								final Block b;
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 5 - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
@@ -1520,7 +1544,7 @@ public class Main extends JavaPlugin implements Listener {
 							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
-						for (int i = 0; i < length3; i++) {
+						/*for (int i = 0; i < length3; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								if (f_) {
@@ -1528,6 +1552,21 @@ public class Main extends JavaPlugin implements Listener {
 								} else {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
 								}
+
+								Bukkit.getScheduler().runTask(m, new Runnable() {
+									public void run() {
+										if (b.getType() != Material.AIR) {
+											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+											b.setType(Material.AIR);
+										}
+									}
+								});
+							}
+						}*/
+						for (int i = 0; i < 10; i++) {
+							for (int j = 0; j < length2; j++) {
+								final Block b;
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 5 - i));
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
@@ -1547,7 +1586,7 @@ public class Main extends JavaPlugin implements Listener {
 							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
-						for (int i = 0; i < length3; i++) {
+						/*for (int i = 0; i < length3; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								if (f_) {
@@ -1555,6 +1594,21 @@ public class Main extends JavaPlugin implements Listener {
 								} else {
 									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
 								}
+
+								Bukkit.getScheduler().runTask(m, new Runnable() {
+									public void run() {
+										if (b.getType() != Material.AIR) {
+											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+											b.setType(Material.AIR);
+										}
+									}
+								});
+							}
+						}*/
+						for (int i = 0; i < 10; i++) {
+							for (int j = 0; j < length2; j++) {
+								final Block b;
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 5 - i));
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
@@ -1943,7 +1997,6 @@ public class Main extends JavaPlugin implements Listener {
 		return "";
 	}
 
-	
 	public ArrayList<Vector> getDragonWayPoints(String arena){
 		ArrayList<Vector> ret = new ArrayList<Vector>();
 		if(!getConfig().isSet(arena + ".flypoint")){
@@ -1957,7 +2010,7 @@ public class Main extends JavaPlugin implements Listener {
 			return ret;
 		}
 	}
-	
+
 	public int getCurrentFlyPoint(String arena){
 		if(!getConfig().isSet(arena + ".flypoint")){
 			return 0;
@@ -1970,6 +2023,4 @@ public class Main extends JavaPlugin implements Listener {
 			return count;
 		}
 	}
-	
-	
 }
