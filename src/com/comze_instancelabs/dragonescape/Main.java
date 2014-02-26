@@ -729,7 +729,7 @@ public class Main extends JavaPlugin implements Listener {
 			g_map.put("Slimey", Integer.valueOf(55));
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			
 		}
 		
 		
