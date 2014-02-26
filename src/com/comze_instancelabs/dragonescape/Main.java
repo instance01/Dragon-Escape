@@ -130,7 +130,7 @@ public class Main extends JavaPlugin implements Listener {
 	boolean start_announcement = false;
 	boolean winner_announcement = false;
 	String dragon_name = "Ender Dragon";
-
+	
 	int start_countdown = 5;
 
 	public String saved_arena = "";
@@ -489,6 +489,23 @@ public class Main extends JavaPlugin implements Listener {
 							getConfig().set(arenaname + ".spawn.loc.z", p.getLocation().getBlockZ());
 							getConfig().set(arenaname + ".spawn.loc.yaw", p.getLocation().getYaw());
 							getConfig().set(arenaname + ".spawn.loc.pitch", p.getLocation().getPitch());
+							this.saveConfig();
+							sender.sendMessage(saved_spawn);
+						} else {
+							sender.sendMessage(noperm);
+						}
+					}
+				} else if (action.equalsIgnoreCase("setdragonspawn")) {
+					if (args.length > 1) {
+						if (sender.hasPermission("dragonescape.setup")) {
+							Player p = (Player) sender;
+							String arenaname = args[1];
+							getConfig().set(arenaname + ".dragonspawn.world", p.getWorld().getName());
+							getConfig().set(arenaname + ".dragonspawn.loc.x", p.getLocation().getBlockX());
+							getConfig().set(arenaname + ".dragonspawn.loc.y", p.getLocation().getBlockY());
+							getConfig().set(arenaname + ".dragonspawn.loc.z", p.getLocation().getBlockZ());
+							getConfig().set(arenaname + ".dragonspawn.loc.yaw", p.getLocation().getYaw());
+							getConfig().set(arenaname + ".dragonspawn.loc.pitch", p.getLocation().getPitch());
 							this.saveConfig();
 							sender.sendMessage(saved_spawn);
 						} else {
@@ -1118,6 +1135,16 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		return ret;
 	}
+	
+	
+	public Location getDragonSpawn(String arena) {
+		Location ret = null;
+		if (isValidArena(arena)) {
+			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".dragonspawn.world")), getConfig().getInt(arena + ".dragonspawn.loc.x"), getConfig().getInt(arena + ".dragonspawn.loc.y"), getConfig().getInt(arena + ".dragonspawn.loc.z"), getConfig().getInt(arena + ".dragonspawn.loc.yaw"), getConfig().getInt(arena + ".dragonspawn.loc.pitch"));
+		}
+		return ret;
+	}
+	
 
 	public Location getFinish(String arena) {
 		Location ret = null;
@@ -1397,7 +1424,11 @@ public class Main extends JavaPlugin implements Listener {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
 					try{
-						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, -3.0D)));
+						if(getDragonSpawn(arena) != null){
+							dragons.put(arena, spawnEnderdragon(arena, getDragonSpawn(arena)));
+						}else{
+							dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, -3.0D)));
+						}
 					}catch(Exception e){
 						stop(h.get(arena), arena);
 						return;
@@ -1408,7 +1439,11 @@ public class Main extends JavaPlugin implements Listener {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
 					try{
-						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, +3.0D)));
+						if(getDragonSpawn(arena) != null){
+							dragons.put(arena, spawnEnderdragon(arena, getDragonSpawn(arena)));
+						}else{
+							dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(0.0D, 0.0D, +3.0D)));
+						}
 					}catch(Exception e){
 						stop(h.get(arena), arena);
 						return;
@@ -1419,6 +1454,11 @@ public class Main extends JavaPlugin implements Listener {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
 					try{
+						if(getDragonSpawn(arena) != null){
+							dragons.put(arena, spawnEnderdragon(arena, getDragonSpawn(arena)));
+						}else{
+							dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
+						}
 						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
 					}catch(Exception e){
 						stop(h.get(arena), arena);
@@ -1430,7 +1470,11 @@ public class Main extends JavaPlugin implements Listener {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				public void run() {
 					try{
-						dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
+						if(getDragonSpawn(arena) != null){
+							dragons.put(arena, spawnEnderdragon(arena, getDragonSpawn(arena)));
+						}else{
+							dragons.put(arena, spawnEnderdragon(arena, getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
+						}
 					}catch(Exception e){
 						stop(h.get(arena), arena);
 						return;
