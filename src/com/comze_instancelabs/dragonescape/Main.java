@@ -1140,6 +1140,9 @@ public class Main extends JavaPlugin implements Listener {
 	public Location getDragonSpawn(String arena) {
 		Location ret = null;
 		if (isValidArena(arena)) {
+			if(!getConfig().isSet(arena + ".dragonspawn")){
+				return null;
+			}
 			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".dragonspawn.world")), getConfig().getInt(arena + ".dragonspawn.loc.x"), getConfig().getInt(arena + ".dragonspawn.loc.y"), getConfig().getInt(arena + ".dragonspawn.loc.z"), getConfig().getInt(arena + ".dragonspawn.loc.yaw"), getConfig().getInt(arena + ".dragonspawn.loc.pitch"));
 		}
 		return ret;
