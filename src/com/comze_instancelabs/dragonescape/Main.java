@@ -70,6 +70,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.Vector;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -130,7 +134,7 @@ public class Main extends JavaPlugin implements Listener {
 	boolean start_announcement = false;
 	boolean winner_announcement = false;
 	String dragon_name = "Ender Dragon";
-	public double dragon_speed = 1;
+	public double dragon_speed = 1.0;
 	
 	int start_countdown = 5;
 
@@ -177,7 +181,7 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.command_reward", "pex user [user] group set DragonPro");
 		getConfig().addDefault("config.start_announcement", false);
 		getConfig().addDefault("config.winner_announcement", false);
-	    getConfig().addDefault("config.dragon_speed", "1.0");
+	    getConfig().addDefault("config.dragon_speed", 1.0D);
 	    getConfig().addDefault("config.dragon_healthbar_name", "Ender Dragon");
 
 		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
@@ -256,6 +260,9 @@ public class Main extends JavaPlugin implements Listener {
 		start_announcement = getConfig().getBoolean("config.start_announcement");
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
         dragon_speed = getConfig().getDouble("config.dragon_speed");
+        if(dragon_speed < 0.05 || dragon_speed > 10){
+        	dragon_speed = 1.0;
+        }
 		dragon_name = getConfig().getString("config.dragon_healthbar_name").replaceAll("&", "§");
         
 		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");
@@ -1755,6 +1762,9 @@ public class Main extends JavaPlugin implements Listener {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				
+				//TODO reminder
+				updateScoreboard();
 
 			}
 		}, 3 + 20 * start_countdown, 3);
@@ -2165,6 +2175,46 @@ public class Main extends JavaPlugin implements Listener {
 		PacketPlayOutWorldEvent packet = new PacketPlayOutWorldEvent(2001, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), m.getId(), false);
 		for (final Player p : players) {
 			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+		}
+	}
+	
+
+	Scoreboard board;
+	Objective objective;
+	public HashMap<String, Integer> currentscore = new HashMap<String, Integer>();
+
+	public void updateScoreboard(){
+
+		for(Player pl : arenap.keySet()){
+			Player p = pl;
+			if(board == null){
+				board = Bukkit.getScoreboardManager().getNewScoreboard();
+			}
+			if(objective == null){
+				objective = board.registerNewObjective("test", "dummy");
+			}
+
+			objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+			objective.setDisplayName("[" + arenap.get(p) + "]");
+
+			for(Player pl_ : arenap.keySet()){
+				Player p_ = pl_;
+				int score = -(int) p_.getLocation().distance(getFinish(arenap.get(p)));
+				if(currentscore.containsKey(pl_.getName())){
+					int oldscore = currentscore.get(pl_.getName());
+					if(score > oldscore){
+						currentscore.put(pl_.getName(), score);
+					}else{
+						score = oldscore;
+					}
+				}else{
+					currentscore.put(pl_.getName(), score);
+				}
+				objective.getScore(p_).setScore(score);
+			}
+
+			p.setScoreboard(board);
 		}
 	}
 }
