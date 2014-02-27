@@ -111,6 +111,11 @@ public class Main extends JavaPlugin implements Listener {
 	 */
 	public static HashMap<Player, String> lost = new HashMap<Player, String>();
 
+	/**
+	 * player -> kit
+	 */
+	public static HashMap<Player, String> pkit = new HashMap<Player, String>();
+
 	public static HashMap<String, Test> dragons = new HashMap<String, Test>();
 
 	int default_max_players = 4;
