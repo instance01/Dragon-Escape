@@ -130,6 +130,7 @@ public class Main extends JavaPlugin implements Listener {
 	boolean start_announcement = false;
 	boolean winner_announcement = false;
 	String dragon_name = "Ender Dragon";
+	public double dragon_speed = 1;
 	
 	int start_countdown = 5;
 
@@ -176,7 +177,8 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.command_reward", "pex user [user] group set DragonPro");
 		getConfig().addDefault("config.start_announcement", false);
 		getConfig().addDefault("config.winner_announcement", false);
-	    getConfig().addDefault("config.dragonname", "Ender Dragon");
+	    getConfig().addDefault("config.dragon_speed", "1.0");
+	    getConfig().addDefault("config.dragon_healthbar_name", "Ender Dragon");
 
 		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
 		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
@@ -253,7 +255,8 @@ public class Main extends JavaPlugin implements Listener {
 		start_countdown = getConfig().getInt("config.start_countdown");
 		start_announcement = getConfig().getBoolean("config.start_announcement");
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
-        dragon_name = getConfig().getString("config.dragonname").replaceAll("&", "§");
+        dragon_speed = getConfig().getDouble("config.dragon_speed");
+		dragon_name = getConfig().getString("config.dragon_healthbar_name").replaceAll("&", "§");
         
 		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");
 		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
