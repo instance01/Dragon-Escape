@@ -119,8 +119,7 @@ public class Test extends EntityEnderDragon {
 			double disZ = (this.locZ - points.get(currentid).getZ());
 			
 			double tick_ = Math.sqrt(disX * disX + disY * disY + disZ * disZ) * 2 / m.dragon_speed * Math.pow(0.9, currentid);
-			System.out.println(2 / m.dragon_speed * Math.pow(0.9, currentid));
-			
+
 			this.X = (Math.abs(disX) / tick_);
 			this.Y = (Math.abs(disY) / tick_);
 			this.Z = (Math.abs(disZ) / tick_);

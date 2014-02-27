@@ -1220,16 +1220,17 @@ public class Main extends JavaPlugin implements Listener {
 				lost.remove(p);
 			}
 
+			final String arena = arenap.get(p);
+			
 			Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 				public void run() {
 					if (p.isOnline()) {
 						p.setAllowFlight(false);
 						p.setFlying(false);
+						removeScoreboard(arena, p);
 					}
 				}
 			}, 16);
-
-			final String arena = arenap.get(p);
 
 			if (flag) {
 				if (arenap.containsKey(p)) {
@@ -1814,6 +1815,7 @@ public class Main extends JavaPlugin implements Listener {
 				for (Player p : arenap.keySet()) {
 					if (arenap.get(p).equalsIgnoreCase(arena)) {
 						leaveArena(p, false, false);
+						removeScoreboard(arena, p);
 						torem.add(p);
 					}
 				}
@@ -1841,7 +1843,6 @@ public class Main extends JavaPlugin implements Listener {
 			}
 
 		}, 20); // 1 second
-
 	}
 
 	public void clean() {
@@ -2215,6 +2216,19 @@ public class Main extends JavaPlugin implements Listener {
 			}
 
 			p.setScoreboard(board);
+		}
+	}
+	
+	
+	public void removeScoreboard(String arena, Player p) {
+		try {
+			ScoreboardManager manager = Bukkit.getScoreboardManager();
+			Scoreboard sc = manager.getNewScoreboard();
+			
+			sc.clearSlot(DisplaySlot.SIDEBAR);
+			p.setScoreboard(sc);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
