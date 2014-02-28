@@ -1,4 +1,4 @@
-package com.comze_instancelabs.dragonescape;
+package com.comze_instancelabs.dragonescape.V1_6;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -23,6 +23,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+
+import com.comze_instancelabs.dragonescape.Main;
 
 public class V1_6 {
 
@@ -132,7 +134,7 @@ public class V1_6 {
 		}, 0, 20).getTaskId();
 		m.countdown_id.put(arena, t);
 
-		final String dir = m.m.getDirection(m.getSpawn(arena).getYaw());
+		final String dir = m.getDirection(m.getSpawn(arena).getYaw());
 		
 		// spawn enderdragon
 		if (dir.equalsIgnoreCase("south")) {
@@ -172,9 +174,9 @@ public class V1_6 {
 						if(m.getDragonSpawn(arena) != null){
 							dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.getDragonSpawn(arena)));
 						}else{
-							dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
+							dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
 						}
-						dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
+						dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
 						return;
@@ -188,7 +190,7 @@ public class V1_6 {
 						if(m.getDragonSpawn(arena) != null){
 							dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.getDragonSpawn(arena)));
 						}else{
-							dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.m.getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
+							dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
 						}
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);

@@ -1,4 +1,4 @@
-package com.comze_instancelabs.dragonescape;
+package com.comze_instancelabs.dragonescape.V1_7;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -20,6 +20,10 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+
+import com.comze_instancelabs.dragonescape.Main;
+import com.comze_instancelabs.dragonescape.Slimey;
+import com.comze_instancelabs.dragonescape.Test;
 
 import net.minecraft.server.v1_7_R1.EntityTypes;
 import net.minecraft.server.v1_7_R1.PacketPlayOutWorldEvent;
@@ -179,7 +183,7 @@ public class V1_7 {
 		}, 0, 20).getTaskId();
 		m.countdown_id.put(arena, t);
 
-		final String dir = m.m.getDirection(m.getSpawn(arena).getYaw());
+		final String dir = m.getDirection(m.getSpawn(arena).getYaw());
 		
 		// spawn enderdragon
 		if (dir.equalsIgnoreCase("south")) {
@@ -219,9 +223,9 @@ public class V1_7 {
 						if(m.getDragonSpawn(arena) != null){
 							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
 						}else{
-							dragons.put(arena, spawnEnderdragon(m, arena, m.m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
+							dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
 						}
-						dragons.put(arena, spawnEnderdragon(m, arena, m.m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
+						dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
 						return;
@@ -235,7 +239,7 @@ public class V1_7 {
 						if(m.getDragonSpawn(arena) != null){
 							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
 						}else{
-							dragons.put(arena, spawnEnderdragon(m, arena, m.m.getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
+							dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
 						}
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);

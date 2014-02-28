@@ -69,6 +69,9 @@ import org.bukkit.util.Vector;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
+import com.comze_instancelabs.dragonescape.V1_6.V1_6;
+import com.comze_instancelabs.dragonescape.V1_7.V1_7;
+
 public class Main extends JavaPlugin implements Listener {
 
 	/*
@@ -126,13 +129,13 @@ public class Main extends JavaPlugin implements Listener {
 	int itemamount = 1;
 	boolean command_reward = false;
 	String cmd = "";
-	boolean start_announcement = false;
+	public boolean start_announcement = false;
 	boolean winner_announcement = false;
-	String dragon_name = "Ender Dragon";
+	public String dragon_name = "Ender Dragon";
 	public double dragon_speed = 1.0;
 	public static boolean mode1_6 = false;
 	
-	int start_countdown = 5;
+	public int start_countdown = 5;
 
 	public String saved_arena = "";
 	public String saved_lobby = "";
