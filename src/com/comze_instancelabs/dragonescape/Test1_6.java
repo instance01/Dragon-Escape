@@ -62,10 +62,10 @@ public class Test1_6 extends EntityEnderDragon {
 		this.Z = (Math.abs(disZ) / tick);
 	}
 
-	/*@Override
-	public void e() {
+	@Override
+	public void c() {
 		return;
-	}*/
+	}
 
 	public boolean damageEntity(DamageSource damagesource, int i) {
 		return false;
