@@ -116,8 +116,6 @@ public class Main extends JavaPlugin implements Listener {
 	 */
 	public static HashMap<Player, String> pkit = new HashMap<Player, String>();
 
-	public static HashMap<String, Test> dragons = new HashMap<String, Test>();
-	public static HashMap<String, Test1_6> dragons1_6 = new HashMap<String, Test1_6>();
 
 	int default_max_players = 4;
 	int default_min_players = 3;
@@ -736,7 +734,7 @@ public class Main extends JavaPlugin implements Listener {
 		return V1_7.registerEntities();
 	}
 
-	public Test spawnEnderdragon(String arena, Location t) {
+	/*public Test spawnEnderdragon(String arena, Location t) {
 		/*Object w = ((CraftWorld) t.getWorld()).getHandle();
 		if(this.getDragonWayPoints(arena) == null){
 			getLogger().severe("You forgot to set any FlyPoints! You need to have min. 2 and one of them has to be at finish.");
@@ -751,21 +749,16 @@ public class Main extends JavaPlugin implements Listener {
 		/*Slimey b = new Slimey(this, t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle());
 		((net.minecraft.server.v1_7_R1.World) w).addEntity(b, CreatureSpawnEvent.SpawnReason.CUSTOM);
 		b.setCustomName(dragon_name);
-		b.setInvisible(true);*/
+		b.setInvisible(true);
 		V1_7 v = new V1_7();
 		return v.spawnEnderdragon(m, arena, t);
-	}
+	}*/
 	
-	public Test1_6 spawnEnderdragon1_6(String arena, Location t) {
+	/*public Test1_6 spawnEnderdragon1_6(String arena, Location t) {
 		V1_6 v = new V1_6();
 		return v.spawnEnderdragon(m, arena, t);
-	}
+	}*/
 
-	public void removeEnderdragon(Test t) {
-		if (t != null) {
-			t.getBukkitEntity().remove();
-		}
-	}
 	
 	/*public void setDragonSpeed(EnderDragon s, double speed) {
 		AttributeInstance attributes = ((EntityInsentient) ((CraftLivingEntity) s).getHandle()).getAttributeInstance(GenericAttributes.d);
@@ -1010,6 +1003,7 @@ public class Main extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onSignChange(SignChangeEvent event) {
 		Player p = event.getPlayer();
+		getServer().broadcastMessage(event.getLine(0));
 		if (event.getLine(0).toLowerCase().equalsIgnoreCase("dragonescape")) {
 			if (event.getPlayer().hasPermission("dragonescape.sign") || event.getPlayer().isOp()) {
 				event.setLine(0, "" + ChatColor.GOLD + "DragonEscape");
@@ -1349,64 +1343,13 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public void stop(BukkitTask t, final String arena) {
-		ingame.put(arena, false);
-		try {
-			t.cancel();
-		} catch (Exception e) {
-
+		if(mode1_6){
+			V1_6 v = new V1_6();
+			v.stop(this, t, arena);
+		}else{
+			V1_7 v = new V1_7();
+			v.stop(this, t, arena);
 		}
-
-		try {
-			removeEnderdragon(dragons.get(arena));
-			dragons.put(arena, null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		dragon_move_increment.put(arena, 0.0D);
-
-		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-
-			public void run() {
-				countdown_count.put(arena, start_countdown);
-				try {
-					Bukkit.getServer().getScheduler().cancelTask(countdown_id.get(arena));
-				} catch (Exception e) {
-				}
-
-				ArrayList<Player> torem = new ArrayList<Player>();
-				determineWinners(arena);
-				for (Player p : arenap.keySet()) {
-					if (arenap.get(p).equalsIgnoreCase(arena)) {
-						leaveArena(p, false, false);
-						removeScoreboard(arena, p);
-						torem.add(p);
-					}
-				}
-
-				for (Player p : torem) {
-					arenap.remove(p);
-				}
-				torem.clear();
-
-				winner.clear();
-
-				Sign s = getSignFromArena(arena);
-				if (s != null) {
-					s.setLine(1, "" + ChatColor.GOLD + "[Restarting]");
-					s.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
-					s.update();
-				}
-
-				h.remove(arena);
-
-				reset(arena);
-
-				// clean out offline players
-				clean();
-			}
-
-		}, 20); // 1 second
 	}
 
 	public void clean() {

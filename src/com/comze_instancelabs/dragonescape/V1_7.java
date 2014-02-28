@@ -1,6 +1,7 @@
 package com.comze_instancelabs.dragonescape;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -25,6 +26,9 @@ import net.minecraft.server.v1_7_R1.PacketPlayOutWorldEvent;
 
 public class V1_7 {
 
+	public static HashMap<String, Test> dragons = new HashMap<String, Test>();
+
+	
 	public static boolean registerEntities(){
 		try {
 			Class entityTypeClass = EntityTypes.class;
@@ -183,9 +187,9 @@ public class V1_7 {
 				public void run() {
 					try{
 						if(m.getDragonSpawn(arena) != null){
-							m.dragons.put(arena, m.spawnEnderdragon(arena, m.getDragonSpawn(arena)));
+							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
 						}else{
-							m.dragons.put(arena, m.spawnEnderdragon(arena, m.getSpawn(arena).add(0.0D, 0.0D, -3.0D)));
+							dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(0.0D, 0.0D, -3.0D)));
 						}
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
@@ -198,9 +202,9 @@ public class V1_7 {
 				public void run() {
 					try{
 						if(m.getDragonSpawn(arena) != null){
-							m.dragons.put(arena, m.m.spawnEnderdragon(arena, m.getDragonSpawn(arena)));
+							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
 						}else{
-							m.dragons.put(arena, m.spawnEnderdragon(arena, m.getSpawn(arena).add(0.0D, 0.0D, +3.0D)));
+							dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(0.0D, 0.0D, +3.0D)));
 						}
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
@@ -213,11 +217,11 @@ public class V1_7 {
 				public void run() {
 					try{
 						if(m.getDragonSpawn(arena) != null){
-							m.dragons.put(arena, m.m.spawnEnderdragon(arena, m.getDragonSpawn(arena)));
+							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
 						}else{
-							m.dragons.put(arena, m.m.spawnEnderdragon(arena, m.m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
+							dragons.put(arena, spawnEnderdragon(m, arena, m.m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
 						}
-						m.dragons.put(arena, m.m.spawnEnderdragon(arena, m.m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
+						dragons.put(arena, spawnEnderdragon(m, arena, m.m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
 						return;
@@ -229,9 +233,9 @@ public class V1_7 {
 				public void run() {
 					try{
 						if(m.getDragonSpawn(arena) != null){
-							m.dragons.put(arena, m.m.spawnEnderdragon(arena, m.getDragonSpawn(arena)));
+							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
 						}else{
-							m.dragons.put(arena, m.m.spawnEnderdragon(arena, m.m.getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
+							dragons.put(arena, spawnEnderdragon(m, arena, m.m.getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
 						}
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
@@ -249,22 +253,22 @@ public class V1_7 {
 			public void run() {
 				try {
 					/*if (dir.equalsIgnoreCase("south")) {
-						if (m.dragons.get(arena).locZ > getFinish(arena).getBlockZ()) {
+						if (dragons.get(arena).locZ > getFinish(arena).getBlockZ()) {
 							stop(h.get(arena), arena);
 							return;
 						}
 					} else if (dir.equalsIgnoreCase("north")) {
-						if (m.dragons.get(arena).locZ < getFinish(arena).getBlockZ()) {
+						if (dragons.get(arena).locZ < getFinish(arena).getBlockZ()) {
 							stop(h.get(arena), arena);
 							return;
 						}
 					} else if (dir.equalsIgnoreCase("east")) {
-						if (m.dragons.get(arena).locX > getFinish(arena).getBlockX()) {
+						if (dragons.get(arena).locX > getFinish(arena).getBlockX()) {
 							stop(h.get(arena), arena);
 							return;
 						}
 					} else if (dir.equalsIgnoreCase("west")) {
-						if (m.dragons.get(arena).locX < getFinish(arena).getBlockX()) {
+						if (dragons.get(arena).locX < getFinish(arena).getBlockX()) {
 							stop(h.get(arena), arena);
 							return;
 						}
@@ -302,31 +306,31 @@ public class V1_7 {
 						f_ = true;
 					}
 
-					if(!m.dragons.containsKey(arena)){
+					if(!dragons.containsKey(arena)){
 						return;
 					}
-					if(m.dragons.get(arena) == null){
+					if(dragons.get(arena) == null){
 						return;
 					}
 					
-					String dir_ = m.getDirection(m.dragons.get(arena).getBukkitEntity().getLocation().getYaw());
+					String dir_ = m.getDirection(dragons.get(arena).getBukkitEntity().getLocation().getYaw());
 
 					
 					if (dir_.equalsIgnoreCase("south")) {
-						//m.dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() + m.dragon_move_increment.get(arena));
+						//dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() + m.dragon_move_increment.get(arena));
 
-						Vector v = m.dragons.get(arena).getNextPosition();
-						if(v != null && m.dragons.get(arena) != null){
-							m.dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
+						Vector v = dragons.get(arena).getNextPosition();
+						if(v != null && dragons.get(arena) != null){
+							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
 						/*for (int i = 0; i < length1; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								if (f) {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, m.dragons.get(arena).locZ + 3));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
 								} else {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, m.dragons.get(arena).locZ + 3));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
 								}
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
@@ -340,14 +344,14 @@ public class V1_7 {
 							}
 						}*/
 
-						if(m.dragons.get(arena) == null){
+						if(dragons.get(arena) == null){
 							return;
 						}
 						
 						for (int i = 0; i < 10; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
-								b = l.getWorld().getBlockAt(new Location(l.getWorld(), m.dragons.get(arena).locX + 5 - i, l2.getBlockY() + j - 1, m.dragons.get(arena).locZ + 3));
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 5 - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
 										if (b.getType() != Material.AIR) {
@@ -360,20 +364,20 @@ public class V1_7 {
 							}
 						}
 					} else if (dir_.equalsIgnoreCase("north")) {
-						//m.dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - m.dragon_move_increment.get(arena));
+						//dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - m.dragon_move_increment.get(arena));
 
-						Vector v = m.dragons.get(arena).getNextPosition();
-						if(v != null && m.dragons.get(arena) != null){
-							m.dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
+						Vector v = dragons.get(arena).getNextPosition();
+						if(v != null && dragons.get(arena) != null){
+							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
 						/*for (int i = 0; i < length1; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								if (f) {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, m.dragons.get(arena).locZ - 3));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
 								} else {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, m.dragons.get(arena).locZ - 3));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
 								}
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
@@ -387,14 +391,14 @@ public class V1_7 {
 							}
 						}*/
 						
-						if(m.dragons.get(arena) == null){
+						if(dragons.get(arena) == null){
 							return;
 						}
 						
 						for (int i = 0; i < 10; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
-								b = l.getWorld().getBlockAt(new Location(l.getWorld(), m.dragons.get(arena).locX + 5 - i, l2.getBlockY() + j - 1, m.dragons.get(arena).locZ - 3));
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 5 - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
@@ -408,20 +412,20 @@ public class V1_7 {
 							}
 						}
 					} else if (dir_.equalsIgnoreCase("east")) {
-						//m.dragons.get(arena).setPosition(l.getX() + m.dragon_move_increment.get(arena), l.getY(), l.getZ());
+						//dragons.get(arena).setPosition(l.getX() + m.dragon_move_increment.get(arena), l.getY(), l.getZ());
 
-						Vector v = m.dragons.get(arena).getNextPosition();
-						if(v != null && m.dragons.get(arena) != null){
-							m.dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
+						Vector v = dragons.get(arena).getNextPosition();
+						if(v != null && dragons.get(arena) != null){
+							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
 						/*for (int i = 0; i < length3; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								if (f_) {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), m.dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
 								} else {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), m.dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
 								}
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
@@ -435,14 +439,14 @@ public class V1_7 {
 							}
 						}*/
 						
-						if(m.dragons.get(arena) == null){
+						if(dragons.get(arena) == null){
 							return;
 						}
 						
 						for (int i = 0; i < 10; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
-								b = l.getWorld().getBlockAt(new Location(l.getWorld(), m.dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, m.dragons.get(arena).locZ + 5 - i));
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 5 - i));
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
@@ -456,20 +460,20 @@ public class V1_7 {
 							}
 						}
 					} else if (dir_.equalsIgnoreCase("west")) {
-						//m.dragons.get(arena).setPosition(l.getX() - m.dragon_move_increment.get(arena), l.getY(), l.getZ());
+						//dragons.get(arena).setPosition(l.getX() - m.dragon_move_increment.get(arena), l.getY(), l.getZ());
 
-						Vector v = m.dragons.get(arena).getNextPosition();
-						if(v != null && m.dragons.get(arena) != null){
-							m.dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
+						Vector v = dragons.get(arena).getNextPosition();
+						if(v != null && dragons.get(arena) != null){
+							dragons.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
 						/*for (int i = 0; i < length3; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								if (f_) {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), m.dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
 								} else {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), m.dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
+									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
 								}
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
@@ -483,14 +487,14 @@ public class V1_7 {
 							}
 						}*/
 						
-						if(m.dragons.get(arena) == null){
+						if(dragons.get(arena) == null){
 							return;
 						}
 						
 						for (int i = 0; i < 10; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
-								b = l.getWorld().getBlockAt(new Location(l.getWorld(), m.dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, m.dragons.get(arena).locZ + 5 - i));
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 5 - i));
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
@@ -518,4 +522,76 @@ public class V1_7 {
 		m.tasks.put(arena, id__);
 		return id__;
 	}
+	
+	
+	
+	
+	public void stop(final Main m, BukkitTask t, final String arena) {
+		m.ingame.put(arena, false);
+		try {
+			t.cancel();
+		} catch (Exception e) {
+
+		}
+
+		try {
+			removeEnderdragon(dragons.get(arena));
+			dragons.put(arena, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		m.dragon_move_increment.put(arena, 0.0D);
+
+		Bukkit.getScheduler().runTaskLater(m, new Runnable() {
+
+			public void run() {
+				m.countdown_count.put(arena, m.start_countdown);
+				try {
+					Bukkit.getServer().getScheduler().cancelTask(m.countdown_id.get(arena));
+				} catch (Exception e) {
+				}
+
+				ArrayList<Player> torem = new ArrayList<Player>();
+				m.determineWinners(arena);
+				for (Player p : m.arenap.keySet()) {
+					if (m.arenap.get(p).equalsIgnoreCase(arena)) {
+						m.leaveArena(p, false, false);
+						m.removeScoreboard(arena, p);
+						torem.add(p);
+					}
+				}
+
+				for (Player p : torem) {
+					m.arenap.remove(p);
+				}
+				torem.clear();
+
+				m.winner.clear();
+
+				Sign s = m.getSignFromArena(arena);
+				if (s != null) {
+					s.setLine(1, "" + ChatColor.GOLD + "[Restarting]");
+					s.setLine(3, "0/" + Integer.toString(m.getArenaMaxPlayers(arena)));
+					s.update();
+				}
+
+				m.h.remove(arena);
+
+				m.reset(arena);
+
+				// clean out offline players
+				m.clean();
+			}
+
+		}, 20); // 1 second
+	}
+	
+	
+	public void removeEnderdragon(Test t) {
+		if (t != null) {
+			t.getBukkitEntity().remove();
+		}
+	}
+
 }
