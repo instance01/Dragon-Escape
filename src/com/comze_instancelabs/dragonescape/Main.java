@@ -182,7 +182,7 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.itemid", 264); // diamond
 		getConfig().addDefault("config.itemamount", 1);
 		getConfig().addDefault("config.use_command_reward", false);
-		getConfig().addDefault("config.command_reward", "pex user [user] group set DragonPro");
+		getConfig().addDefault("config.command_reward", "pex user <player> group set DragonPro");
 		getConfig().addDefault("config.start_announcement", false);
 		getConfig().addDefault("config.winner_announcement", false);
 	    getConfig().addDefault("config.dragon_speed", 1.0D);
@@ -1217,7 +1217,9 @@ public class Main extends JavaPlugin implements Listener {
 
 				// command reward
 				if (command_reward) {
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("[user]", p.getName()));
+					String t = cmd.replaceAll("<player>", p.getName());
+					getLogger().info(t);
+					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), t);
 				}
 			}
 
