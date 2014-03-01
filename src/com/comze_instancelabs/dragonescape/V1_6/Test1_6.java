@@ -57,7 +57,7 @@ public class Test1_6 extends EntityEnderDragon {
 		double disY = (this.locY - points.get(currentid).getY());
 		double disZ = (this.locZ - points.get(currentid).getZ());
 
-		double tick = Math.sqrt(disX * disX + disY * disY + disZ * disZ) * 2 / m.dragon_speed * Math.pow(0.9, currentid);
+		double tick = Math.sqrt(disX * disX + disY * disY + disZ * disZ) * 2 / m.dragon_speed * Math.pow(0.98, currentid);
 
 		this.X = (Math.abs(disX) / tick);
 		this.Y = (Math.abs(disY) / tick);
@@ -120,7 +120,7 @@ public class Test1_6 extends EntityEnderDragon {
 			double disY = (this.locY - points.get(currentid).getY());
 			double disZ = (this.locZ - points.get(currentid).getZ());
 			
-			double tick_ = Math.sqrt(disX * disX + disY * disY + disZ * disZ) * 2 / m.dragon_speed * Math.pow(0.9, currentid);
+			double tick_ = Math.sqrt(disX * disX + disY * disY + disZ * disZ) * 2 / m.dragon_speed * Math.pow(0.98, currentid);
 
 			this.X = (Math.abs(disX) / tick_);
 			this.Y = (Math.abs(disY) / tick_);

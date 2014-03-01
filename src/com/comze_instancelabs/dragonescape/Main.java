@@ -164,7 +164,7 @@ public class Main extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(this, this);
-
+		
 		// TODO CHECK IF 1.6.4
 		if(Bukkit.getVersion().contains("1.6.4") || Bukkit.getVersion().contains("1.6.2")){
 			mode1_6 = true;
@@ -230,6 +230,10 @@ public class Main extends JavaPlugin implements Listener {
 		 * Updater.UpdateType.DEFAULT, false); }
 		 */
 
+		if (getConfig().getBoolean("config.auto_updating")) {
+			UpdaterNEW updater = new UpdaterNEW(this, 5, this.getFile(), UpdaterNEW.UpdateType.DEFAULT, false);	
+		}
+		
 		if (economy) {
 			if (!setupEconomy()) {
 				getLogger().severe(String.format("[%s] - No iConomy dependency found! Disabling Economy.", getDescription().getName()));
