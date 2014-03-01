@@ -643,7 +643,36 @@ public class Main extends JavaPlugin implements Listener {
 							sender.sendMessage(arena_invalid);
 						}
 					}
-				} else if (action.equalsIgnoreCase("start")) {
+				} else if (action.equalsIgnoreCase("stop") || action.equalsIgnoreCase("end")) {
+					if (args.length > 1) {
+						if (sender.hasPermission("dragonescape.stop")) {
+							final String arena = args[1];
+							if (!ingame.containsKey(arena)) {
+								sender.sendMessage("The arena appears to be not ingame.");
+								return true;
+							}
+							int count = 0;
+							for (Player p : arenap.keySet()) {
+								if (arenap.get(p).equalsIgnoreCase(arena)) {
+									count++;
+								}
+							}
+							if (count < 1) {
+								sender.sendMessage("" + ChatColor.RED + "Noone is in this arena.");
+								return true;
+							}
+							if (ingame.get(arena)) {
+								Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+									public void run() {
+										stop(h.get(arena), arena);
+									}
+								}, 10);
+							}
+						} else {
+							sender.sendMessage(noperm);
+						}
+					}
+				}  else if (action.equalsIgnoreCase("start")) {
 					if (args.length > 1) {
 						if (sender.hasPermission("dragonescape.start")) {
 							final String arena = args[1];
