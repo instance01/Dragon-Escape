@@ -171,12 +171,16 @@ public class V1_7 {
 					}
 
 					// update sign
-					Sign s = m.getSignFromArena(arena);
-					if (s != null) {
-						s.setLine(1, "" + ChatColor.DARK_RED + "[m.ingame]");
-						s.update();
-					}
-
+					Bukkit.getServer().getScheduler().runTask(m, new Runnable(){
+						public void run(){
+							Sign s = m.getSignFromArena(arena);
+							if (s != null) {
+								s.setLine(1, "" + ChatColor.DARK_RED + "[m.ingame]");
+								s.update();
+							}	
+						}
+					});
+					
 					Bukkit.getServer().getScheduler().cancelTask(m.countdown_id.get(arena));
 				}
 			}
