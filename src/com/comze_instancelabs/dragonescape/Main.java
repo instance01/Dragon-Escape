@@ -157,6 +157,12 @@ public class Main extends JavaPlugin implements Listener {
 	public String saved_finish = "";
 	public String saved_spawn = "";
 
+	
+	public String sign_top = "";
+	public String sign_second_join = "";
+	public String sign_second_ingame = "";
+	public String sign_second_restarting = "";
+	
 	// anouncements
 	public String starting = "";
 	public String started = "";
@@ -187,6 +193,10 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.winner_announcement", false);
 	    getConfig().addDefault("config.dragon_speed", 1.0D);
 	    getConfig().addDefault("config.dragon_healthbar_name", "Ender Dragon");
+	    getConfig().addDefault("config.sign_top_line", "&6DragonEscape");
+	    getConfig().addDefault("config.sign_second_line_join", "&a[Join]");
+	    getConfig().addDefault("config.sign_second_line_ingame", "&c[Ingame]");
+	    getConfig().addDefault("config.sign_second_line_restarting", "&6[Restarting]");
 
 		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
 		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
@@ -296,6 +306,10 @@ public class Main extends JavaPlugin implements Listener {
 		winner_an = getConfig().getString("strings.winner_announcement").replaceAll("&", "§");
 		noperm = getConfig().getString("strings.noperm").replaceAll("&", "§");
 
+		sign_top = getConfig().getString("config.sign_top_line").replaceAll("&", "§");
+		sign_second_join = getConfig().getString("config.sign_second_line_join").replaceAll("&", "§");;
+		sign_second_ingame = getConfig().getString("config.sign_second_line_ingame").replaceAll("&", "§");;
+		sign_second_restarting = getConfig().getString("config.sign_second_line_restarting").replaceAll("&", "§");;
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -631,7 +645,7 @@ public class Main extends JavaPlugin implements Listener {
 								getLogger().warning("No sign found for arena " + args[1] + ". May lead to errors.");
 							}
 							if (s != null) {
-								if (s.getLine(1).equalsIgnoreCase("" + ChatColor.DARK_GREEN + "[join]")) {
+								if (s.getLine(1).equalsIgnoreCase(sign_second_join.toLowerCase())) {
 									joinLobby((Player) sender, args[1]);
 								} else {
 									sender.sendMessage(arena_ingame);
@@ -648,7 +662,7 @@ public class Main extends JavaPlugin implements Listener {
 						if (sender.hasPermission("dragonescape.stop")) {
 							final String arena = args[1];
 							if (!ingame.containsKey(arena)) {
-								sender.sendMessage("The arena appears to be not ingame.");
+								sender.sendMessage(ChatColor.RED + "The arena appears to be not ingame.");
 								return true;
 							}
 							int count = 0;
@@ -818,7 +832,7 @@ public class Main extends JavaPlugin implements Listener {
 			try {
 				Sign s = this.getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, "" + ChatColor.DARK_GREEN + "[Join]");
+					s.setLine(1, sign_second_join);
 					s.setLine(3, Integer.toString(count - 1) + "/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
@@ -980,8 +994,8 @@ public class Main extends JavaPlugin implements Listener {
 		if (event.hasBlock()) {
 			if (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) {
 				final Sign s = (Sign) event.getClickedBlock().getState();
-				if (s.getLine(0).toLowerCase().contains("dragonescape")) {
-					if (s.getLine(1).equalsIgnoreCase("" + ChatColor.DARK_GREEN + "[join]")) {
+				if (s.getLine(0).toLowerCase().contains(sign_top.toLowerCase())) {
+					if (s.getLine(1).equalsIgnoreCase(sign_second_join)) {
 						if (isValidArena(s.getLine(2))) {
 							joinLobby(event.getPlayer(), s.getLine(2));
 						} else {
@@ -1042,7 +1056,7 @@ public class Main extends JavaPlugin implements Listener {
 		getServer().broadcastMessage(event.getLine(0));
 		if (event.getLine(0).toLowerCase().equalsIgnoreCase("dragonescape")) {
 			if (event.getPlayer().hasPermission("dragonescape.sign") || event.getPlayer().isOp()) {
-				event.setLine(0, "" + ChatColor.GOLD + "DragonEscape");
+				event.setLine(0, sign_top);
 				if (!event.getLine(2).equalsIgnoreCase("")) {
 					String arena = event.getLine(2);
 					if (isValidArena(arena)) {
@@ -1056,7 +1070,7 @@ public class Main extends JavaPlugin implements Listener {
 						p.sendMessage(arena_invalid_component);
 						event.getBlock().breakNaturally();
 					}
-					event.setLine(1, "" + ChatColor.DARK_GREEN + "[Join]");
+					event.setLine(1, sign_second_join);
 					event.setLine(2, arena);
 					event.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 				}
@@ -1655,7 +1669,7 @@ public class Main extends JavaPlugin implements Listener {
 
 				Sign s = getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, "" + ChatColor.DARK_GREEN + "[Join]");
+					s.setLine(1, sign_second_join);
 					s.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}

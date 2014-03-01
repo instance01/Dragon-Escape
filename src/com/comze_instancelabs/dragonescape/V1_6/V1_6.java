@@ -126,7 +126,7 @@ public class V1_6 {
 						public void run(){
 							Sign s = m.getSignFromArena(arena);
 							if (s != null) {
-								s.setLine(1, "" + ChatColor.DARK_RED + "[m.ingame]");
+								s.setLine(1, m.sign_second_ingame);
 								s.update();
 							}	
 						}
@@ -529,7 +529,7 @@ public class V1_6 {
 
 				Sign s = m.getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, "" + ChatColor.GOLD + "[Restarting]");
+					s.setLine(1, m.sign_second_restarting);
 					s.setLine(3, "0/" + Integer.toString(m.getArenaMaxPlayers(arena)));
 					s.update();
 				}
