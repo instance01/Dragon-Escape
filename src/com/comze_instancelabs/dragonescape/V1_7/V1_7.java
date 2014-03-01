@@ -175,7 +175,7 @@ public class V1_7 {
 						public void run(){
 							Sign s = m.getSignFromArena(arena);
 							if (s != null) {
-								s.setLine(1, "" + ChatColor.DARK_RED + "[m.ingame]");
+								s.setLine(1, "" + ChatColor.DARK_RED + "[Ingame]");
 								s.update();
 							}	
 						}

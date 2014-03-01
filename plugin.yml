@@ -1,6 +1,6 @@
 name: DragonEscape
 main: com.comze_instancelabs.dragonescape.Main
-version: 1.1
+version: 1.2
 author: instancelabs
 softdepend: [Vault]
 commands:
