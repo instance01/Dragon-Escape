@@ -764,6 +764,7 @@ public class Main extends JavaPlugin implements Listener {
 					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setlobby [name] " + ChatColor.GOLD + " - for the waiting lobby");
 					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setspawn [name] " + ChatColor.GOLD + " - players spawn here");
 					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setfinish [name] " + ChatColor.GOLD + " - the finish line");
+					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setflypoint [name] " + ChatColor.GOLD + " - set at least two flypoints for the dragon!");
 					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setbounds [name] " + ChatColor.GOLD + " - don't forget to set both high and low boundaries.");
 					sender.sendMessage("" + ChatColor.DARK_GREEN + "/de savearena [name] " + ChatColor.GOLD + " - save the arena");
 					sender.sendMessage("");
@@ -778,6 +779,7 @@ public class Main extends JavaPlugin implements Listener {
 				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setlobby [name] " + ChatColor.GOLD + " - for the waiting lobby");
 				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setspawn [name] " + ChatColor.GOLD + " - players spawn here");
 				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setfinish [name] " + ChatColor.GOLD + " - the finish line");
+				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setflypoint [name] " + ChatColor.GOLD + " - set at least two flypoints for the dragon!");
 				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de setbounds [name] " + ChatColor.GOLD + " - don't forget to set both high and low boundaries.");
 				sender.sendMessage("" + ChatColor.DARK_GREEN + "/de savearena [name] " + ChatColor.GOLD + " - save the arena");
 				sender.sendMessage("");

@@ -285,26 +285,6 @@ public class V1_6 {
 						if(v != null && dragons1_6.get(arena) != null){
 							dragons1_6.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
-						
-						/*for (int i = 0; i < length1; i++) {
-							for (int j = 0; j < length2; j++) {
-								final Block b;
-								if (f) {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons1_6.get(arena).locZ + 3));
-								} else {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons1_6.get(arena).locZ + 3));
-								}
-
-								Bukkit.getScheduler().runTask(m, new Runnable() {
-									public void run() {
-										if (b.getType() != Material.AIR) {
-											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
-											b.setType(Material.AIR);
-										}
-									}
-								});
-							}
-						}*/
 
 						if(dragons1_6.get(arena) == null){
 							return;
@@ -332,26 +312,6 @@ public class V1_6 {
 						if(v != null && dragons1_6.get(arena) != null){
 							dragons1_6.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
-						
-						/*for (int i = 0; i < length1; i++) {
-							for (int j = 0; j < length2; j++) {
-								final Block b;
-								if (f) {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l2.getBlockX() - i, l2.getBlockY() + j - 1, dragons1_6.get(arena).locZ - 3));
-								} else {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), l1.getBlockX() - i, l2.getBlockY() + j - 1, dragons1_6.get(arena).locZ - 3));
-								}
-
-								Bukkit.getScheduler().runTask(m, new Runnable() {
-									public void run() {
-										if (b.getType() != Material.AIR) {
-											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
-											b.setType(Material.AIR);
-										}
-									}
-								});
-							}
-						}*/
 						
 						if(dragons1_6.get(arena) == null){
 							return;
@@ -381,26 +341,6 @@ public class V1_6 {
 							dragons1_6.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
 						
-						/*for (int i = 0; i < length3; i++) {
-							for (int j = 0; j < length2; j++) {
-								final Block b;
-								if (f_) {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons1_6.get(arena).locX + 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
-								} else {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons1_6.get(arena).locX + 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
-								}
-
-								Bukkit.getScheduler().runTask(m, new Runnable() {
-									public void run() {
-										if (b.getType() != Material.AIR) {
-											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
-											b.setType(Material.AIR);
-										}
-									}
-								});
-							}
-						}*/
-						
 						if(dragons1_6.get(arena) == null){
 							return;
 						}
@@ -428,26 +368,6 @@ public class V1_6 {
 						if(v != null && dragons1_6.get(arena) != null){
 							dragons1_6.get(arena).setPosition(v.getX(), v.getY(), v.getZ());
 						}
-						
-						/*for (int i = 0; i < length3; i++) {
-							for (int j = 0; j < length2; j++) {
-								final Block b;
-								if (f_) {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons1_6.get(arena).locX - 3, l2.getBlockY() + j - 1, l2.getBlockZ() - i));
-								} else {
-									b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons1_6.get(arena).locX - 3, l2.getBlockY() + j - 1, l1.getBlockZ() - i));
-								}
-
-								Bukkit.getScheduler().runTask(m, new Runnable() {
-									public void run() {
-										if (b.getType() != Material.AIR) {
-											l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
-											b.setType(Material.AIR);
-										}
-									}
-								});
-							}
-						}*/
 						
 						if(dragons1_6.get(arena) == null){
 							return;
