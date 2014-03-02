@@ -356,10 +356,10 @@ public class V1_7 {
 							return;
 						}
 						
-						for (int i = 0; i < 10; i++) {
+						for (int i = 0; i < m.destroy_radius; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
-								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 5 - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + (m.destroy_radius / 2) - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
 										if (b.getType() != Material.AIR) {
@@ -403,10 +403,10 @@ public class V1_7 {
 							return;
 						}
 						
-						for (int i = 0; i < 10; i++) {
+						for (int i = 0; i < m.destroy_radius; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
-								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 5 - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + (m.destroy_radius / 2) - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
@@ -451,10 +451,10 @@ public class V1_7 {
 							return;
 						}
 						
-						for (int i = 0; i < 10; i++) {
+						for (int i = 0; i < m.destroy_radius; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
-								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 5 - i));
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + (m.destroy_radius / 2) - i));
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {
@@ -499,10 +499,10 @@ public class V1_7 {
 							return;
 						}
 						
-						for (int i = 0; i < 10; i++) {
+						for (int i = 0; i < m.destroy_radius; i++) {
 							for (int j = 0; j < length2; j++) {
 								final Block b;
-								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 5 - i));
+								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + (m.destroy_radius / 2) - i));
 
 								Bukkit.getScheduler().runTask(m, new Runnable() {
 									public void run() {

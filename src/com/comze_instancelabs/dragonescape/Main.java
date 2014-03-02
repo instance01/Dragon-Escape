@@ -134,6 +134,7 @@ public class Main extends JavaPlugin implements Listener {
 	public String dragon_name = "Ender Dragon";
 	public double dragon_speed = 1.0;
 	public static boolean mode1_6 = false;
+	public int destroy_radius = 10;
 	
 	public int start_countdown = 5;
 
@@ -193,6 +194,8 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.winner_announcement", false);
 	    getConfig().addDefault("config.dragon_speed", 1.0D);
 	    getConfig().addDefault("config.dragon_healthbar_name", "Ender Dragon");
+	    getConfig().addDefault("config.destroy_radius", 10);
+
 	    getConfig().addDefault("config.sign_top_line", "&6DragonEscape");
 	    getConfig().addDefault("config.sign_second_line_join", "&a[Join]");
 	    getConfig().addDefault("config.sign_second_line_ingame", "&c[Ingame]");
@@ -278,6 +281,7 @@ public class Main extends JavaPlugin implements Listener {
 		start_announcement = getConfig().getBoolean("config.start_announcement");
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
         dragon_speed = getConfig().getDouble("config.dragon_speed");
+        destroy_radius = getConfig().getInt("config.destroy_radius");
         if(dragon_speed < 0.05 || dragon_speed > 10){
         	dragon_speed = 1.0;
         }
