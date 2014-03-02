@@ -140,6 +140,7 @@ public class Main extends JavaPlugin implements Listener {
 	public double dragon_speed = 1.0;
 	public static boolean mode1_6 = false;
 	public int destroy_radius = 10;
+	public boolean last_man_standing = true;
 	
 	public int start_countdown = 5;
 
@@ -200,6 +201,7 @@ public class Main extends JavaPlugin implements Listener {
 	    getConfig().addDefault("config.dragon_speed", 1.0D);
 	    getConfig().addDefault("config.dragon_healthbar_name", "Ender Dragon");
 	    getConfig().addDefault("config.destroy_radius", 10);
+	    getConfig().addDefault("config.last_man_standing", true);
 
 	    getConfig().addDefault("config.sign_top_line", "&6DragonEscape");
 	    getConfig().addDefault("config.sign_second_line_join", "&a[Join]");
@@ -291,7 +293,8 @@ public class Main extends JavaPlugin implements Listener {
         	dragon_speed = 1.0;
         }
 		dragon_name = getConfig().getString("config.dragon_healthbar_name").replaceAll("&", "§");
-        
+		last_man_standing = getConfig().getBoolean("config.last_man_standing");
+		
 		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");
 		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
 		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "§");
@@ -1001,9 +1004,14 @@ public class Main extends JavaPlugin implements Listener {
 					}
 				}
 
-				if (count < 2) {
-					// last man standing!
-					stop(h.get(arena), arena);
+				if(last_man_standing){
+					if (count < 2) {
+						stop(h.get(arena), arena);
+					}
+				}else{
+					if (count < 1) {
+						stop(h.get(arena), arena);
+					}
 				}
 
 				return;
@@ -1781,18 +1789,26 @@ public class Main extends JavaPlugin implements Listener {
 
 			for(Player pl_ : arenap.keySet()){
 				Player p_ = pl_;
-				int score = -(int) p_.getLocation().distance(getFinish(arenap.get(p)));
-				if(currentscore.containsKey(pl_.getName())){
-					int oldscore = currentscore.get(pl_.getName());
-					if(score > oldscore){
-						currentscore.put(pl_.getName(), score);
+				if(!lost.containsKey(pl_)){
+					int score = -(int) p_.getLocation().distance(getFinish(arenap.get(p)));
+					if(currentscore.containsKey(pl_.getName())){
+						int oldscore = currentscore.get(pl_.getName());
+						if(score > oldscore){
+							currentscore.put(pl_.getName(), score);
+						}else{
+							score = oldscore;
+						}
 					}else{
-						score = oldscore;
+						currentscore.put(pl_.getName(), score);
 					}
+					objective.getScore(Bukkit.getOfflinePlayer("§a" + p_.getName())).setScore(score);
 				}else{
-					currentscore.put(pl_.getName(), score);
+					if(currentscore.containsKey(pl_.getName())){
+						int score = currentscore.get(pl_.getName());
+						board.resetScores(Bukkit.getOfflinePlayer("§a" + p_.getName()));
+						objective.getScore(Bukkit.getOfflinePlayer("§c" + p_.getName())).setScore(score);
+					}
 				}
-				objective.getScore(p_).setScore(score);
 			}
 
 			p.setScoreboard(board);
