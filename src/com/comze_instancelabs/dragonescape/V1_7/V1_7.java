@@ -339,7 +339,7 @@ public class V1_7 {
 							return;
 						}
 						
-						for (int i = 0; i < m.destroy_radius; i++) { // length1
+						/*for (int i = 0; i < m.destroy_radius; i++) { // length1
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + (m.destroy_radius / 2) - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
@@ -353,7 +353,8 @@ public class V1_7 {
 									}
 								});
 							}
-						}
+						}*/
+						V1_7.destroy(m, l1, l2, arena, length2);
 					} else if (dir_.equalsIgnoreCase("north")) {
 						//dragons.get(arena).setPosition(l.getX(), l.getY(), l.getZ() - m.dragon_move_increment.get(arena));
 
@@ -366,7 +367,7 @@ public class V1_7 {
 							return;
 						}
 						
-						for (int i = 0; i < m.destroy_radius; i++) { // length1
+						/*for (int i = 0; i < m.destroy_radius; i++) { // length1
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + (m.destroy_radius / 2) - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
@@ -381,7 +382,8 @@ public class V1_7 {
 									}
 								});
 							}
-						}
+						}*/
+						V1_7.destroy(m, l1, l2, arena, length2);
 					} else if (dir_.equalsIgnoreCase("east")) {
 						//dragons.get(arena).setPosition(l.getX() + m.dragon_move_increment.get(arena), l.getY(), l.getZ());
 
@@ -394,7 +396,7 @@ public class V1_7 {
 							return;
 						}
 						
-						for (int i = 0; i < m.destroy_radius; i++) { // length1
+						/*for (int i = 0; i < m.destroy_radius; i++) { // length1
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + (m.destroy_radius / 2) - i));
@@ -409,7 +411,8 @@ public class V1_7 {
 									}
 								});
 							}
-						}
+						}*/
+						V1_7.destroy(m, l1, l2, arena, length2);
 					} else if (dir_.equalsIgnoreCase("west")) {
 						//dragons.get(arena).setPosition(l.getX() - m.dragon_move_increment.get(arena), l.getY(), l.getZ());
 
@@ -422,7 +425,7 @@ public class V1_7 {
 							return;
 						}
 						
-						for (int i = 0; i < m.destroy_radius; i++) { // length1
+						/*for (int i = 0; i < m.destroy_radius; i++) { // length1
 							for (int j = 0; j < length2; j++) {
 								final Block b;
 								b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + (m.destroy_radius / 2) - i));
@@ -437,7 +440,8 @@ public class V1_7 {
 									}
 								});
 							}
-						}
+						}*/
+						V1_7.destroy(m, l1, l2, arena, length2);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -522,6 +526,80 @@ public class V1_7 {
 	public void removeEnderdragon(Test t) {
 		if (t != null) {
 			t.getBukkitEntity().remove();
+		}
+	}
+	
+	
+	public static void destroy(final Main m, final Location l, final Location l2, String arena, int length2){
+		// south
+		for (int i = 0; i < m.destroy_radius; i++) { // length1
+			for (int j = 0; j < length2; j++) {
+				final Block b;
+				b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + (m.destroy_radius / 2) - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ + 3));
+				Bukkit.getScheduler().runTask(m, new Runnable() {
+					public void run() {
+						if (b.getType() != Material.AIR) {
+							playBlockBreakParticles(b.getLocation(), b.getType());
+							l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+							b.setType(Material.AIR);
+						}
+					}
+				});
+			}
+		}
+		
+		// north
+		for (int i = 0; i < m.destroy_radius; i++) { // length1
+			for (int j = 0; j < length2; j++) {
+				final Block b;
+				b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + (m.destroy_radius / 2) - i, l2.getBlockY() + j - 1, dragons.get(arena).locZ - 3));
+
+				Bukkit.getScheduler().runTask(m, new Runnable() {
+					public void run() {
+						if (b.getType() != Material.AIR) {
+							playBlockBreakParticles(b.getLocation(), b.getType());
+							l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+							b.setType(Material.AIR);
+						}
+					}
+				});
+			}
+		}
+		
+		// east
+		for (int i = 0; i < m.destroy_radius; i++) { // length1
+			for (int j = 0; j < length2; j++) {
+				final Block b;
+				b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX + 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + (m.destroy_radius / 2) - i));
+
+				Bukkit.getScheduler().runTask(m, new Runnable() {
+					public void run() {
+						if (b.getType() != Material.AIR) {
+							playBlockBreakParticles(b.getLocation(), b.getType());
+							l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+							b.setType(Material.AIR);
+						}
+					}
+				});
+			}
+		}
+		
+		// west
+		for (int i = 0; i < m.destroy_radius; i++) { // length1
+			for (int j = 0; j < length2; j++) {
+				final Block b;
+				b = l.getWorld().getBlockAt(new Location(l.getWorld(), dragons.get(arena).locX - 3, l2.getBlockY() + j - 1, dragons.get(arena).locZ + (m.destroy_radius / 2) - i));
+
+				Bukkit.getScheduler().runTask(m, new Runnable() {
+					public void run() {
+						if (b.getType() != Material.AIR) {
+							playBlockBreakParticles(b.getLocation(), b.getType());
+							l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+							b.setType(Material.AIR);
+						}
+					}
+				});
+			}
 		}
 	}
 
