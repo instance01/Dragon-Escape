@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -14,30 +13,23 @@ import java.util.Set;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-/*import net.minecraft.server.v1_7_R1.AttributeInstance;
-import net.minecraft.server.v1_7_R1.EntityInsentient;
-import net.minecraft.server.v1_7_R1.EntityTypes;
-import net.minecraft.server.v1_7_R1.GenericAttributes;*/
-
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-/*import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;*/
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -45,7 +37,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -56,8 +47,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -71,6 +62,13 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import com.comze_instancelabs.dragonescape.V1_6.V1_6;
 import com.comze_instancelabs.dragonescape.V1_7.V1_7;
+/*import net.minecraft.server.v1_7_R1.AttributeInstance;
+ import net.minecraft.server.v1_7_R1.EntityInsentient;
+ import net.minecraft.server.v1_7_R1.EntityTypes;
+ import net.minecraft.server.v1_7_R1.GenericAttributes;*/
+/*import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+ import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
+ import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;*/
 
 public class Main extends JavaPlugin implements Listener {
 
@@ -124,7 +122,6 @@ public class Main extends JavaPlugin implements Listener {
 	 */
 	public static HashMap<String, Boolean> astarted = new HashMap<String, Boolean>();
 
-
 	int default_max_players = 4;
 	int default_min_players = 3;
 
@@ -141,7 +138,7 @@ public class Main extends JavaPlugin implements Listener {
 	public static boolean mode1_6 = false;
 	public int destroy_radius = 10;
 	public boolean last_man_standing = true;
-	
+
 	public int start_countdown = 5;
 
 	public String saved_arena = "";
@@ -164,12 +161,11 @@ public class Main extends JavaPlugin implements Listener {
 	public String saved_finish = "";
 	public String saved_spawn = "";
 
-	
 	public String sign_top = "";
 	public String sign_second_join = "";
 	public String sign_second_ingame = "";
 	public String sign_second_restarting = "";
-	
+
 	// anouncements
 	public String starting = "";
 	public String started = "";
@@ -177,9 +173,9 @@ public class Main extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(this, this);
-		
+
 		// TODO CHECK IF 1.6.4
-		if(Bukkit.getVersion().contains("1.6.4") || Bukkit.getVersion().contains("1.6.2")){
+		if (Bukkit.getVersion().contains("1.6.4") || Bukkit.getVersion().contains("1.6.2")) {
 			mode1_6 = true;
 			getLogger().info("Turned on 1.6.4 mode.");
 		}
@@ -198,15 +194,15 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.command_reward", "pex user <player> group set DragonPro");
 		getConfig().addDefault("config.start_announcement", false);
 		getConfig().addDefault("config.winner_announcement", false);
-	    getConfig().addDefault("config.dragon_speed", 1.0D);
-	    getConfig().addDefault("config.dragon_healthbar_name", "Ender Dragon");
-	    getConfig().addDefault("config.destroy_radius", 10);
-	    getConfig().addDefault("config.last_man_standing", true);
+		getConfig().addDefault("config.dragon_speed", 1.0D);
+		getConfig().addDefault("config.dragon_healthbar_name", "Ender Dragon");
+		getConfig().addDefault("config.destroy_radius", 10);
+		getConfig().addDefault("config.last_man_standing", true);
 
-	    getConfig().addDefault("config.sign_top_line", "&6DragonEscape");
-	    getConfig().addDefault("config.sign_second_line_join", "&a[Join]");
-	    getConfig().addDefault("config.sign_second_line_ingame", "&c[Ingame]");
-	    getConfig().addDefault("config.sign_second_line_restarting", "&6[Restarting]");
+		getConfig().addDefault("config.sign_top_line", "&6DragonEscape");
+		getConfig().addDefault("config.sign_second_line_join", "&a[Join]");
+		getConfig().addDefault("config.sign_second_line_ingame", "&c[Ingame]");
+		getConfig().addDefault("config.sign_second_line_restarting", "&6[Restarting]");
 
 		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
 		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
@@ -251,9 +247,9 @@ public class Main extends JavaPlugin implements Listener {
 		 */
 
 		if (getConfig().getBoolean("config.auto_updating")) {
-			UpdaterNEW updater = new UpdaterNEW(this, 5, this.getFile(), UpdaterNEW.UpdateType.DEFAULT, false);	
+			UpdaterNEW updater = new UpdaterNEW(this, 5, this.getFile(), UpdaterNEW.UpdateType.DEFAULT, false);
 		}
-		
+
 		if (economy) {
 			if (!setupEconomy()) {
 				getLogger().severe(String.format("[%s] - No iConomy dependency found! Disabling Economy.", getDescription().getName()));
@@ -287,14 +283,14 @@ public class Main extends JavaPlugin implements Listener {
 		start_countdown = getConfig().getInt("config.start_countdown");
 		start_announcement = getConfig().getBoolean("config.start_announcement");
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
-        dragon_speed = getConfig().getDouble("config.dragon_speed");
-        destroy_radius = getConfig().getInt("config.destroy_radius");
-        if(dragon_speed < 0.05 || dragon_speed > 10){
-        	dragon_speed = 1.0;
-        }
+		dragon_speed = getConfig().getDouble("config.dragon_speed");
+		destroy_radius = getConfig().getInt("config.destroy_radius");
+		if (dragon_speed < 0.05 || dragon_speed > 10) {
+			dragon_speed = 1.0;
+		}
 		dragon_name = getConfig().getString("config.dragon_healthbar_name").replaceAll("&", "§");
 		last_man_standing = getConfig().getBoolean("config.last_man_standing");
-		
+
 		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");
 		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
 		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "§");
@@ -319,9 +315,12 @@ public class Main extends JavaPlugin implements Listener {
 		noperm = getConfig().getString("strings.noperm").replaceAll("&", "§");
 
 		sign_top = getConfig().getString("config.sign_top_line").replaceAll("&", "§");
-		sign_second_join = getConfig().getString("config.sign_second_line_join").replaceAll("&", "§");;
-		sign_second_ingame = getConfig().getString("config.sign_second_line_ingame").replaceAll("&", "§");;
-		sign_second_restarting = getConfig().getString("config.sign_second_line_restarting").replaceAll("&", "§");;
+		sign_second_join = getConfig().getString("config.sign_second_line_join").replaceAll("&", "§");
+		;
+		sign_second_ingame = getConfig().getString("config.sign_second_line_ingame").replaceAll("&", "§");
+		;
+		sign_second_restarting = getConfig().getString("config.sign_second_line_restarting").replaceAll("&", "§");
+		;
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -445,18 +444,18 @@ public class Main extends JavaPlugin implements Listener {
 						if (sender.hasPermission("dragonescape.setup")) {
 							Player p = (Player) sender;
 							String arenaname = args[1];
-							
+
 							String count = Integer.toString(this.getCurrentFlyPoint(arenaname));
-							
+
 							// overwrite functionality
-							if(args.length > 2){
-								if(isNumeric(args[2])){
-									if(Integer.parseInt(args[2]) <= getCurrentFlyPoint(arenaname)){
+							if (args.length > 2) {
+								if (isNumeric(args[2])) {
+									if (Integer.parseInt(args[2]) <= getCurrentFlyPoint(arenaname)) {
 										count = args[2];
 									}
 								}
 							}
-							
+
 							getConfig().set(arenaname + ".flypoint." + count + ".world", p.getWorld().getName());
 							getConfig().set(arenaname + ".flypoint." + count + ".x", p.getLocation().getBlockX());
 							getConfig().set(arenaname + ".flypoint." + count + ".y", p.getLocation().getBlockY());
@@ -472,18 +471,18 @@ public class Main extends JavaPlugin implements Listener {
 						if (sender.hasPermission("dragonescape.setup")) {
 							Player p = (Player) sender;
 							String arenaname = args[1];
-							if(!isNumeric(args[2])){
+							if (!isNumeric(args[2])) {
 								sender.sendMessage(ChatColor.RED + "Usage: /de removeflypoint [arena] [count]");
 								return true;
 							}
-							if(!getConfig().isSet(arenaname + ".flypoint")){
+							if (!getConfig().isSet(arenaname + ".flypoint")) {
 								sender.sendMessage(ChatColor.RED + "Could not find any flypoints for this arena.");
 								return true;
 							}
-							
+
 							int rem_count = Integer.parseInt(args[2]);
-							
-							if(rem_count < this.getCurrentFlyPoint(arenaname)){
+
+							if (rem_count < this.getCurrentFlyPoint(arenaname)) {
 								getConfig().set(arenaname + ".flypoint." + Integer.toString(rem_count), null);
 								this.saveConfig();
 								sender.sendMessage(ChatColor.RED + "Removed Fly point " + Integer.toString(rem_count));
@@ -698,7 +697,7 @@ public class Main extends JavaPlugin implements Listener {
 							sender.sendMessage(noperm);
 						}
 					}
-				}  else if (action.equalsIgnoreCase("start")) {
+				} else if (action.equalsIgnoreCase("start")) {
 					if (args.length > 1) {
 						if (sender.hasPermission("dragonescape.start")) {
 							final String arena = args[1];
@@ -792,42 +791,45 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	private boolean registerEntities() {
-		if(mode1_6){
+		if (mode1_6) {
 			return V1_6.registerEntities();
 		}
 		return V1_7.registerEntities();
 	}
 
-	/*public Test spawnEnderdragon(String arena, Location t) {
-		/*Object w = ((CraftWorld) t.getWorld()).getHandle();
-		if(this.getDragonWayPoints(arena) == null){
-			getLogger().severe("You forgot to set any FlyPoints! You need to have min. 2 and one of them has to be at finish.");
-			return null;
-		}
-		Test t_ = new Test(this, arena, t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle(), this.getDragonWayPoints(arena));
-		((net.minecraft.server.v1_7_R1.World) w).addEntity(t_, CreatureSpawnEvent.SpawnReason.CUSTOM);
-		t_.setCustomName(dragon_name);
-		*/
-		//TODO: send entity invisibility packet
-		//TODO: might get possible though with HoloAPI when MC 1.8 is released
-		/*Slimey b = new Slimey(this, t, (net.minecraft.server.v1_7_R1.World) ((CraftWorld) t.getWorld()).getHandle());
-		((net.minecraft.server.v1_7_R1.World) w).addEntity(b, CreatureSpawnEvent.SpawnReason.CUSTOM);
-		b.setCustomName(dragon_name);
-		b.setInvisible(true);
-		V1_7 v = new V1_7();
-		return v.spawnEnderdragon(m, arena, t);
-	}*/
-	
-	/*public Test1_6 spawnEnderdragon1_6(String arena, Location t) {
-		V1_6 v = new V1_6();
-		return v.spawnEnderdragon(m, arena, t);
-	}*/
+	/*
+	 * public Test spawnEnderdragon(String arena, Location t) { /*Object w =
+	 * ((CraftWorld) t.getWorld()).getHandle();
+	 * if(this.getDragonWayPoints(arena) == null){ getLogger().severe(
+	 * "You forgot to set any FlyPoints! You need to have min. 2 and one of them has to be at finish."
+	 * ); return null; } Test t_ = new Test(this, arena, t,
+	 * (net.minecraft.server.v1_7_R1.World) ((CraftWorld)
+	 * t.getWorld()).getHandle(), this.getDragonWayPoints(arena));
+	 * ((net.minecraft.server.v1_7_R1.World) w).addEntity(t_,
+	 * CreatureSpawnEvent.SpawnReason.CUSTOM); t_.setCustomName(dragon_name);
+	 */
+	// TODO: send entity invisibility packet
+	// TODO: might get possible though with HoloAPI when MC 1.8 is released
+	/*
+	 * Slimey b = new Slimey(this, t, (net.minecraft.server.v1_7_R1.World)
+	 * ((CraftWorld) t.getWorld()).getHandle());
+	 * ((net.minecraft.server.v1_7_R1.World) w).addEntity(b,
+	 * CreatureSpawnEvent.SpawnReason.CUSTOM); b.setCustomName(dragon_name);
+	 * b.setInvisible(true); V1_7 v = new V1_7(); return v.spawnEnderdragon(m,
+	 * arena, t); }
+	 */
 
-	
-	/*public void setDragonSpeed(EnderDragon s, double speed) {
-		AttributeInstance attributes = ((EntityInsentient) ((CraftLivingEntity) s).getHandle()).getAttributeInstance(GenericAttributes.d);
-		attributes.setValue(speed);
-	}*/
+	/*
+	 * public Test1_6 spawnEnderdragon1_6(String arena, Location t) { V1_6 v =
+	 * new V1_6(); return v.spawnEnderdragon(m, arena, t); }
+	 */
+
+	/*
+	 * public void setDragonSpeed(EnderDragon s, double speed) {
+	 * AttributeInstance attributes = ((EntityInsentient) ((CraftLivingEntity)
+	 * s).getHandle()).getAttributeInstance(GenericAttributes.d);
+	 * attributes.setValue(speed); }
+	 */
 
 	public ArrayList<String> left_players = new ArrayList<String>();
 
@@ -935,19 +937,19 @@ public class Main extends JavaPlugin implements Listener {
 			}
 
 			final String arena_ = arenap_.get(event.getPlayer().getName());
-			if(!astarted.get(arena_)){
-				if(getDragonSpawn(arena_) != null){
+			if (!astarted.get(arena_)) {
+				if (getDragonSpawn(arena_) != null) {
 					final Player p = event.getPlayer();
-					if(p.getLocation().getBlockZ() > getSpawn(arena_).getBlockZ() + 1 || p.getLocation().getBlockZ() < getSpawn(arena_).getBlockZ() - 1 || p.getLocation().getBlockX() > getSpawn(arena_).getBlockX() + 1 || p.getLocation().getBlockX() < getSpawn(arena_).getBlockX() - 1){
-						Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
-							public void run(){
+					if (p.getLocation().getBlockZ() > getSpawn(arena_).getBlockZ() + 1 || p.getLocation().getBlockZ() < getSpawn(arena_).getBlockZ() - 1 || p.getLocation().getBlockX() > getSpawn(arena_).getBlockX() + 1 || p.getLocation().getBlockX() < getSpawn(arena_).getBlockX() - 1) {
+						Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+							public void run() {
 								p.teleport(getSpawn(arena_));
 							}
 						}, 5);
 					}
 				}
 			}
-						
+
 			String dir = m.getDirection(getSpawn(arena_).getYaw());
 			if (dir.equalsIgnoreCase("south")) {
 				if (event.getPlayer().getLocation().getBlockZ() > getFinish(arenap_.get(event.getPlayer().getName())).getBlockZ()) {
@@ -979,7 +981,9 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 
-			//if (event.getPlayer().getLocation().getBlockY() < getSpawn(arenap_.get(event.getPlayer().getName())).getBlockY() - 5) {
+			// if (event.getPlayer().getLocation().getBlockY() <
+			// getSpawn(arenap_.get(event.getPlayer().getName())).getBlockY() -
+			// 5) {
 			if (event.getPlayer().getLocation().getBlockY() < getLowBoundary(arenap_.get(event.getPlayer().getName())).getBlockY() - 3) {
 				lost.put(event.getPlayer(), arenap.get(event.getPlayer()));
 				final Player p__ = event.getPlayer();
@@ -1007,11 +1011,11 @@ public class Main extends JavaPlugin implements Listener {
 					}
 				}
 
-				if(last_man_standing){
+				if (last_man_standing) {
 					if (count < 2) {
 						stop(h.get(arena), arena);
 					}
-				}else{
+				} else {
 					if (count < 1) {
 						stop(h.get(arena), arena);
 					}
@@ -1130,11 +1134,11 @@ public class Main extends JavaPlugin implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
-	public void onEntityDamage(EntityDamageEvent event){
+	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
-			Player p = (Player)event.getEntity();
+			Player p = (Player) event.getEntity();
 			if (arenap_.containsKey(p.getName())) {
 				p.setHealth(20D);
 				event.setCancelled(true);
@@ -1179,19 +1183,17 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		return ret;
 	}
-	
-	
+
 	public Location getDragonSpawn(String arena) {
 		Location ret = null;
 		if (isValidArena(arena)) {
-			if(!getConfig().isSet(arena + ".dragonspawn")){
+			if (!getConfig().isSet(arena + ".dragonspawn")) {
 				return null;
 			}
 			ret = new Location(Bukkit.getWorld(getConfig().getString(arena + ".dragonspawn.world")), getConfig().getInt(arena + ".dragonspawn.loc.x"), getConfig().getInt(arena + ".dragonspawn.loc.y"), getConfig().getInt(arena + ".dragonspawn.loc.z"), getConfig().getInt(arena + ".dragonspawn.loc.yaw"), getConfig().getInt(arena + ".dragonspawn.loc.pitch"));
 		}
 		return ret;
 	}
-	
 
 	public Location getFinish(String arena) {
 		Location ret = null;
@@ -1255,7 +1257,7 @@ public class Main extends JavaPlugin implements Listener {
 			}
 
 			final String arena = arenap.get(p);
-			
+
 			Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 				public void run() {
 					if (p.isOnline()) {
@@ -1297,6 +1299,8 @@ public class Main extends JavaPlugin implements Listener {
 					getLogger().info(t);
 					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), t);
 				}
+				
+				spawnFirework(p);
 			}
 
 			int count = 0;
@@ -1408,10 +1412,10 @@ public class Main extends JavaPlugin implements Listener {
 	final public HashMap<String, Integer> countdown_count = new HashMap<String, Integer>();
 	final public HashMap<String, Integer> countdown_id = new HashMap<String, Integer>();
 	final public HashMap<String, Double> dragon_move_increment = new HashMap<String, Double>();
-	
+
 	public BukkitTask start(final String arena) {
-		if(mode1_6){
-			V1_6 v  = new V1_6();
+		if (mode1_6) {
+			V1_6 v = new V1_6();
 			return v.start(this, arena);
 		}
 		V1_7 v_ = new V1_7();
@@ -1428,10 +1432,10 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public void stop(BukkitTask t, final String arena) {
-		if(mode1_6){
+		if (mode1_6) {
 			V1_6 v = new V1_6();
 			v.stop(this, t, arena);
-		}else{
+		} else {
 			V1_7 v = new V1_7();
 			v.stop(this, t, arena);
 		}
@@ -1731,13 +1735,13 @@ public class Main extends JavaPlugin implements Listener {
 		return "";
 	}
 
-	public ArrayList<Vector> getDragonWayPoints(String arena){
+	public ArrayList<Vector> getDragonWayPoints(String arena) {
 		ArrayList<Vector> ret = new ArrayList<Vector>();
-		if(!getConfig().isSet(arena + ".flypoint")){
+		if (!getConfig().isSet(arena + ".flypoint")) {
 			return null;
-		}else{
+		} else {
 			Set<String> f = getConfig().getConfigurationSection(arena + ".flypoint").getKeys(false);
-			for(String key : f){
+			for (String key : f) {
 
 				ret.add(new Vector(getConfig().getDouble(arena + ".flypoint." + key + ".x"), getConfig().getDouble(arena + ".flypoint." + key + ".y"), getConfig().getDouble(arena + ".flypoint." + key + ".z")));
 			}
@@ -1745,44 +1749,42 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	public int getCurrentFlyPoint(String arena){
-		if(!getConfig().isSet(arena + ".flypoint")){
+	public int getCurrentFlyPoint(String arena) {
+		if (!getConfig().isSet(arena + ".flypoint")) {
 			return 0;
-		}else{
+		} else {
 			int count = 0;
 			Set<String> f = getConfig().getConfigurationSection(arena + ".flypoint").getKeys(false);
-			for(String key : f){
-				count ++;
+			for (String key : f) {
+				count++;
 			}
 			return count;
 		}
 	}
-	
-	
+
 	public static final void playBlockBreakParticles(final Location loc, final Material m) {
 		playBlockBreakParticles(loc, m, Bukkit.getOnlinePlayers());
 	}
 
 	public static final void playBlockBreakParticles(final Location loc, final Material m, final Player... players) {
-		if(mode1_6){
+		if (mode1_6) {
 			V1_6.playBlockBreakParticles(loc, m, players);
 		}
 		V1_7.playBlockBreakParticles(loc, m, players);
 	}
-	
 
 	Scoreboard board;
 	Objective objective;
 	public HashMap<String, Integer> currentscore = new HashMap<String, Integer>();
 
-	public void updateScoreboard(){
+	public void updateScoreboard() {
 
-		for(Player pl : arenap.keySet()){
+		for (Player pl : arenap.keySet()) {
 			Player p = pl;
-			if(board == null){
+			if (board == null) {
 				board = Bukkit.getScoreboardManager().getNewScoreboard();
 			}
-			if(objective == null){
+			if (objective == null) {
 				objective = board.registerNewObjective("test", "dummy");
 			}
 
@@ -1790,23 +1792,23 @@ public class Main extends JavaPlugin implements Listener {
 
 			objective.setDisplayName("[" + arenap.get(p) + "]");
 
-			for(Player pl_ : arenap.keySet()){
+			for (Player pl_ : arenap.keySet()) {
 				Player p_ = pl_;
-				if(!lost.containsKey(pl_)){
+				if (!lost.containsKey(pl_)) {
 					int score = -(int) p_.getLocation().distance(getFinish(arenap.get(p)));
-					if(currentscore.containsKey(pl_.getName())){
+					if (currentscore.containsKey(pl_.getName())) {
 						int oldscore = currentscore.get(pl_.getName());
-						if(score > oldscore){
+						if (score > oldscore) {
 							currentscore.put(pl_.getName(), score);
-						}else{
+						} else {
 							score = oldscore;
 						}
-					}else{
+					} else {
 						currentscore.put(pl_.getName(), score);
 					}
 					objective.getScore(Bukkit.getOfflinePlayer("§a" + p_.getName())).setScore(score);
-				}else{
-					if(currentscore.containsKey(pl_.getName())){
+				} else {
+					if (currentscore.containsKey(pl_.getName())) {
 						int score = currentscore.get(pl_.getName());
 						board.resetScores(Bukkit.getOfflinePlayer("§a" + p_.getName()));
 						objective.getScore(Bukkit.getOfflinePlayer("§c" + p_.getName())).setScore(score);
@@ -1817,17 +1819,26 @@ public class Main extends JavaPlugin implements Listener {
 			p.setScoreboard(board);
 		}
 	}
-	
-	
+
 	public void removeScoreboard(String arena, Player p) {
 		try {
 			ScoreboardManager manager = Bukkit.getScoreboardManager();
 			Scoreboard sc = manager.getNewScoreboard();
-			
+
 			sc.clearSlot(DisplaySlot.SIDEBAR);
 			p.setScoreboard(sc);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void spawnFirework(Player p) {
+		Firework fw = (Firework) p.getWorld().spawnEntity(p.getLocation(), EntityType.FIREWORK);
+		FireworkMeta fwm = fw.getFireworkMeta();
+		FireworkEffect effect = FireworkEffect.builder().flicker(r.nextBoolean()).withColor(Color.AQUA).withFade(Color.ORANGE).with(Type.STAR).trail(r.nextBoolean()).build();
+		fwm.addEffect(effect);
+		int rp = r.nextInt(2) + 1;
+		fwm.setPower(rp);
+		fw.setFireworkMeta(fwm);
 	}
 }
