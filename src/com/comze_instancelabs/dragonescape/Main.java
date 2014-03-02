@@ -138,6 +138,7 @@ public class Main extends JavaPlugin implements Listener {
 	public static boolean mode1_6 = false;
 	public int destroy_radius = 10;
 	public boolean last_man_standing = true;
+	public boolean spawn_winnerfirework = true;
 
 	public int start_countdown = 5;
 
@@ -198,6 +199,7 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.dragon_healthbar_name", "Ender Dragon");
 		getConfig().addDefault("config.destroy_radius", 10);
 		getConfig().addDefault("config.last_man_standing", true);
+		getConfig().addDefault("config.spawn_winnerfirework", true);
 
 		getConfig().addDefault("config.sign_top_line", "&6DragonEscape");
 		getConfig().addDefault("config.sign_second_line_join", "&a[Join]");
@@ -290,7 +292,8 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		dragon_name = getConfig().getString("config.dragon_healthbar_name").replaceAll("&", "§");
 		last_man_standing = getConfig().getBoolean("config.last_man_standing");
-
+		spawn_winnerfirework = getConfig().getBoolean("config.spawn_winnerfirework");
+		
 		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "§");
 		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
 		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "§");
@@ -316,11 +319,8 @@ public class Main extends JavaPlugin implements Listener {
 
 		sign_top = getConfig().getString("config.sign_top_line").replaceAll("&", "§");
 		sign_second_join = getConfig().getString("config.sign_second_line_join").replaceAll("&", "§");
-		;
 		sign_second_ingame = getConfig().getString("config.sign_second_line_ingame").replaceAll("&", "§");
-		;
 		sign_second_restarting = getConfig().getString("config.sign_second_line_restarting").replaceAll("&", "§");
-		;
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -1248,6 +1248,9 @@ public class Main extends JavaPlugin implements Listener {
 							e.printStackTrace();
 							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mvtp e:" + getMainLobby().getWorld() + ":" + getMainLobby().getX() + "," + getMainLobby().getY() + "," + getMainLobby().getZ() + ":0:0");
 						}
+						if(spawn_winnerfirework){
+							spawnFirework(p);
+						}
 					}
 				}
 			}, 8);
@@ -1300,7 +1303,9 @@ public class Main extends JavaPlugin implements Listener {
 					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), t);
 				}
 				
-				spawnFirework(p);
+				if(spawn_winnerfirework){
+					spawnFirework(p);
+				}
 			}
 
 			int count = 0;
