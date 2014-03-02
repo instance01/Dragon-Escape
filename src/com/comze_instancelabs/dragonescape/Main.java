@@ -119,6 +119,11 @@ public class Main extends JavaPlugin implements Listener {
 	 */
 	public static HashMap<Player, String> pkit = new HashMap<Player, String>();
 
+	/**
+	 * arena -> countdown finished or not
+	 */
+	public static HashMap<String, Boolean> astarted = new HashMap<String, Boolean>();
+
 
 	int default_max_players = 4;
 	int default_min_players = 3;
@@ -924,7 +929,20 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 
-			String arena_ = arenap_.get(event.getPlayer().getName());
+			final String arena_ = arenap_.get(event.getPlayer().getName());
+			if(!astarted.get(arena_)){
+				if(getDragonSpawn(arena_) != null){
+					final Player p = event.getPlayer();
+					if(p.getLocation().getBlockZ() > getSpawn(arena_).getBlockZ() + 1 || p.getLocation().getBlockZ() < getSpawn(arena_).getBlockZ() - 1 || p.getLocation().getBlockX() > getSpawn(arena_).getBlockX() + 1 || p.getLocation().getBlockX() < getSpawn(arena_).getBlockX() - 1){
+						Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+							public void run(){
+								p.teleport(getSpawn(arena_));
+							}
+						}, 5);
+					}
+				}
+			}
+						
 			String dir = m.getDirection(getSpawn(arena_).getYaw());
 			if (dir.equalsIgnoreCase("south")) {
 				if (event.getPlayer().getLocation().getBlockZ() > getFinish(arenap_.get(event.getPlayer().getName())).getBlockZ()) {

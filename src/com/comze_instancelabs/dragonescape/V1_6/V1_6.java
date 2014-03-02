@@ -78,7 +78,8 @@ public class V1_6 {
 	
 	public BukkitTask start(final Main m, final String arena) {
 		m.ingame.put(arena, true);
-
+		m.astarted.put(arena, false);
+		
 		// start countdown timer
 		if (m.start_announcement) {
 			Bukkit.getServer().broadcastMessage(m.starting + " " + Integer.toString(m.start_countdown));
@@ -121,6 +122,8 @@ public class V1_6 {
 						Bukkit.getServer().broadcastMessage(m.started);
 					}
 
+					m.astarted.put(arena, true);
+					
 					// update sign
 					Bukkit.getServer().getScheduler().runTask(m, new Runnable(){
 						public void run(){
