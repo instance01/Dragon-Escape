@@ -910,6 +910,22 @@ public class Main extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
+		if(arenap.containsKey(event.getPlayer()) && !arenap_.containsKey(event.getPlayer().getName())){
+			final String arena_ = arenap.get(event.getPlayer());
+			//getLogger().info(astarted.get(arena_).toString());
+			if(ingame.get(arena_)){
+				if (getDragonSpawn(arena_) != null) {
+					final Player p = event.getPlayer();
+					if (p.getLocation().getBlockZ() > getSpawn(arena_).getBlockZ() + 1 || p.getLocation().getBlockZ() < getSpawn(arena_).getBlockZ() - 1 || p.getLocation().getBlockX() > getSpawn(arena_).getBlockX() + 1 || p.getLocation().getBlockX() < getSpawn(arena_).getBlockX() - 1) {
+						Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+							public void run() {
+								p.teleport(getSpawn(arena_));
+							}
+						}, 5);
+					}
+				}
+			}
+		}
 		if (arenap_.containsKey(event.getPlayer().getName())) {
 			if (lost.containsKey(event.getPlayer())) {
 				Location l = getSpawn(lost.get(event.getPlayer()));
@@ -937,18 +953,6 @@ public class Main extends JavaPlugin implements Listener {
 			}
 
 			final String arena_ = arenap_.get(event.getPlayer().getName());
-			if (!astarted.get(arena_)) {
-				if (getDragonSpawn(arena_) != null) {
-					final Player p = event.getPlayer();
-					if (p.getLocation().getBlockZ() > getSpawn(arena_).getBlockZ() + 1 || p.getLocation().getBlockZ() < getSpawn(arena_).getBlockZ() - 1 || p.getLocation().getBlockX() > getSpawn(arena_).getBlockX() + 1 || p.getLocation().getBlockX() < getSpawn(arena_).getBlockX() - 1) {
-						Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-							public void run() {
-								p.teleport(getSpawn(arena_));
-							}
-						}, 5);
-					}
-				}
-			}
 
 			String dir = m.getDirection(getSpawn(arena_).getYaw());
 			if (dir.equalsIgnoreCase("south")) {
@@ -1090,7 +1094,6 @@ public class Main extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onSignChange(SignChangeEvent event) {
 		Player p = event.getPlayer();
-		getServer().broadcastMessage(event.getLine(0));
 		if (event.getLine(0).toLowerCase().equalsIgnoreCase("dragonescape")) {
 			if (event.getPlayer().hasPermission("dragonescape.sign") || event.getPlayer().isOp()) {
 				event.setLine(0, sign_top);
@@ -1131,7 +1134,14 @@ public class Main extends JavaPlugin implements Listener {
 	@EventHandler
 	public void EntityChangeBlockEvent(org.bukkit.event.entity.EntityChangeBlockEvent event) {
 		if (event.getEntityType() == EntityType.FALLING_BLOCK) {
-			event.setCancelled(true);
+			for (String arena : getConfig().getKeys(false)) {
+				if (!arena.equalsIgnoreCase("mainlobby") && !arena.equalsIgnoreCase("strings") && !arena.equalsIgnoreCase("config")){
+					Cuboid c = new Cuboid(getLowBoundary(arena), getHighBoundary(arena));
+					if(c.containsLocWithoutY(event.getBlock().getLocation())){
+						event.setCancelled(true);
+					}
+				}
+			}
 		}
 	}
 
@@ -1811,12 +1821,18 @@ public class Main extends JavaPlugin implements Listener {
 					} else {
 						currentscore.put(pl_.getName(), score);
 					}
-					objective.getScore(Bukkit.getOfflinePlayer("§a" + p_.getName())).setScore(score);
-				} else {
+					try{
+						objective.getScore(Bukkit.getOfflinePlayer("§a" + p_.getName())).setScore(score);
+					}catch(Exception e){
+					}
+				} else if (lost.containsKey(pl_)){
 					if (currentscore.containsKey(pl_.getName())) {
 						int score = currentscore.get(pl_.getName());
-						board.resetScores(Bukkit.getOfflinePlayer("§a" + p_.getName()));
-						objective.getScore(Bukkit.getOfflinePlayer("§c" + p_.getName())).setScore(score);
+						try{
+							board.resetScores(Bukkit.getOfflinePlayer("§a" + p_.getName()));
+							objective.getScore(Bukkit.getOfflinePlayer("§c" + p_.getName())).setScore(score);
+						}catch(Exception e){
+						}
 					}
 				}
 			}
@@ -1829,7 +1845,9 @@ public class Main extends JavaPlugin implements Listener {
 		try {
 			ScoreboardManager manager = Bukkit.getScoreboardManager();
 			Scoreboard sc = manager.getNewScoreboard();
-
+			board.resetScores(Bukkit.getOfflinePlayer("§c" + p.getName()));
+			board.resetScores(Bukkit.getOfflinePlayer("§a" + p.getName()));
+			
 			sc.clearSlot(DisplaySlot.SIDEBAR);
 			p.setScoreboard(sc);
 		} catch (Exception e) {

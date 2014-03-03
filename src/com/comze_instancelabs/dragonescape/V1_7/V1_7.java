@@ -488,7 +488,10 @@ public class V1_7 {
 				}
 
 				ArrayList<Player> torem = new ArrayList<Player>();
-				m.determineWinners(arena);
+				if(m.astarted.get(arena)){
+					m.determineWinners(arena);
+				}
+				m.astarted.put(arena, false);
 				for (Player p : m.arenap.keySet()) {
 					if (m.arenap.get(p).equalsIgnoreCase(arena)) {
 						m.leaveArena(p, false, false);
@@ -540,7 +543,9 @@ public class V1_7 {
 					public void run() {
 						if (b.getType() != Material.AIR) {
 							playBlockBreakParticles(b.getLocation(), b.getType());
-							l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+							if(b.getType() != Material.WATER && b.getType() != Material.LAVA){
+								l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));	
+							}
 							b.setType(Material.AIR);
 						}
 					}
@@ -558,7 +563,9 @@ public class V1_7 {
 					public void run() {
 						if (b.getType() != Material.AIR) {
 							playBlockBreakParticles(b.getLocation(), b.getType());
-							l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+							if(b.getType() != Material.WATER && b.getType() != Material.LAVA){
+								l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));	
+							}
 							b.setType(Material.AIR);
 						}
 					}
@@ -576,7 +583,9 @@ public class V1_7 {
 					public void run() {
 						if (b.getType() != Material.AIR) {
 							playBlockBreakParticles(b.getLocation(), b.getType());
-							l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+							if(b.getType() != Material.WATER && b.getType() != Material.LAVA){
+								l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));	
+							}
 							b.setType(Material.AIR);
 						}
 					}
@@ -594,7 +603,9 @@ public class V1_7 {
 					public void run() {
 						if (b.getType() != Material.AIR) {
 							playBlockBreakParticles(b.getLocation(), b.getType());
-							l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));
+							if(b.getType() != Material.WATER && b.getType() != Material.LAVA){
+								l.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData()).setMetadata("vortex", new FixedMetadataValue(m, "protected"));	
+							}
 							b.setType(Material.AIR);
 						}
 					}
