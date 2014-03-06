@@ -459,6 +459,7 @@ public class V1_6 {
 				torem.clear();
 
 				m.winner.clear();
+				m.currentscore.clear();
 
 				Sign s = m.getSignFromArena(arena);
 				if (s != null) {

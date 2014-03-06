@@ -1687,8 +1687,11 @@ public class Main extends JavaPlugin implements Listener {
 				if (b != null) {
 					ArenaBlock ablock = (ArenaBlock) b;
 					try {
-						if (!ablock.getBlock().getWorld().getBlockAt(ablock.getBlock().getLocation()).getType().toString().equalsIgnoreCase(ablock.getMaterial().toString())) {
-							ablock.getBlock().getWorld().getBlockAt(ablock.getBlock().getLocation()).setTypeIdAndData(ablock.getMaterial().getId(), ablock.getData(), false);
+						Block b_ = ablock.getBlock().getWorld().getBlockAt(ablock.getBlock().getLocation());
+						if (!b_.getType().toString().equalsIgnoreCase(ablock.getMaterial().toString())) {
+							b_.setType(ablock.getMaterial());
+							b_.setData(ablock.getData());
+							// .setTypeIdAndData(ablock.getMaterial().getId(), ablock.getData(), false);
 						}
 					} catch (IllegalStateException e) {
 						failcount += 1;
