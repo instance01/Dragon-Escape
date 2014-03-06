@@ -490,8 +490,12 @@ public class V1_7 {
 					e.printStackTrace();
 				}
 				
-				//TODO reminder
-				m.updateScoreboard();
+				Bukkit.getScheduler().runTask(m, new Runnable(){
+					public void run(){
+						//TODO reminder
+						m.updateScoreboard();
+					}
+				});
 
 			}
 		}, 3 + 20 * m.start_countdown, 3);

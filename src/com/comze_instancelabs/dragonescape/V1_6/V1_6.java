@@ -183,7 +183,6 @@ public class V1_6 {
 						}else{
 							dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
 						}
-						dragons1_6.put(arena, spawnEnderdragon1_6(m, arena, m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
 						return;
@@ -398,8 +397,12 @@ public class V1_6 {
 					e.printStackTrace();
 				}
 				
-				//TODO reminder
-				m.updateScoreboard();
+				Bukkit.getScheduler().runTask(m, new Runnable(){
+					public void run(){
+						//TODO reminder
+						m.updateScoreboard();
+					}
+				});
 
 			}
 		}, 3 + 20 * m.start_countdown, 3);

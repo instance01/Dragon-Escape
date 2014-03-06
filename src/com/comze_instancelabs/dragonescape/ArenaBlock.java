@@ -14,6 +14,7 @@ public class ArenaBlock implements Serializable
     public int x, y, z;
     public String world;
     public Material m;
+    public byte data;
  
     public ArenaBlock(Block b)
     {
@@ -21,6 +22,7 @@ public class ArenaBlock implements Serializable
         x = b.getX();
         y = b.getY();
         z = b.getZ();
+        data = b.getData();
         world = b.getWorld().getName();
     }
  
@@ -35,6 +37,10 @@ public class ArenaBlock implements Serializable
     
     public Material getMaterial(){
     	return m;
+    }
+    
+    public Byte getData(){
+    	return data;
     }
  
 }

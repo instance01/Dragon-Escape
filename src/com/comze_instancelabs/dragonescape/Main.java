@@ -1688,7 +1688,7 @@ public class Main extends JavaPlugin implements Listener {
 					ArenaBlock ablock = (ArenaBlock) b;
 					try {
 						if (!ablock.getBlock().getWorld().getBlockAt(ablock.getBlock().getLocation()).getType().toString().equalsIgnoreCase(ablock.getMaterial().toString())) {
-							ablock.getBlock().getWorld().getBlockAt(ablock.getBlock().getLocation()).setType(ablock.getMaterial());
+							ablock.getBlock().getWorld().getBlockAt(ablock.getBlock().getLocation()).setTypeIdAndData(ablock.getMaterial().getId(), ablock.getData(), false);
 						}
 					} catch (IllegalStateException e) {
 						failcount += 1;
@@ -1711,11 +1711,11 @@ public class Main extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 
-		getLogger().warning("Failed to update " + Integer.toString(failcount) + " blocks due to spigots async exception.");
+		getLogger().info("Failed to update " + Integer.toString(failcount) + " blocks due to spigots async exception.");
 		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			public void run() {
 				// restore spigot blocks!
-				getLogger().info("Trying to restore blocks affected by spigot exception..");
+				//getLogger().info("Trying to restore blocks affected by spigot exception..");
 				for (ArenaBlock ablock : failedblocks) {
 					getServer().getWorld(ablock.world).getBlockAt(new Location(getServer().getWorld(ablock.world), ablock.x, ablock.y, ablock.z)).setType(Material.WOOL);
 					getServer().getWorld(ablock.world).getBlockAt(new Location(getServer().getWorld(ablock.world), ablock.x, ablock.y, ablock.z)).getTypeId();
