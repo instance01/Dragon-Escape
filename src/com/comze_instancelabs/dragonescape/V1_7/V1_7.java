@@ -112,6 +112,10 @@ public class V1_7 {
 	
 	
 	public Test spawnEnderdragon(Main m, String arena, Location t) {
+		/*if(dragons.containsKey(arena)){
+			return dragons.get(arena);
+		}*/
+		m.getLogger().info("DRAGON SPAWNED " + arena + " " + t.toString());
 		Object w = ((CraftWorld) t.getWorld()).getHandle();
 		if(m.getDragonWayPoints(arena) == null){
 			m.getLogger().severe("You forgot to set any FlyPoints! You need to have min. 2 and one of them has to be at finish.");
@@ -128,7 +132,7 @@ public class V1_7 {
 	public BukkitTask start(final Main m, final String arena) {
 		m.ingame.put(arena, true);
 		m.astarted.put(arena, false);
-		
+		m.getLogger().info("STARTED");
 		// start countdown timer
 		if (m.start_announcement) {
 			Bukkit.getServer().broadcastMessage(m.starting + " " + Integer.toString(m.start_countdown));
@@ -197,10 +201,20 @@ public class V1_7 {
 			Bukkit.getScheduler().runTask(m, new Runnable() {
 				public void run() {
 					try{
-						if(m.getDragonSpawn(arena) != null){
-							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
-						}else{
-							dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(0.0D, 0.0D, -3.0D)));
+						boolean cont = true;
+						for(Entity e : m.getNearbyEntities(m.getDragonSpawn(arena), 40)){
+							if(e.getType() == EntityType.ENDER_DRAGON){
+								cont = false;
+							}
+						}
+						if(cont){
+							if(m.getDragonSpawn(arena) != null){
+								dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
+								m.getLogger().info("DRAGON SPAWN");
+							}else{
+								m.getLogger().info("NORMAL SPAWN");
+								dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(0.0D, 0.0D, -3.0D)));
+							}	
 						}
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
@@ -212,10 +226,20 @@ public class V1_7 {
 			Bukkit.getScheduler().runTask(m, new Runnable() {
 				public void run() {
 					try{
-						if(m.getDragonSpawn(arena) != null){
-							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
-						}else{
-							dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(0.0D, 0.0D, +3.0D)));
+						boolean cont = true;
+						for(Entity e : m.getNearbyEntities(m.getDragonSpawn(arena), 40)){
+							if(e.getType() == EntityType.ENDER_DRAGON){
+								cont = false;
+							}
+						}
+						if(cont){
+							if(m.getDragonSpawn(arena) != null){
+								dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
+								m.getLogger().info("DRAGON SPAWN");
+							}else{
+								m.getLogger().info("NORMAL SPAWN");
+								dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(0.0D, 0.0D, +3.0D)));
+							}
 						}
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
@@ -227,12 +251,21 @@ public class V1_7 {
 			Bukkit.getScheduler().runTask(m, new Runnable() {
 				public void run() {
 					try{
-						if(m.getDragonSpawn(arena) != null){
-							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
-						}else{
-							dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
+						boolean cont = true;
+						for(Entity e : m.getNearbyEntities(m.getDragonSpawn(arena), 40)){
+							if(e.getType() == EntityType.ENDER_DRAGON){
+								cont = false;
+							}
 						}
-						dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));
+						if(cont){
+							if(m.getDragonSpawn(arena) != null){
+								dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
+								m.getLogger().info("DRAGON SPAWN");
+							}else{
+								m.getLogger().info("NORMAL SPAWN");
+								dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(-3.0D, 0.0D, 0.0D)));	
+							}
+						}
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
 						return;
@@ -243,10 +276,20 @@ public class V1_7 {
 			Bukkit.getScheduler().runTask(m, new Runnable() {
 				public void run() {
 					try{
-						if(m.getDragonSpawn(arena) != null){
-							dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
-						}else{
-							dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
+						boolean cont = true;
+						for(Entity e : m.getNearbyEntities(m.getDragonSpawn(arena), 40)){
+							if(e.getType() == EntityType.ENDER_DRAGON){
+								cont = false;
+							}
+						}
+						if(cont){
+							if(m.getDragonSpawn(arena) != null){
+								dragons.put(arena, spawnEnderdragon(m, arena, m.getDragonSpawn(arena)));
+								m.getLogger().info("DRAGON SPAWN");
+							}else{
+								m.getLogger().info("NORMAL SPAWN");
+								dragons.put(arena, spawnEnderdragon(m, arena, m.getSpawn(arena).add(3.0D, 0.0D, 0.0D)));
+							}
 						}
 					}catch(Exception e){
 						m.stop(m.h.get(arena), arena);
@@ -488,8 +531,10 @@ public class V1_7 {
 				}
 
 				ArrayList<Player> torem = new ArrayList<Player>();
-				if(m.astarted.get(arena)){
-					m.determineWinners(arena);
+				if(m.astarted.containsKey(arena)){
+					if(m.astarted.get(arena)){
+						m.determineWinners(arena);
+					}	
 				}
 				m.astarted.put(arena, false);
 				for (Player p : m.arenap.keySet()) {

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -1136,9 +1138,11 @@ public class Main extends JavaPlugin implements Listener {
 		if (event.getEntityType() == EntityType.FALLING_BLOCK) {
 			for (String arena : getConfig().getKeys(false)) {
 				if (!arena.equalsIgnoreCase("mainlobby") && !arena.equalsIgnoreCase("strings") && !arena.equalsIgnoreCase("config")){
-					Cuboid c = new Cuboid(getLowBoundary(arena), getHighBoundary(arena));
-					if(c.containsLocWithoutY(event.getBlock().getLocation())){
-						event.setCancelled(true);
+					if(isValidArena(arena)){
+						Cuboid c = new Cuboid(getLowBoundary(arena), getHighBoundary(arena));
+						if(c.containsLocWithoutY(event.getBlock().getLocation())){
+							event.setCancelled(true);
+						}
 					}
 				}
 			}
@@ -1845,9 +1849,11 @@ public class Main extends JavaPlugin implements Listener {
 		try {
 			ScoreboardManager manager = Bukkit.getScoreboardManager();
 			Scoreboard sc = manager.getNewScoreboard();
-			board.resetScores(Bukkit.getOfflinePlayer("§c" + p.getName()));
-			board.resetScores(Bukkit.getOfflinePlayer("§a" + p.getName()));
-			
+			try{
+				board.resetScores(Bukkit.getOfflinePlayer("§c" + p.getName()));
+				board.resetScores(Bukkit.getOfflinePlayer("§a" + p.getName()));
+			}catch(Exception e){}
+
 			sc.clearSlot(DisplaySlot.SIDEBAR);
 			p.setScoreboard(sc);
 		} catch (Exception e) {
@@ -1864,4 +1870,19 @@ public class Main extends JavaPlugin implements Listener {
 		fwm.setPower(rp);
 		fw.setFireworkMeta(fwm);
 	}
+	
+	
+	public static Entity[]  getNearbyEntities(Location l, int radius){
+        int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16))/16;
+        HashSet<Entity> radiusEntities = new HashSet<Entity>();
+            for (int chX = 0 -chunkRadius; chX <= chunkRadius; chX ++){
+                for (int chZ = 0 -chunkRadius; chZ <= chunkRadius; chZ++){
+                    int x=(int) l.getX(),y=(int) l.getY(),z=(int) l.getZ();
+                    for (Entity e : new Location(l.getWorld(),x+(chX*16),y,z+(chZ*16)).getChunk().getEntities()){
+                        if (e.getLocation().distance(l) <= radius && e.getLocation().getBlock() != l.getBlock()) radiusEntities.add(e);
+                    }
+                }
+            }
+        return radiusEntities.toArray(new Entity[radiusEntities.size()]);
+    }
 }
