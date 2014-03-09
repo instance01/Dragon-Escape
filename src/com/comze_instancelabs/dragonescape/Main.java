@@ -46,6 +46,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -53,6 +54,8 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -178,7 +181,6 @@ public class Main extends JavaPlugin implements Listener {
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(this, this);
 
-		// TODO CHECK IF 1.6.4
 		if (Bukkit.getVersion().contains("1.6.4") || Bukkit.getVersion().contains("1.6.2")) {
 			mode1_6 = true;
 			getLogger().info("Turned on 1.6.4 mode.");
@@ -208,6 +210,13 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.sign_second_line_join", "&a[Join]");
 		getConfig().addDefault("config.sign_second_line_ingame", "&c[Ingame]");
 		getConfig().addDefault("config.sign_second_line_restarting", "&6[Restarting]");
+
+		getConfig().addDefault("config.kits.jumper.description", "&eRightclick the iron axe to jump.");
+		getConfig().addDefault("config.kits.jumper.uses", 4);
+		getConfig().addDefault("config.kits.warper.description", "&eWarps you to a nearby player, good for when you're falling and almost dead.");
+		getConfig().addDefault("config.kits.warper.uses", 1);
+		getConfig().addDefault("config.kits.tnt.description", "&eRightclick to place a tnt trap, which gives a player blindness for 5 seconds.");
+		getConfig().addDefault("config.kits.tnt.uses", 2);
 
 		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
 		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
@@ -683,13 +692,13 @@ public class Main extends JavaPlugin implements Listener {
 							return true;
 						}
 						
-						//TODO: kit descripitions:
+						//TODO: kit descriptions
 						if(kit.equalsIgnoreCase("jumper")){
-							sender.sendMessage(ChatColor.GREEN + "Kit description");
+							sender.sendMessage(getKitDescription("jumper"));
 						}else if(kit.equalsIgnoreCase("warper")){
-							sender.sendMessage(ChatColor.GREEN + "Kit description");
+							sender.sendMessage(getKitDescription("warper"));
 						}else if(kit.equalsIgnoreCase("tnt")){
-							sender.sendMessage(ChatColor.GREEN + "Kit description");
+							sender.sendMessage(getKitDescription("tnt"));
 						}else{
 							sender.sendMessage(ChatColor.RED + "Unknown Kit.");
 							return true;
@@ -1118,15 +1127,17 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 		
+		//TODO kits
 		if (event.hasItem()) {
 			if(event.getItem().getTypeId() == 258){
 				Player p = event.getPlayer();
 				p.getInventory().removeItem(new ItemStack(Material.IRON_AXE, 1));
 				p.updateInventory();
 				p.setVelocity(p.getVelocity().multiply(5D));
-				// TODO jump
+				Vector direction = p.getLocation().getDirection().multiply(2);
+				direction.setY(direction.getY() + 1.5);
+				p.setVelocity(direction);
 			}else if(event.getItem().getTypeId() == 368){
-				//TODO enderpearl, tp to player
 				final Player p = event.getPlayer();
 				p.getInventory().removeItem(new ItemStack(Material.ENDER_PEARL, 1));
 				p.updateInventory();
@@ -1141,16 +1152,25 @@ public class Main extends JavaPlugin implements Listener {
 				}
 				event.setCancelled(true);
 			}else if(event.getItem().getTypeId() == 46){
-				//TODO tnt
 				Player p = event.getPlayer();
 				p.getInventory().removeItem(new ItemStack(Material.TNT, 1));
 				p.updateInventory();
-				p.getLocation().getWorld().dropItemNaturally(p.getLocation().add(1, 1, 1), new ItemStack(Material.TNT));
-				// TODO if player takes tnt, blindness
+				p.getLocation().getWorld().dropItemNaturally(p.getLocation().add(1, 3, 1), new ItemStack(Material.TNT));
 			}
 		}
 	}
 
+	@EventHandler
+	public void onPlayerPickup(PlayerPickupItemEvent event){
+		if(arenap.containsKey(event.getPlayer())){
+			if(event.getItem().getItemStack().getType() == Material.TNT){
+				event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 120, 1));
+				event.getItem().remove();
+				event.setCancelled(true);
+			}
+		}
+	}
+	
 	@EventHandler
 	public void onSignChange(SignChangeEvent event) {
 		Player p = event.getPlayer();
@@ -1946,4 +1966,13 @@ public class Main extends JavaPlugin implements Listener {
             }
         return radiusEntities.toArray(new Entity[radiusEntities.size()]);
     }
+	
+	
+	public String getKitDescription(String kit){
+		return getConfig().getString("config.kits." + kit + ".description").replaceAll("&", "§");
+	}
+	
+	public int getKitUses(String kit){
+		return getConfig().getInt("config.kits." + kit + ".uses");
+	}
 }
