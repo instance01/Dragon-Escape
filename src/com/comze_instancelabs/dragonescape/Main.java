@@ -692,7 +692,6 @@ public class Main extends JavaPlugin implements Listener {
 							return true;
 						}
 						
-						//TODO: kit descriptions
 						if(kit.equalsIgnoreCase("jumper")){
 							sender.sendMessage(getKitDescription("jumper"));
 						}else if(kit.equalsIgnoreCase("warper")){
