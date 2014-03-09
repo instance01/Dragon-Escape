@@ -195,11 +195,11 @@ public class V1_7 {
 								String kit = m.pkit.get(p);
 								
 								if(kit.equalsIgnoreCase("jumper")){
-									Kits.giveJumperKit(p);
+									Kits.giveJumperKit(m, p);
 								}else if(kit.equalsIgnoreCase("warper")){
-									Kits.giveWarperKit(p);
+									Kits.giveWarperKit(m, p);
 								}else if(kit.equalsIgnoreCase("tnt")){
-									Kits.giveTNTKit(p);
+									Kits.giveTNTKit(m, p);
 								}
 								m.pkit.remove(p);
 							}
