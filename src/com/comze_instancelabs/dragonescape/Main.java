@@ -77,6 +77,7 @@ public class Main extends JavaPlugin implements Listener {
 	/*
 	 * 
 	 * This is based off the ColorMatch arena system
+	 *
 	 */
 
 	/*
@@ -670,6 +671,31 @@ public class Main extends JavaPlugin implements Listener {
 							sender.sendMessage(arena_invalid);
 						}
 					}
+				} else if (action.equalsIgnoreCase("kit")) {
+					if (args.length > 1) {
+						String kit = args[1];
+						if(!(sender instanceof Player)){
+							return true;
+						}
+						Player p = (Player)sender;
+						if(!arenap.containsKey(p)){
+							sender.sendMessage(not_in_arena);
+							return true;
+						}
+						
+						//TODO: kit descripitions:
+						if(kit.equalsIgnoreCase("jumper")){
+							sender.sendMessage(ChatColor.GREEN + "Kit description");
+						}else if(kit.equalsIgnoreCase("warper")){
+							sender.sendMessage(ChatColor.GREEN + "Kit description");
+						}else if(kit.equalsIgnoreCase("tnt")){
+							sender.sendMessage(ChatColor.GREEN + "Kit description");
+						}else{
+							sender.sendMessage(ChatColor.RED + "Unknown Kit.");
+							return true;
+						}
+						pkit.put(p, args[1]);
+					}
 				} else if (action.equalsIgnoreCase("stop") || action.equalsIgnoreCase("end")) {
 					if (args.length > 1) {
 						if (sender.hasPermission("dragonescape.stop")) {
@@ -1089,6 +1115,38 @@ public class Main extends JavaPlugin implements Listener {
 						}
 					}
 				}
+			}
+		}
+		
+		if (event.hasItem()) {
+			if(event.getItem().getTypeId() == 258){
+				Player p = event.getPlayer();
+				p.getInventory().removeItem(new ItemStack(Material.IRON_AXE, 1));
+				p.updateInventory();
+				p.setVelocity(p.getVelocity().multiply(5D));
+				// TODO jump
+			}else if(event.getItem().getTypeId() == 368){
+				//TODO enderpearl, tp to player
+				final Player p = event.getPlayer();
+				p.getInventory().removeItem(new ItemStack(Material.ENDER_PEARL, 1));
+				p.updateInventory();
+				for(final Entity t : p.getNearbyEntities(40, 40, 40)){
+					if(t instanceof Player){
+						Bukkit.getScheduler().runTaskLater(this, new Runnable(){
+							public void run(){
+								p.teleport(t);
+							}
+						}, 5L);
+					}
+				}
+				event.setCancelled(true);
+			}else if(event.getItem().getTypeId() == 46){
+				//TODO tnt
+				Player p = event.getPlayer();
+				p.getInventory().removeItem(new ItemStack(Material.TNT, 1));
+				p.updateInventory();
+				p.getLocation().getWorld().dropItemNaturally(p.getLocation().add(1, 1, 1), new ItemStack(Material.TNT));
+				// TODO if player takes tnt, blindness
 			}
 		}
 	}

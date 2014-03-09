@@ -21,6 +21,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import com.comze_instancelabs.dragonescape.Kits;
 import com.comze_instancelabs.dragonescape.Main;
 import com.comze_instancelabs.dragonescape.Slimey;
 import com.comze_instancelabs.dragonescape.Test;
@@ -187,6 +188,23 @@ public class V1_7 {
 							}	
 						}
 					});
+					
+					for (final Player p : m.arenap.keySet()) {
+						if (p.isOnline()) {
+							if(m.pkit.containsKey(p)){
+								String kit = m.pkit.get(p);
+								
+								if(kit.equalsIgnoreCase("jumper")){
+									Kits.giveJumperKit(p);
+								}else if(kit.equalsIgnoreCase("warper")){
+									Kits.giveWarperKit(p);
+								}else if(kit.equalsIgnoreCase("tnt")){
+									Kits.giveTNTKit(p);
+								}
+								m.pkit.remove(p);
+							}
+						}
+					}
 					
 					Bukkit.getServer().getScheduler().cancelTask(m.countdown_id.get(arena));
 				}
