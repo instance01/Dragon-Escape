@@ -719,7 +719,13 @@ public class Main extends JavaPlugin implements Listener {
 							return true;
 						}
 						if(this.kitPlayerHasPermission(args[1], p)){
-							pkit.put(p, args[1]);
+							if(this.kitRequiresMoney(args[1])){
+								if(this.kitTakeMoney(p, args[1])){
+									pkit.put(p, args[1]);
+								}
+							}else{
+								pkit.put(p, args[1]);
+							}
 						}else{
 							sender.sendMessage(nopermkit);
 						}
@@ -1997,6 +2003,19 @@ public class Main extends JavaPlugin implements Listener {
 	
 	public boolean kitRequiresMoney(String kit){
 		return getConfig().getBoolean("config.kits." + kit + ".requires_money");
+	}
+	
+	public boolean kitTakeMoney(Player p, String kit) {
+		if (econ.getBalance(p.getName()) >= getConfig().getInt("config.kits." + kit + ".money_amount")) {
+			EconomyResponse r = econ.withdrawPlayer(p.getName(), getConfig().getInt("config.kits." + kit + ".money_amount"));
+			if (!r.transactionSuccess()) {
+				p.sendMessage(String.format("An error occured: %s", r.errorMessage));
+			}
+			return true;
+		} else {
+			p.sendMessage("§4You don't have enough money!");
+			return false;
+		}
 	}
 	
 	public boolean kitPlayerHasPermission(String kit, Player p){
