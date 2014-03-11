@@ -165,6 +165,7 @@ public class Main extends JavaPlugin implements Listener {
 	public String removed_arena = "";
 	public String winner_an = "";
 	public String noperm = "";
+	public String nopermkit = "";
 	public String saved_finish = "";
 	public String saved_spawn = "";
 
@@ -213,10 +214,23 @@ public class Main extends JavaPlugin implements Listener {
 
 		getConfig().addDefault("config.kits.jumper.description", "&eRightclick the iron axe to jump.");
 		getConfig().addDefault("config.kits.jumper.uses", 4);
+		getConfig().addDefault("config.kits.jumper.requires_money", false);
+		getConfig().addDefault("config.kits.jumper.requires_permission", false);
+		getConfig().addDefault("config.kits.jumper.money_amount", 100);
+		getConfig().addDefault("config.kits.jumper.permission_node", "dragonescape.kits.jumper");
 		getConfig().addDefault("config.kits.warper.description", "&eWarps you to a nearby player, good for when you're falling and almost dead.");
 		getConfig().addDefault("config.kits.warper.uses", 1);
+		getConfig().addDefault("config.kits.warper.requires_money", false);
+		getConfig().addDefault("config.kits.warper.requires_permission", false);
+		getConfig().addDefault("config.kits.warper.money_amount", 200);
+		getConfig().addDefault("config.kits.warper.permission_node", "dragonescape.kits.warper");
 		getConfig().addDefault("config.kits.tnt.description", "&eRightclick to place a tnt trap, which gives a player blindness for 5 seconds.");
 		getConfig().addDefault("config.kits.tnt.uses", 2);
+		getConfig().addDefault("config.kits.tnt.requires_money", false);
+		getConfig().addDefault("config.kits.tnt.requires_permission", false);
+		getConfig().addDefault("config.kits.tnt.money_amount", 300);
+		getConfig().addDefault("config.kits.tnt.permission_node", "dragonescape.kits.tnt");
+		
 
 		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
 		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
@@ -238,7 +252,8 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("strings.started_announcement", "&aA new DragonEscape Round has started!");
 		getConfig().addDefault("strings.winner_announcement", "&6<player> &awon the game on arena &6<arena>!");
 		getConfig().addDefault("strings.noperm", "&cYou don't have permission.");
-
+		getConfig().addDefault("strings.nopermkit", "&cYou don't have permission to use this kit.");
+		
 		getConfig().options().copyDefaults(true);
 		if (getConfig().isSet("config.min_players")) {
 			getConfig().set("config.min_players", null);
@@ -328,6 +343,7 @@ public class Main extends JavaPlugin implements Listener {
 		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "§");
 		winner_an = getConfig().getString("strings.winner_announcement").replaceAll("&", "§");
 		noperm = getConfig().getString("strings.noperm").replaceAll("&", "§");
+		nopermkit = getConfig().getString("strings.nopermkit").replaceAll("&", "§");
 
 		sign_top = getConfig().getString("config.sign_top_line").replaceAll("&", "§");
 		sign_second_join = getConfig().getString("config.sign_second_line_join").replaceAll("&", "§");
@@ -702,7 +718,11 @@ public class Main extends JavaPlugin implements Listener {
 							sender.sendMessage(ChatColor.RED + "Unknown Kit.");
 							return true;
 						}
-						pkit.put(p, args[1]);
+						if(this.kitPlayerHasPermission(args[1], p)){
+							pkit.put(p, args[1]);
+						}else{
+							sender.sendMessage(nopermkit);
+						}
 					}
 				} else if (action.equalsIgnoreCase("stop") || action.equalsIgnoreCase("end")) {
 					if (args.length > 1) {
@@ -1973,5 +1993,21 @@ public class Main extends JavaPlugin implements Listener {
 	
 	public int getKitUses(String kit){
 		return getConfig().getInt("config.kits." + kit + ".uses");
+	}
+	
+	public boolean kitRequiresMoney(String kit){
+		return getConfig().getBoolean("config.kits." + kit + ".requires_money");
+	}
+	
+	public boolean kitPlayerHasPermission(String kit, Player p){
+		if(!getConfig().getBoolean("config.kits." + kit + ".requires_permission")){
+			return true;
+		}else{
+			if(p.hasPermission(getConfig().getString("config.kits." + kit + ".permission_node"))){
+				return true;
+			}else{
+				return false;
+			}
+		}
 	}
 }
